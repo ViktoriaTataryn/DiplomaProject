@@ -45,3 +45,6 @@ _ReSharper*/
 # OS
 .DS_Store
 Thumbs.db
+
+# Visual Studio caches
+*.dtbcache.v2
