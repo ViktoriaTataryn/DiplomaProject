@@ -1,0 +1,47 @@
+## =========================
+## Visual Studio / ASP.NET
+## =========================
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio working folder
+.vs/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bin/
+obj/
+
+# ASP.NET Core
+appsettings.Development.json
+appsettings.*.json.user
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+
+# NuGet
+*.nupkg
+.nuget/
+
+# Publish output
+publish/
+
+# Tools
+_ReSharper*/
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
