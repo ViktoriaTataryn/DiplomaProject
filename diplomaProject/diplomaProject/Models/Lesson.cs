@@ -12,5 +12,7 @@
         public int? LiveMeetingId { get; set; }
         public LiveMeeting? LiveMeeting { get; set; }
 
+        //test
+
     }
 }
