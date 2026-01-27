@@ -1,3 +1,6 @@
+using diplomaProject.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace diplomaProject
 {
     public class Program
@@ -6,8 +9,15 @@ namespace diplomaProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
+         
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            builder.Services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(connectionString));
 
             var app = builder.Build();
 
