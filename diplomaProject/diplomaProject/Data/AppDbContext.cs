@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace diplomaProject.Data
 {
-    public class ApplicationContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public ApplicationContext()
+        public AppDbContext()
         {
 
         }
-        public ApplicationContext(DbContextOptions<ApplicationContext> options):base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
         {
 
         }
