@@ -9,8 +9,7 @@
         public Module Module { get; set; }
         public int ModuleId { get; set; }
         public ICollection<Resource>? Resources { get; set; }
-        public int? LiveMeetingId { get; set; }
-        public LiveMeeting? LiveMeeting { get; set; }
+      
 
     }
 }

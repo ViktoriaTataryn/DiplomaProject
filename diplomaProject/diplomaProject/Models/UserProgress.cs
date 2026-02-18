@@ -12,7 +12,7 @@ namespace diplomaProject.Models
         //ссылка на ID пользователя (связь с таблицей User)
         [Required]
         [Display(Name = "User ID")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         //ссылка на ID курса (связь с таблицей Course)
         [Required]
