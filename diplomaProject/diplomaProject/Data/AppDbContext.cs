@@ -22,6 +22,8 @@ namespace diplomaProject.Data
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<UserProgress> UserProgresses { get; set; }
+        public DbSet<Homework> Homeworks { get; set; }
+        public DbSet<HomeworkSubmission> HomeworkSubmissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
