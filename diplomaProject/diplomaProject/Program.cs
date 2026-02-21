@@ -1,6 +1,7 @@
 using diplomaProject.Data;
 using diplomaProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace diplomaProject
@@ -22,6 +23,8 @@ namespace diplomaProject
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
+
+                
                 // Налаштування паролів 
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 6;
@@ -31,15 +34,20 @@ namespace diplomaProject
 
                 // Налаштування унікальності пошти
                 options.User.RequireUniqueEmail = true;
+
+                options.SignIn.RequireConfirmedAccount = true;
+
             })
                 .AddEntityFrameworkStores<AppDbContext>() // Де зберігати дані
                 .AddDefaultTokenProviders(); // Потрібно для скидання паролів тощо
 
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+
             // 2. Налаштування кукі (куди кидати користувача, якщо він не авторизований)
             builder.Services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "/Account/Login";  // Шлях до вашої сторінки входу
-                options.AccessDeniedPath = "/Account/AccessDenied"; // Якщо немає прав (наприклад, не Адмін)
+                options.LoginPath = "/Auth/Login";  // Шлях до вашої сторінки входу
+                options.AccessDeniedPath = "/Auth/AccessDenied"; // Якщо немає прав (наприклад, не Адмін)
             });
 
             var app = builder.Build();
@@ -60,6 +68,8 @@ namespace diplomaProject
                     }
                 }
             }
+
+          
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

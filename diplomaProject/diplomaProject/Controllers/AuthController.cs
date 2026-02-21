@@ -1,6 +1,7 @@
 ﻿using diplomaProject.DTOs;
 using diplomaProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace diplomaProject.Controllers
@@ -9,11 +10,13 @@ namespace diplomaProject.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
 
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSender=emailSender;
         }
 
         [HttpGet]
@@ -35,15 +38,23 @@ namespace diplomaProject.Controllers
                     RegistrationDate = DateTime.Now,
                 };
                 var result = await _userManager.CreateAsync(user, registerUserDTO.Password);
+                await _userManager.AddToRoleAsync(user, "Student");
+
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "Student");
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    // 2. Створюємо посилання (Callback URL)
+                    var confirmationLink = Url.Action("ConfirmEmail", "Auth",
+                        new { userId = user.Id, token = token }, Request.Scheme);
 
-                    // return RedirectToAction("Index", "Home");
-                    return Ok(new { message = "Реєстрація успішна!" });
+                    await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
+                $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
+
+                    //return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
+
+                    return View("RegisterSuccess");
                 }
 
                 foreach (var error in result.Errors)
@@ -55,12 +66,32 @@ namespace diplomaProject.Controllers
             return View(registerUserDTO);
             
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null) return BadRequest("Некоректні дані");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("Користувача не знайдено");
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                // return Ok("Пошту успішно підтверджено! Тепер ви можете увійти."); //тест для постман
+                TempData["StatusMessage"] = "Пошту підтверджено. Тепер ви можете увійти.";
+                return RedirectToAction("Login");
+            }
+            return BadRequest("Помилка підтвердження");
+        }
+
         [HttpGet]
         public IActionResult Login()
         {
             
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginUserDTO loginUserDTO)
         {
@@ -76,8 +107,7 @@ namespace diplomaProject.Controllers
                 //{
                 //    return Ok(new { message = "Вхід успішний!" });
                 //}
-
-                //return BadRequest("Невірний логін або пароль.");
+                //return BadRequest("Невірний логін або пароль."); //тест для постман
 
                 if (result.Succeeded)
                 {
