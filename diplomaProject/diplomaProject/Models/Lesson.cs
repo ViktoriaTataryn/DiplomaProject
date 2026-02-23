@@ -13,6 +13,7 @@ namespace diplomaProject.Models
         [Required]
         [Display(Name = "Content")]
         public string Content { get; set; }
+        public string? Description { get; set; }
 
         [Display(Name = "Video URL")]
         public string? VideoUrl { get; set; } // Ссылка на видео, если будет нужно
@@ -24,5 +25,6 @@ namespace diplomaProject.Models
         // Список всех файлов (картинок, методичек), привязанных к уроку
         [Display(Name = "Resources")]
         public ICollection<Resource> Resources { get; set; } = new List<Resource>();
+        public ICollection<Homework> Homeworks { get; set; }
     }
 }

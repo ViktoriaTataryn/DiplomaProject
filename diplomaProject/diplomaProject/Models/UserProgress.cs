@@ -2,6 +2,13 @@
 
 namespace diplomaProject.Models
 {
+    public enum ProgressStatus
+    {
+        Open,
+        InProgress,
+        Close,
+        Completed
+    }
     // класс для отслеживания успехов студента в обучении
     public class UserProgress
     {
@@ -30,5 +37,7 @@ namespace diplomaProject.Models
         // дата и время последнего захода в материалы курса
         [Display(Name = "Last Activity Date")]
         public DateTime LastActivity { get; set; } = DateTime.Now;
+
+        public ProgressStatus Status { get; set; }
     }
 }
