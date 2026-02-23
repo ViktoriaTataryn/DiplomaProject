@@ -16,5 +16,6 @@ namespace diplomaProject.Models
 
         // Дата создания (чтобы знать, когда курс добавили)
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public ICollection<Module> Modules { get; set; }
     }
 }

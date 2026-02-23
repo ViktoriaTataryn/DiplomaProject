@@ -2,6 +2,13 @@
 
 namespace diplomaProject.Models
 {
+    public enum HomeworkStatus
+    {
+        NotSubmitted,
+        Pending,
+        Approved,
+        Rejected
+    }
     public class HomeworkSubmission
     {
         public int Id { get; set; }
@@ -23,5 +30,8 @@ namespace diplomaProject.Models
 
         [Display(Name = "Grade")]
         public int? Grade { get; set; } // Оценка (со знаком вопроса, так как изначально работы не проверены)
+        public string? Feedback { get; set; }
+
+        public HomeworkStatus Status { get; set; }
     }
 }
