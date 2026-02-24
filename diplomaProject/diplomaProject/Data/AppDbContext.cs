@@ -30,7 +30,28 @@ namespace diplomaProject.Data
             //  викликає внутрішні налаштування Identity для створення таблиць AspNetUsers, AspNetRoles тощо.
             base.OnModelCreating(builder);
 
-          
+            builder.Entity<UserProgress>()
+        .HasOne(p => p.Module)
+        .WithMany()
+        .HasForeignKey(p => p.ModuleId)
+        .OnDelete(DeleteBehavior.Restrict); // Або NoAction
+
+            // Вимикаємо каскадне видалення для Лекцій у таблиці прогресу
+            builder.Entity<UserProgress>()
+                .HasOne(p => p.Lesson)
+                .WithMany()
+                .HasForeignKey(p => p.LessonId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Якщо виникне помилка з UserId, можна додати і це:
+            builder.Entity<UserProgress>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+           
+
+
         }
     }
 }

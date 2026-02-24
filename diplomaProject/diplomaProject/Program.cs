@@ -1,5 +1,7 @@
 using diplomaProject.Data;
+using diplomaProject.Interfaces;
 using diplomaProject.Models;
+using diplomaProject.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +51,8 @@ namespace diplomaProject
                 options.LoginPath = "/Auth/Login";  // Шлях до вашої сторінки входу
                 options.AccessDeniedPath = "/Auth/AccessDenied"; // Якщо немає прав (наприклад, не Адмін)
             });
+
+            builder.Services.AddScoped<IProgressService, ProgressService>();
 
             var app = builder.Build();
 
