@@ -1,0 +1,65 @@
+﻿@model diplomaProject.Models.Lesson
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Back to Course</a></li>
+            <li class="breadcrumb-item active">@Model.Title</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="mb-3">@Model.Title</h2>
+
+            @if (!string.IsNullOrEmpty(Model.VideoUrl))
+            {
+                <div class="ratio ratio-16x9 mb-4 shadow-sm">
+                    <iframe src="@Model.VideoUrl" title="YouTube video" allowfullscreen></iframe>
+                </div>
+            }
+
+            <div class="lesson-content p-3 border rounded bg-white">
+                @if (!string.IsNullOrEmpty(Model.Content))
+                {
+                    @Html.Raw(Model.Content)
+                }
+                else
+                {
+                    <p class="text-muted italic">No content for this lesson yet.</p>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Resources</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    @if (Model.Resources != null && Model.Resources.Any())
+                    {
+                        foreach (var res in Model.Resources)
+                        {
+                            <li class="list-group-item">
+                                <a href="@res.FilePath" target="_blank">@res.FileName</a>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item text-muted small">No extra files.</li>
+                    }
+                </ul>
+            </div>
+
+            <div class="d-grid gap-2">
+                <a asp-action="SubmitHomework" asp-route-id="@Model.Id" class="btn btn-success btn-lg shadow">Submit Homework</a>
+            </div>
+        </div>
+    </div>
+</div>
