@@ -111,7 +111,7 @@ namespace diplomaProject.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "User");
                 }
 
                 ModelState.AddModelError(string.Empty, "Невірний логін або пароль.");
