@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Submit Homework";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Submit Your Homework</h4>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Link to your work (GitHub or Google Drive)</label>
+                            <input type="url" class="form-control" placeholder="https://..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Comments for the teacher</label>
+                            <textarea class="form-control" rows="4" placeholder="Anything you want to add?"></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-primary" onclick="alert('Sent to review!')">Send Homework</button>
+                            <a asp-action="Lesson" asp-route-id="@ViewBag.LessonId" class="btn btn-link">Back to Lesson</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

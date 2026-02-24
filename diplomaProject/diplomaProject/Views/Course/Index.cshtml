@@ -38,7 +38,7 @@
                                         <span class="text-muted small">@lesson.Description</span>
                                     }
                                 </div>
-                                <button class="btn btn-sm btn-outline-primary">Open Lesson</button>
+                                <a asp-action="Lesson" asp-route-id="@lesson.Id" class="btn btn-sm btn-outline-primary">Open Lesson</a>
                             </li>
                         }
                     </ul>

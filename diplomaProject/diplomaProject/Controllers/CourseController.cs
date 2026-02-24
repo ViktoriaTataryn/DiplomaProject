@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Identity;
 namespace diplomaProject.Controllers
 {
     // [Authorize] - Сюда пускаем только тех, кто залогинился 
-    //[Authorize]
+    // Пока закомментировано, так как у Вики нет View для логина
+    // [Authorize]
     public class CourseController : Controller
     {
         private readonly AppDbContext _context;
@@ -31,6 +32,33 @@ namespace diplomaProject.Controllers
                 .ToListAsync();
 
             return View(modules);
+        }
+
+        // GET: Course/Lesson/5
+        // Страница конкретного урока
+        public async Task<IActionResult> Lesson(int id)
+        {
+            // Ищем урок в базе по его ID
+            // Include(l => l.Resources) нужен, чтобы подтянуть доп. материалы (файлы к уроку)
+            var lesson = await _context.Lessons
+                .Include(l => l.Resources)
+                .FirstOrDefaultAsync(l => l.Id == id);
+
+            // Если вдруг урока с таким номером нет (кто-то ввел ID вручную)
+            if (lesson == null)
+            {
+                return NotFound();
+            }
+
+            return View(lesson);
+        }
+
+        // GET: Course/SubmitHomework/5
+        public IActionResult SubmitHomework(int id)
+        {
+            // Передаем ID урока, чтобы знать, к чему привязана домашка
+            ViewBag.LessonId = id;
+            return View();
         }
     }
 }
