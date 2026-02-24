@@ -1,0 +1,49 @@
+﻿@model IEnumerable<diplomaProject.Models.Module>
+
+@{
+    ViewData["Title"] = "Course Curriculum";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Course Curriculum</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No modules available yet. Check back later!
+        </div>
+    }
+    else
+    {
+        <div class="accordion" id="courseAccordion">
+            @foreach (var module in Model)
+            {
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h3 class="h5 mb-0">@module.Title</h3>
+                        @if (!string.IsNullOrEmpty(module.Description))
+                        {
+                            <small class="text-muted">@module.Description</small>
+                        }
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var lesson in module.Lessons)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@lesson.Title</strong>
+                                    @if (!string.IsNullOrEmpty(lesson.Description))
+                                    {
+                                        <br />
+                                        <span class="text-muted small">@lesson.Description</span>
+                                    }
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary">Open Lesson</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    }
+</div>
