@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace diplomaProject.Controllers
 {
@@ -8,6 +9,7 @@ namespace diplomaProject.Controllers
         // GET: UserController
         public ActionResult Index()
         {
+           // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return View();
         }
 
