@@ -53,6 +53,7 @@ namespace diplomaProject
             });
 
             builder.Services.AddScoped<IProgressService, ProgressService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
 
             var app = builder.Build();
 
