@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace diplomaProject.Controllers
 {
+    [Authorize] // Только вошедшие пользователи увидят уроки
     public class CourseController : Controller
     {
         private readonly AppDbContext _context;
