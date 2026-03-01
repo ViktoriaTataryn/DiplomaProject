@@ -7,58 +7,56 @@ using Microsoft.AspNetCore.Identity;
 
 namespace diplomaProject.Controllers
 {
-    // [Authorize] - Сюда пускаем только тех, кто залогинился 
-    // Пока закомментировано, так как у Вики нет View для логина
-    // [Authorize]
+    [Authorize] // Только вошедшие пользователи увидят уроки
     public class CourseController : Controller
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        // Конструктор: получает доступ к базе данных и менеджеру пользователей
         public CourseController(AppDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        // GET: Course
-        // Главная страница курса: показывает список модулей
+        // 1. Список курсов
         public async Task<IActionResult> Index()
         {
-            // Берем модули из базы и сразу подгружаем связанные с ними уроки
-            var modules = await _context.Modules
-                .Include(m => m.Lessons)
-                .ToListAsync();
-
+            var modules = await _context.Modules.Include(m => m.Lessons).ToListAsync();
             return View(modules);
         }
 
-        // GET: Course/Lesson/5
-        // Страница конкретного урока
+        // 2. Страница урока
         public async Task<IActionResult> Lesson(int id)
         {
-            // Ищем урок в базе по его ID
-            // Include(l => l.Resources) нужен, чтобы подтянуть доп. материалы (файлы к уроку)
             var lesson = await _context.Lessons
                 .Include(l => l.Resources)
                 .FirstOrDefaultAsync(l => l.Id == id);
 
-            // Если вдруг урока с таким номером нет (кто-то ввел ID вручную)
-            if (lesson == null)
-            {
-                return NotFound();
-            }
-
+            if (lesson == null) return NotFound();
             return View(lesson);
         }
 
-        // GET: Course/SubmitHomework/5
-        public IActionResult SubmitHomework(int id)
+        // 3. Метод для ресурсов (как просила Вика)
+        // Позволяет получить список файлов отдельно, если нужно
+        [HttpGet]
+        public async Task<IActionResult> GetResources(int lessonId)
         {
-            // Передаем ID урока, чтобы знать, к чему привязана домашка
-            ViewBag.LessonId = id;
-            return View();
+            var resources = await _context.Resources
+                .Where(r => r.LessonId == lessonId)
+                .ToListAsync();
+            return PartialView("_ResourcesPartial", resources);
+        }
+
+        // 4. Отправка домашки через POST (без отдельной вьюшки)
+        [HttpPost]
+        public async Task<IActionResult> SubmitHomework(int lessonId, string homeworkUrl, string comment)
+        {
+            // Тут в будущем будет логика сохранения в базу через ProgressService Вики
+            // Пока просто делаем заглушку, чтобы кнопка работала
+
+            TempData["Message"] = "Homework submitted successfully!";
+            return RedirectToAction("Lesson", new { id = lessonId });
         }
     }
 }
