@@ -26,7 +26,7 @@ namespace diplomaProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDTO registerUserDTO)
+        public async Task<IActionResult> Register( RegisterUserDTO registerUserDTO)
         {
             if (ModelState.IsValid) {
                 var user = new ApplicationUser
@@ -93,7 +93,7 @@ namespace diplomaProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginUserDTO loginUserDTO)
+        public async Task<IActionResult> Login(LoginUserDTO loginUserDTO)
         {
             if (ModelState.IsValid)
             {
@@ -111,7 +111,7 @@ namespace diplomaProject.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "User");
+                    return RedirectToAction("Dashboard", "User");
                 }
 
                 ModelState.AddModelError(string.Empty, "Невірний логін або пароль.");

@@ -6,5 +6,7 @@ namespace diplomaProject.Interfaces
     {
         Task<DashboardProgressDTO> GetUserStatistic(string userId, int courseId);
         Task<UserProfileDTO> GetUserProfile(string userId);
+        Task <List<int>> GetGrades(string userId);
+        Task <DashboardViewDTO> GetDashboardView(string userId, int courseId);
     }
 }

@@ -5,6 +5,6 @@
         public DashboardProgressDTO Progress { get; set; }
         public UserProfileDTO UserProfile { get; set; }
 
-        //hometask
+        public List<int> Grades { get; set; }
     }
 }

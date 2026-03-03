@@ -1,16 +1,43 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using diplomaProject.Data;
+using diplomaProject.Interfaces;
+using diplomaProject.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace diplomaProject.Controllers
 {
     public class UserController : Controller
     {
-        // GET: UserController
-        public ActionResult Index()
+        private readonly IDashboardService _dashboardService;
+        private readonly AppDbContext _context;
+
+        public UserController(IDashboardService dashboardService, AppDbContext context)
         {
-           // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View();
+            _dashboardService =dashboardService;
+            _context = context;
+        }
+
+
+        // GET: UserController
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Dashboard()
+        {
+           var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var course = await _context.CourseRegistrations
+                .Where(c => c.UserId == userId)
+                .Select(c => c.CourseId)
+                .FirstOrDefaultAsync();
+            if (course == 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+           // var course = 1;
+            var data =await _dashboardService.GetDashboardView(userId,course);
+            return View(data);
         }
 
 
