@@ -9,13 +9,37 @@ namespace diplomaProject.Services
     public class DashboardService : IDashboardService
     {
         private readonly AppDbContext _context;
-        private readonly ProgressService _progressService;
+        private readonly IProgressService _progressService;
 
-        public DashboardService(AppDbContext context, ProgressService progressService)
+        public DashboardService(AppDbContext context, IProgressService progressService)
         {
             _context = context;
             _progressService=progressService;
 
+        }
+
+        public async Task<DashboardViewDTO> GetDashboardView(string userId, int courseId)
+        {
+            var progressData = await GetUserStatistic(userId, courseId);
+            var userProfile =await GetUserProfile(userId);
+            var gradesList =await GetGrades(userId);
+            
+            return new DashboardViewDTO
+            {
+                Progress= progressData,
+                UserProfile= userProfile,
+                Grades= gradesList,
+            }; 
+           
+        }
+
+        public async Task<List<int>> GetGrades(string userId)
+        {
+            return  await _context.HomeworkSubmissions
+                .Where(g => g.StudentId == userId&&g.Status==HomeworkStatus.Approved)
+                .Where(g=>g.Grade.HasValue)
+                .Select(g=>g.Grade.Value)
+                .ToListAsync();
         }
 
         public async Task<UserProfileDTO> GetUserProfile(string userId)
