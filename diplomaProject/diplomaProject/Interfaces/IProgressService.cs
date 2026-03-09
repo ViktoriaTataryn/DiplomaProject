@@ -24,6 +24,7 @@ namespace diplomaProject.Interfaces
 
         Task<string> GetActiveLessonAsync(string userId, int courseId);
 
+        Task <HomeworkStatus>GetHomeworkStatusAsync(string userId, int homeworkId);
        
         
     }
