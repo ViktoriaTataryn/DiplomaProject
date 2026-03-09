@@ -120,5 +120,19 @@ namespace diplomaProject.Controllers
             //return BadRequest(ModelState);
             return View(loginUserDTO);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogOut(string returnUrl = null) {
+            await _signInManager.SignOutAsync();
+            if (returnUrl != null && Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index","Home");
+            }
+        }
     }
 }
