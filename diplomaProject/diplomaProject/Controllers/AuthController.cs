@@ -1,5 +1,4 @@
-﻿using diplomaProject.DTOs;
-using diplomaProject.Models;
+﻿using diplomaProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,7 @@ namespace diplomaProject.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender=emailSender;
+            _emailSender = emailSender;
         }
 
         [HttpGet]
@@ -26,23 +25,26 @@ namespace diplomaProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDTO registerUserDTO)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
                 var user = new ApplicationUser
                 {
-                    UserName = registerUserDTO.Email,
-                    FirstName = registerUserDTO.FirstName,
-                    LastName = registerUserDTO.LastName,
-                    Email = registerUserDTO.Email,
+                    UserName = model.Email,
+                    Email = model.Email,
+                    EmailConfirmed = true, // <--- ДОБАВЬ ЭТУ СТРОЧКУ (Auto-confirm email)
                     RegistrationDate = DateTime.Now,
+                    FirstName = model.FirstName, // Gets value from the form
+                    LastName = model.LastName    // Gets value from the form
+                    // Примітка: FirstName та LastName тепер отримуються безпосередньо з моделі
                 };
-                var result = await _userManager.CreateAsync(user, registerUserDTO.Password);
-                await _userManager.AddToRoleAsync(user, "Student");
 
+                var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Student");
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                     // 2. Створюємо посилання (Callback URL)
@@ -50,7 +52,7 @@ namespace diplomaProject.Controllers
                         new { userId = user.Id, token = token }, Request.Scheme);
 
                     await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
-                $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
+                        $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
 
                     //return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
 
@@ -61,10 +63,8 @@ namespace diplomaProject.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-                return BadRequest(result.Errors);
             }
-            return View(registerUserDTO);
-            
+            return View(model);
         }
 
         [HttpGet]
@@ -88,19 +88,18 @@ namespace diplomaProject.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginUserDTO loginUserDTO)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(
-                    loginUserDTO.Email,
-                    loginUserDTO.Password,
-                    isPersistent: false,
+                    model.Email,
+                    model.Password,
+                    isPersistent: model.RememberMe,
                     lockoutOnFailure: false);
 
                 //if (result.Succeeded)
@@ -111,14 +110,14 @@ namespace diplomaProject.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "User");
+                    // Направляємо користувача на список курсів після входу
+                    return RedirectToAction("Index", "Course");
                 }
 
                 ModelState.AddModelError(string.Empty, "Невірний логін або пароль.");
             }
 
-            //return BadRequest(ModelState);
-            return View(loginUserDTO);
+            return View(model);
         }
     }
 }

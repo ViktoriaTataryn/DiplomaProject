@@ -1,5 +1,80 @@
-﻿
+﻿@model diplomaProject.Models.RegisterViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Registration";
 }
-<h1>Register</h1>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 p-4" style="border-radius: 15px;">
+            <div class="card-body">
+                <h2 class="text-center mb-4">Create Account</h2>
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        <input asp-for="FirstName" class="form-control form-control-lg" placeholder="John" style="border-radius: 10px;" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input asp-for="LastName" class="form-control form-control-lg" placeholder="Doe" style="border-radius: 10px;" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email address</label>
+                        <input asp-for="Email" class="form-control form-control-lg" placeholder="name@example.com" style="border-radius: 10px;" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <input asp-for="Password" type="password" id="passInput" class="form-control form-control-lg" style="border-radius: 10px 0 0 10px;" />
+                            <button class="btn btn-outline-secondary" type="button" id="togglePass" style="border-radius: 0 10px 10px 0; border-color: #ced4da;">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                            <input asp-for="ConfirmPassword" type="password" id="confirmPassInput" class="form-control form-control-lg" style="border-radius: 10px 0 0 10px;" />
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPass" style="border-radius: 0 10px 10px 0; border-color: #ced4da;">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-lg w-100 mb-3" style="border-radius: 10px; background-color: #000;">Sign Up</button>
+                </form>
+                <p class="text-center mb-0">Already have an account? <a asp-action="Login" class="text-decoration-none fw-bold" style="color: #000;">Log In</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Universal function for password visibility toggle
+        function toggleVisibility(inputId, buttonId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(buttonId).querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        }
+
+        // Attach events to buttons
+        document.getElementById('togglePass').addEventListener('click', function () {
+            toggleVisibility('passInput', 'togglePass');
+        });
+        document.getElementById('toggleConfirmPass').addEventListener('click', function () {
+            toggleVisibility('confirmPassInput', 'toggleConfirmPass');
+        });
+    </script>
+}
