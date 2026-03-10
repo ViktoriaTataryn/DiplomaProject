@@ -27,44 +27,51 @@ namespace diplomaProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = new ApplicationUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    EmailConfirmed = true, // <--- ДОБАВЬ ЭТУ СТРОЧКУ (Auto-confirm email)
-                    RegistrationDate = DateTime.Now,
-                    FirstName = model.FirstName, // Gets value from the form
-                    LastName = model.LastName    // Gets value from the form
-                    // Примітка: FirstName та LastName тепер отримуються безпосередньо з моделі
-                };
+                return View(model);
+            }
 
-                var result = await _userManager.CreateAsync(user, model.Password);
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                RegistrationDate = DateTime.Now,
+                FirstName = model.FirstName, // Gets value from the form
+                LastName = model.LastName    // Gets value from the form
+                // Примітка: FirstName та LastName тепер отримуються безпосередньо з моделі
+            };
 
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, "Student");
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var result = await _userManager.CreateAsync(user, model.Password);
 
-                    // 2. Створюємо посилання (Callback URL)
-                    var confirmationLink = Url.Action("ConfirmEmail", "Auth",
-                        new { userId = user.Id, token = token }, Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
-                        $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
-
-                    //return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
-
-                    return View("RegisterSuccess");
-                }
-
+            if (!result.Succeeded)
+            {
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+                return View(model);
             }
-            return View(model);
+
+            var roleResult = await _userManager.AddToRoleAsync(user, "Student");
+            if (!roleResult.Succeeded)
+            {
+                var errors = string.Join(" | ", roleResult.Errors.Select(e => e.Description));
+                throw new Exception($"ПОМИЛКА ДОДАВАННЯ РОЛІ: {errors}");
+            }
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            // 2. Створюємо посилання (Callback URL)
+            var confirmationLink = Url.Action("ConfirmEmail", "Auth",
+                new { userId = user.Id, token = token }, Request.Scheme);
+
+            await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
+                $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
+
+            //return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
+
+            return View("RegisterSuccess");
         }
 
         [HttpGet]
@@ -86,13 +93,14 @@ namespace diplomaProject.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
             if (ModelState.IsValid)
             {
@@ -111,6 +119,10 @@ namespace diplomaProject.Controllers
                 if (result.Succeeded)
                 {
                     // Направляємо користувача на список курсів після входу
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
                     return RedirectToAction("Index", "Course");
                 }
 
@@ -118,6 +130,21 @@ namespace diplomaProject.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogOut(string returnUrl = null)
+        {
+            await _signInManager.SignOutAsync();
+            if (returnUrl != null && Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

@@ -3,8 +3,8 @@
     public class DashboardViewDTO
     {
         public DashboardProgressDTO Progress { get; set; }
+        public UserProfileDTO UserProfile { get; set; }
 
-        //profile
-        //hometask
+        public List<int> Grades { get; set; }
     }
 }

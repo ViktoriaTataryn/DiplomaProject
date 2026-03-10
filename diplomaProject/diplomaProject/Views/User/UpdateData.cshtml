@@ -1,0 +1,106 @@
+﻿@using diplomaProject.DTOs
+@model EditUserDTO
+
+<div class="container mt-4">
+    <form asp-action="UpdateProfile" method="post">
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Особисті дані</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="toggleSection('personal')">
+                    <i class="bi bi-pencil"></i> Редагувати
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="personal-view">
+                    <p><strong>Ім'я:</strong> @Model.FirstName</p>
+                    <p><strong>Прізвище:</strong> @Model.LastName</p>
+                    <p><strong>Телефон:</strong> @Model.UserPhone</p>
+                </div>
+                <div id="personal-edit" style="display: none;">
+                    <div class="mb-3">
+                        <label asp-for="FirstName">Ім'я</label>
+                        <input asp-for="FirstName" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="LastName">Прізвище</label>
+                        <input asp-for="LastName" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="UserPhone">Телефон</label>
+                        <input asp-for="UserPhone" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Безпека</h5>
+                <button type="button" class="btn btn-sm btn-outline-warning" onclick="toggleSection('password')">
+                    <i class="bi bi-key"></i> Змінити пароль
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="password-view">
+                    <p class="text-muted">Пароль встановлено (останнє оновлення нещодавно)</p>
+                </div>
+                <div id="password-edit" style="display: none;">
+                    <div class="mb-3">
+                        <label>Поточний пароль</label>
+                        <input asp-for="CurrentPassword" type="password" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label>Новий пароль</label>
+                        <input asp-for="NewPassword" type="password" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label>Підтвердіть пароль</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="save-button-container" style="display: none;" class="text-end">
+            <button type="submit" class="btn btn-success btn-lg">Зберегти всі зміни</button>
+            <button type="button" class="btn btn-link" onclick="location.reload()">Скасувати</button>
+        </div>
+    </form>
+    <form asp-controller="Auth" asp-action="LogOut" method="post">
+                        <button type="submit" class="dropdown-item text-danger">Вийти</button></form>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleSection(sectionName) {
+            const viewDiv = document.getElementById(sectionName + '-view');
+            const editDiv = document.getElementById(sectionName + '-edit');
+            const saveBtn = document.getElementById('save-button-container');
+
+            // Перевіряємо поточний стан (враховуємо порожній стиль або inline)
+            if (editDiv.style.display === 'none' || editDiv.style.display === '') {
+                editDiv.style.display = 'block';
+                viewDiv.style.display = 'none';
+                saveBtn.style.display = 'block';
+            } else {
+                editDiv.style.display = 'none';
+                viewDiv.style.display = 'block';
+
+                // Додатково: ховаємо кнопку збереження, якщо ВСІ секції закриті
+                checkSaveButton();
+            }
+        }
+
+        function checkSaveButton() {
+            const personalEdit = document.getElementById('personal-edit').style.display;
+            const passwordEdit = document.getElementById('password-edit').style.display;
+            const saveBtn = document.getElementById('save-button-container');
+
+            if (personalEdit === 'none' && passwordEdit === 'none') {
+                saveBtn.style.display = 'none';
+            }
+        }
+    </script>
+}
+

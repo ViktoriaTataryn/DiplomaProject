@@ -38,6 +38,15 @@ namespace diplomaProject.Services
 
         }
 
+        public async Task<HomeworkStatus> GetHomeworkStatusAsync(string userId, int homeworkId)
+        {
+            var status = await _context.HomeworkSubmissions.FirstOrDefaultAsync(s => s.StudentId == userId&&s.HomeworkId==homeworkId);
+            if (status == null) { 
+                return HomeworkStatus.NotSubmitted;
+            }
+            return status.Status;
+        }
+
         public async Task<ProgressStatus> GetLessonStatusAsync(string userId, int lessonId)
         {
             var status= await _context.UserProgresses.FirstOrDefaultAsync(s=>s.UserId == userId&&s.LessonId==lessonId && s.LessonId != 0);
