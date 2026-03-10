@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net.Mail;
 using System.Net;
 
+
 namespace diplomaProject
 {
     public class EmailSender : IEmailSender 
@@ -16,22 +17,33 @@ namespace diplomaProject
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var mail = _config["EmailSettings:Mail"];
+            var smtpUser = _config["EmailSettings:smtpUser"]?.Trim();
             var pw = _config["EmailSettings:Password"];
             var host = _config["EmailSettings:Host"];
             var port = int.Parse(_config["EmailSettings:Port"] ?? "587");
+            var fromEmail = _config["EmailSettings:FromEmail"];
 
-            var client = new SmtpClient(host, port)
+            using var client = new SmtpClient(host, port)
             {
-                EnableSsl = true,
-                Credentials = new NetworkCredential(mail, pw)
+                // 1. Авторизація 
+                Credentials = new NetworkCredential(smtpUser, pw),
+                EnableSsl = true
             };
-            var message = new MailMessage(from: mail, to: email, subject, htmlMessage)
+
+            // 2. Створення листа
+            using var message = new MailMessage(from: fromEmail, to: email)
             {
+                Subject = subject,
+                Body = htmlMessage,
                 IsBodyHtml = true
             };
 
             await client.SendMailAsync(message);
+            //var message = new MailMessage(from: mail, to: email, subject, htmlMessage)
+            //{
+            //    IsBodyHtml = true
+            //};
+           
         }
     }
 }

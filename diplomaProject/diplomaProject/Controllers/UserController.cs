@@ -38,10 +38,10 @@ namespace diplomaProject.Controllers
                 .Where(c => c.UserId == userId)
                 .Select(c => c.CourseId)
                 .FirstOrDefaultAsync();
-            if (course == 0)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            //if (course == 0)
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
             bool progress = await _context.UserProgresses.AnyAsync(c => c.UserId == userId&&c.CourseId==course);
             if (!progress)
             {
