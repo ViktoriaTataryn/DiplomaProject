@@ -127,8 +127,8 @@ namespace diplomaProject.Controllers
                 ModelState.AddModelError(string.Empty, "Невірний логін або пароль.");
             }
 
-            //return BadRequest(ModelState);
-            return View(loginUserDTO);
+           // return BadRequest(ModelState);
+           return View(loginUserDTO);
         }
 
         [HttpPost]
