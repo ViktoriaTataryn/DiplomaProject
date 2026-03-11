@@ -124,6 +124,7 @@ namespace diplomaProject.Controllers
         }
 
 
+  
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(AddReviewDTO review)
@@ -131,9 +132,16 @@ namespace diplomaProject.Controllers
             if (!ModelState.IsValid)
             {
                 return View(review);
+
+                //var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                //return BadRequest(new { message = "Валідація не пройшла", details = errors }); //для постман
+
             }
             var userId = _userManager.GetUserId(User);
-           
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Користувач не авторизований. Перевірте токен.");
+            }
             var userReview = new Review
             {
                 Content=review.Content,
@@ -142,8 +150,8 @@ namespace diplomaProject.Controllers
             };
              _context.Reviews.Add(userReview);
            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Index","Home");
-           }
+           // return Ok(new { message = "Відгук додано успішно!", id = userReview.Id });//для постман
+           return RedirectToAction("Index","Home");
+        }
     }
 }
