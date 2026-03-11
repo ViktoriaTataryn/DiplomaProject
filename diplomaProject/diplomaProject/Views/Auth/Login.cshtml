@@ -1,31 +1,118 @@
-﻿
+﻿@model diplomaProject.Models.LoginViewModel
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Увійти";
 }
-@model diplomaProject.DTOs.LoginUserDTO
-<h1 >Login</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-controller="Auth" asp-action="Login"  method="post">
-            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
-            <div class="form-group">
-                <label>Email</label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+<style>
+    /* Custom styling to match Figma design */
+    .figma-blue {
+        color: #2A35AD; /* Deep blue from the mockup */
+    }
+
+    .figma-bg-blue {
+        background-color: #2A35AD;
+        color: white;
+    }
+
+        .figma-bg-blue:hover {
+            background-color: #1f2785;
+            color: white;
+        }
+
+    .figma-input {
+        border: none;
+        border-bottom: 1.5px solid #2A35AD;
+        border-radius: 0;
+        padding-left: 0;
+        padding-right: 0;
+        color: #2A35AD;
+        background-color: transparent;
+        box-shadow: none !important;
+    }
+
+        .figma-input:focus {
+            border-bottom: 2px solid #2A35AD;
+            background-color: transparent;
+        }
+
+        .figma-input::placeholder {
+            color: #a4a9e8;
+        }
+
+    .figma-eye-container {
+        border: none;
+        border-bottom: 1.5px solid #2A35AD;
+        border-radius: 0;
+        background-color: transparent;
+        cursor: pointer;
+        padding-right: 0;
+    }
+
+    .figma-link {
+        color: #2A35AD;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+        .figma-link:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-5">
+        <div class="card border-0 p-4 bg-transparent">
+            <div class="card-body p-0">
+                <h2 class="text-center mb-5 figma-blue" style="letter-spacing: 1px; font-weight: 400;">УВІЙТИ</h2>
+
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+                    <div class="mb-4">
+                        <input asp-for="Email" class="form-control form-control-lg figma-input" placeholder="E-mail" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="input-group">
+                            <input asp-for="Password" type="password" class="form-control form-control-lg figma-input" id="passwordInput" placeholder="Пароль" style="border-right: none;" />
+
+                            <span class="input-group-text figma-eye-container" id="togglePassword">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#2A35AD" class="bi bi-eye" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-5 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" style="border-color: #2A35AD;" />
+                        <label class="form-check-label figma-blue" style="font-size: 0.9rem;">Запам'ятати мене</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-lg w-100 mb-4 figma-bg-blue" style="border-radius: 0; letter-spacing: 1px;">
+                        ПІДТВЕРДИТИ
+                    </button>
+                </form>
+
+                <p class="text-center mb-0 figma-blue" style="font-size: 0.9rem;">
+                    Ще не зареєстровані? <a asp-action="Register" class="figma-link fw-bold">Створити акаунт</a>
+                </p>
             </div>
-            <div class="form-group">
-                <label>Пароль</label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary mt-3">Увійти</button>
-        </form>
+        </div>
     </div>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordInput = document.getElementById('passwordInput');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+        } else {
+            passwordInput.type = 'password';
+        }
+    });
+</script>

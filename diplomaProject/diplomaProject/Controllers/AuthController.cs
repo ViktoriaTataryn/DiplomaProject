@@ -1,5 +1,4 @@
-﻿using diplomaProject.DTOs;
-using diplomaProject.Models;
+﻿using diplomaProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,7 @@ namespace diplomaProject.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender=emailSender;
+            _emailSender = emailSender;
         }
 
         [HttpGet]
@@ -26,29 +25,32 @@ namespace diplomaProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterUserDTO registerUserDTO)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(registerUserDTO);
+                return View(model);
             }
-           
-                var user = new ApplicationUser
-                {
-                    UserName = registerUserDTO.Email,
-                    FirstName = registerUserDTO.FirstName,
-                    LastName = registerUserDTO.LastName,
-                    Email = registerUserDTO.Email,
-                    RegistrationDate = DateTime.Now,
-                };
-               
-                var result = await _userManager.CreateAsync(user, registerUserDTO.Password);
+
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                RegistrationDate = DateTime.Now,
+                FirstName = model.FirstName, // Gets value from the form
+                LastName = model.LastName    // Gets value from the form
+                // Примітка: FirstName та LastName тепер отримуються безпосередньо з моделі
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
+                {
                     ModelState.AddModelError(string.Empty, error.Description);
-
-                return View(registerUserDTO);
+                }
+                return View(model);
             }
 
             var roleResult = await _userManager.AddToRoleAsync(user, "Student");
@@ -57,21 +59,20 @@ namespace diplomaProject.Controllers
                 var errors = string.Join(" | ", roleResult.Errors.Select(e => e.Description));
                 throw new Exception($"ПОМИЛКА ДОДАВАННЯ РОЛІ: {errors}");
             }
-                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                        // 2. Створюємо посилання (Callback URL)
-                        var confirmationLink = Url.Action("ConfirmEmail", "Auth",
-                            new { userId = user.Id, token = token }, Request.Scheme);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                        await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
-                    $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
+            // 2. Створюємо посилання (Callback URL)
+            var confirmationLink = Url.Action("ConfirmEmail", "Auth",
+                new { userId = user.Id, token = token }, Request.Scheme);
 
-                        //return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
+            await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
+                $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
 
-                        return View("RegisterSuccess");
+            //return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
 
-                }
-                
+            return View("RegisterSuccess");
+        }
 
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
@@ -99,14 +100,14 @@ namespace diplomaProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginUserDTO loginUserDTO, string? returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(
-                    loginUserDTO.Email,
-                    loginUserDTO.Password,
-                    isPersistent: false,
+                    model.Email,
+                    model.Password,
+                    isPersistent: model.RememberMe,
                     lockoutOnFailure: false);
 
                 //if (result.Succeeded)
@@ -117,23 +118,24 @@ namespace diplomaProject.Controllers
 
                 if (result.Succeeded)
                 {
+                    // Направляємо користувача на список курсів після входу
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Course");
                 }
 
                 ModelState.AddModelError(string.Empty, "Невірний логін або пароль.");
             }
 
-            //return BadRequest(ModelState);
-            return View(loginUserDTO);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogOut(string returnUrl = null) {
+        public async Task<IActionResult> LogOut(string returnUrl = null)
+        {
             await _signInManager.SignOutAsync();
             if (returnUrl != null && Url.IsLocalUrl(returnUrl))
             {
@@ -141,7 +143,7 @@ namespace diplomaProject.Controllers
             }
             else
             {
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
         }
     }
