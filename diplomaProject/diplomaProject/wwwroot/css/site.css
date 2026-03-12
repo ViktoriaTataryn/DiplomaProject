@@ -20,3 +20,102 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* =========================================
+   Figma Auth Styles (Login & Register)
+   ========================================= */
+
+/* 1. Import Accia Piano font */
+@font-face {
+    font-family: 'Accia Piano';
+    src: url('/fonts/AcciaPiano-Light.woff2') format('woff2'), url('/fonts/AcciaPiano-Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 2. Import Gilroy font (Regular & Medium) */
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/fonts/Gilroy-Regular.woff2') format('woff2'), url('/fonts/Gilroy-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/fonts/Gilroy-Medium.woff2') format('woff2'), url('/fonts/Gilroy-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+/* 3. Global typography settings */
+body {
+    font-family: 'Gilroy', sans-serif;
+}
+
+.figma-text-blue {
+    color: #1C2473;
+}
+
+.figma-bg-blue {
+    background-color: #1C2473;
+    color: white;
+    transition: all 0.3s ease;
+    font-family: 'Accia Piano', serif;
+}
+
+    .figma-bg-blue:hover {
+        background-color: #131954;
+        color: white;
+    }
+
+/* Seamless input wrapper */
+.figma-input-wrapper {
+    border-bottom: 1.5px solid #1C2473;
+    display: flex;
+    align-items: center;
+    transition: border-bottom 0.3s ease;
+}
+
+    .figma-input-wrapper:focus-within {
+        border-bottom: 2px solid #1C2473;
+    }
+
+/* Transparent input inside wrapper */
+.figma-input {
+    border: none;
+    box-shadow: none !important;
+    background-color: transparent;
+    padding: 12px 0;
+    border-radius: 0;
+    color: #1C2473;
+    font-weight: 500;
+    width: 100%;
+    outline: none;
+    font-family: 'Gilroy', sans-serif;
+}
+
+    .figma-input::placeholder {
+        color: #9BA1D2;
+        font-weight: 400;
+    }
+
+/* Transparent eye button */
+.figma-eye-btn {
+    background: transparent;
+    border: none;
+    padding: 0 10px;
+    cursor: pointer;
+    color: #1C2473;
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+/* Apply Accia Piano to the main titles */
+h2.figma-title {
+    font-family: 'Accia Piano', serif;
+    color: #1C2473;
+    letter-spacing: 1px;
+    font-weight: normal;
+}
