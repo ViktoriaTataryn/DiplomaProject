@@ -54,8 +54,9 @@ namespace diplomaProject.Controllers
 
 
 
+        //те що студент бачить після превірки адміна
         [HttpGet]
-        public async Task<IActionResult> GetHomeworkSubmission()
+        public async Task<IActionResult> GetUserHomework()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var homeworks=await _context.HomeworkSubmissions
