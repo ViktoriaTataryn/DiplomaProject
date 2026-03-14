@@ -104,11 +104,20 @@ namespace diplomaProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Check if email is confirmed before signing in
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
+                {
+                    ModelState.AddModelError(string.Empty, "Вам потрібно підтвердити електронну пошту перед входом. Перевірте свою скриньку.");
+                    return View(model);
+                }
+
+                // Enabled brute-force protection
                 var result = await _signInManager.PasswordSignInAsync(
                     model.Email,
                     model.Password,
                     isPersistent: model.RememberMe,
-                    lockoutOnFailure: false);
+                    lockoutOnFailure: true);
 
                 //if (result.Succeeded)
                 //{
@@ -126,6 +135,20 @@ namespace diplomaProject.Controllers
                     return RedirectToAction("Index", "Course");
                 }
 
+                // Handle Account Lockout
+                if (result.IsLockedOut)
+                {
+                    ModelState.AddModelError(string.Empty, "Акаунт заблоковано через завелику кількість невдалих спроб входу. Спробуйте пізніше.");
+                    return View(model);
+                }
+
+                // Handle Unallowed Login
+                if (result.IsNotAllowed)
+                {
+                    ModelState.AddModelError(string.Empty, "Вхід заборонено. Перевірте, чи підтверджена ваша пошта.");
+                    return View(model);
+                }
+
                 ModelState.AddModelError(string.Empty, "Невірний логін або пароль.");
             }
 
@@ -134,7 +157,7 @@ namespace diplomaProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogOut(string returnUrl = null)
+        public async Task<IActionResult> LogOut(string? returnUrl = null) // Fixed CS8625 Warning
         {
             await _signInManager.SignOutAsync();
             if (returnUrl != null && Url.IsLocalUrl(returnUrl))
