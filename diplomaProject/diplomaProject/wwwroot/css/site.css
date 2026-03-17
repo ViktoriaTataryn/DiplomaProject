@@ -1,24 +1,24 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 /* =========================================
@@ -54,31 +54,34 @@ body {
 }
 
 .figma-text-blue {
-    color: #1C2473;
+    color: #2B31B4; /* Точный цвет из Figma */
 }
 
+/* Стили для кнопки */
 .figma-bg-blue {
-    background-color: #1C2473;
+    background-color: #2B31B4; /* Точный цвет из Figma */
     color: white;
     transition: all 0.3s ease;
     font-family: 'Accia Piano', serif;
+    border-radius: 0 !important; /* Убираем скругления */
+    font-size: 18px; /* Задаем размер шрифта */
 }
 
     .figma-bg-blue:hover {
-        background-color: #131954;
+        background-color: #1e2285;
         color: white;
     }
 
 /* Seamless input wrapper */
 .figma-input-wrapper {
-    border-bottom: 1.5px solid #1C2473;
+    border-bottom: 1.5px solid #2B31B4; /* Точный цвет из Figma */
     display: flex;
     align-items: center;
     transition: border-bottom 0.3s ease;
 }
 
     .figma-input-wrapper:focus-within {
-        border-bottom: 2px solid #1C2473;
+        border-bottom: 2px solid #2B31B4; /* Точный цвет из Figma */
     }
 
 /* Transparent input inside wrapper */
@@ -88,7 +91,7 @@ body {
     background-color: transparent;
     padding: 12px 0;
     border-radius: 0;
-    color: #1C2473;
+    color: #2B31B4; /* Точный цвет из Figma */
     font-weight: 500;
     width: 100%;
     outline: none;
@@ -106,16 +109,16 @@ body {
     border: none;
     padding: 0 10px;
     cursor: pointer;
-    color: #1C2473;
+    color: #2B31B4; /* Точный цвет из Figma */
     display: flex;
     align-items: center;
     outline: none;
 }
 
-/* Apply Accia Piano to the main titles */
+/* Apply Gilroy Medium to the main titles */
 h2.figma-title {
-    font-family: 'Accia Piano', serif;
-    color: #1C2473;
+    font-family: 'Gilroy', sans-serif; /* Поменяли на Gilroy */
+    color: #2B31B4; /* Точный цвет из Figma */
     letter-spacing: 1px;
-    font-weight: normal;
+    font-weight: 500; /* Medium вес шрифта */
 }
