@@ -1,0 +1,31 @@
+﻿@model diplomaProject.Models.Module
+
+<div class="alert alert-danger">
+    <h3>Ви впевнені, що хочете видалити цей модуль?</h3>
+    <p><strong>Назва:</strong> @Model.Title</p>
+
+    @if (Model.Lessons.Any())
+
+    {
+        <p class="text-bold">Разом з модулем будуть видалені такі лекції (@Model.Lessons.Count):</p>
+        <ul>
+            @foreach (var lesson in Model.Lessons)
+
+            {
+                <li>@lesson.Title</li>
+            }
+        </ul>
+    }
+
+    else
+
+    {
+        <p>У цьому модулі поки немає лекцій.</p>
+    }
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Так, видалити все</button>
+    <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+</form>

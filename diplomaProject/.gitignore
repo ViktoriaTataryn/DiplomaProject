@@ -48,3 +48,9 @@ Thumbs.db
 
 # Visual Studio caches
 *.dtbcache.v2
+
+# Ігноруємо всі файли в папці ресурсів
+wwwroot/resources/*
+
+# Але дозволяємо Git бачити сам файл .gitkeep (якщо він там є)
+!wwwroot/resources/.gitkeep

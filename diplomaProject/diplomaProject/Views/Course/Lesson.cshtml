@@ -1,18 +1,18 @@
-﻿<div class="card shadow-sm mt-4">
-    <div class="card-body">
-        <h6>Submit Your Work</h6>
-        <form asp-action="SubmitHomework" method="post">
-            <input type="hidden" name="lessonId" value="@Model.Id" />
-            <div class="mb-2">
-                <input type="url" name="homeworkUrl" class="form-control form-control-sm" placeholder="Link to GitHub/Drive" required>
-            </div>
-            <div class="mb-2">
-                <textarea name="comment" class="form-control form-control-sm" placeholder="Comment..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-success btn-sm w-100">Send Homework</button>
-        </form>
-    </div>
-</div>
+﻿ <div class="card shadow-sm mt-4">
+     <div class="card-body">
+         <h6>Submit Your Work</h6>
+         <form asp-action="SubmitHomework" method="post">
+             <input type="hidden" name="lessonId" value="@Model.Id" />
+             <div class="mb-2">
+                 <input type="url" name="homeworkUrl" class="form-control form-control-sm" placeholder="Link to GitHub/Drive" required>
+             </div>
+             <div class="mb-2">
+                 <textarea name="comment" class="form-control form-control-sm" placeholder="Comment..."></textarea>
+             </div>
+             <button type="submit" class="btn btn-success btn-sm w-100">Send Homework</button>
+         </form>
+     </div>
+ </div>
 
 @if (TempData["Message"] != null)
 {
