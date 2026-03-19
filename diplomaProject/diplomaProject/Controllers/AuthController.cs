@@ -120,9 +120,7 @@ namespace diplomaProject.Controllers
                     lockoutOnFailure: true);
 
                 //if (result.Succeeded)
-                //{
-                //    return Ok(new { message = "Вхід успішний!" });
-                //}
+                //  return Ok(new { message = "Вхід успішний!" });
                 //return BadRequest("Невірний логін або пароль."); //тест для постман
 
                 if (result.Succeeded)
@@ -155,6 +153,7 @@ namespace diplomaProject.Controllers
             return View(model);
         }
 
+        // The existing Logout method is already here and perfectly valid
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOut(string? returnUrl = null) // Fixed CS8625 Warning

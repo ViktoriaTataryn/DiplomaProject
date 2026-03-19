@@ -24,6 +24,8 @@ namespace diplomaProject.Data
         public DbSet<UserProgress> UserProgresses { get; set; }
         public DbSet<Homework> Homeworks { get; set; }
         public DbSet<HomeworkSubmission> HomeworkSubmissions { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<AnswerOption> AnswerOptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -49,8 +51,13 @@ namespace diplomaProject.Data
                 .WithMany()
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
-           
 
+            // Configure one-to-many relationship
+            builder.Entity<Question>()
+                .HasMany(q => q.Options)
+                .WithOne(o => o.Question)
+                .HasForeignKey(o => o.QuestionId)
+                .OnDelete(DeleteBehavior.Cascade); // Если вопрос удаляется, его варианты ответов также автоматически удаляютсч
 
         }
     }

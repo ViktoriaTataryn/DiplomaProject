@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using diplomaProject.Data;
 
@@ -11,9 +12,11 @@ using diplomaProject.Data;
 namespace diplomaProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260317182629_SetupHomeworkSystem")]
+    partial class SetupHomeworkSystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,31 +156,6 @@ namespace diplomaProject.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("diplomaProject.Models.AnswerOption", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("AnswerOptions");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.ApplicationUser", b =>
@@ -428,29 +406,6 @@ namespace diplomaProject.Migrations
                     b.ToTable("Modules");
                 });
 
-            modelBuilder.Entity("diplomaProject.Models.Question", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsMultipleChoice")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("LessonId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Questions");
-                });
-
             modelBuilder.Entity("diplomaProject.Models.Resource", b =>
                 {
                     b.Property<int>("Id")
@@ -598,17 +553,6 @@ namespace diplomaProject.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("diplomaProject.Models.AnswerOption", b =>
-                {
-                    b.HasOne("diplomaProject.Models.Question", "Question")
-                        .WithMany("Options")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-                });
-
             modelBuilder.Entity("diplomaProject.Models.Homework", b =>
                 {
                     b.HasOne("diplomaProject.Models.Lesson", "Lesson")
@@ -730,11 +674,6 @@ namespace diplomaProject.Migrations
             modelBuilder.Entity("diplomaProject.Models.Module", b =>
                 {
                     b.Navigation("Lessons");
-                });
-
-            modelBuilder.Entity("diplomaProject.Models.Question", b =>
-                {
-                    b.Navigation("Options");
                 });
 #pragma warning restore 612, 618
         }

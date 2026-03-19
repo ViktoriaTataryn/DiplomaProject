@@ -122,3 +122,34 @@ h2.figma-title {
     letter-spacing: 1px;
     font-weight: 500; /* Medium вес шрифта */
 }
+
+/* =========================================
+   Mobile Responsiveness (Sidebar)
+   ========================================= */
+
+/* Sidebar default transition for smooth animation */
+#sidebar {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    /* Hide the sidebar completely off-screen to the left */
+    #sidebar {
+        position: fixed;
+        left: -280px;
+        height: 100vh;
+        z-index: 1050; /* Bring it above other content */
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    }
+
+        /* Class to show the sidebar when the button is clicked */
+        #sidebar.show {
+            left: 0;
+        }
+
+    /* Adjust header padding for mobile */
+    #header {
+        padding: 0 15px;
+    }
+}

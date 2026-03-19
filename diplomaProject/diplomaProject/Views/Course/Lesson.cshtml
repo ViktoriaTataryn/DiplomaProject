@@ -18,3 +18,59 @@
 {
     <div class="alert alert-success mt-2 small">@TempData["Message"]</div>
 }
+
+@if (TempData["HomeworkResult"] != null)
+{
+    <div class="alert alert-info mt-4">
+        <strong>Test Result:</strong> @TempData["HomeworkResult"]
+    </div>
+}
+
+<div class="mt-5">
+    <h3>Test Your Knowledge</h3>
+    <hr />
+
+    @{
+        // Cast the ViewBag data to our specific List
+        var questions = ViewBag.Questions as List<diplomaProject.Models.Question>;
+    }
+
+    @if (questions != null && questions.Any())
+    {
+        <form asp-controller="Course" asp-action="CheckHomework" method="post">
+            <input type="hidden" name="lessonId" value="@Model.Id" />
+
+            @foreach (var question in questions)
+            {
+                <div class="card mb-4">
+                    <div class="card-header figma-bg-blue text-white">
+                        <h5 class="mb-0">@question.Text</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var option in question.Options)
+                        {
+                            <div class="form-check mb-2">
+                                <input class="form-check-input"
+                                       type="@(question.IsMultipleChoice ? "checkbox" : "radio")"
+                                       name="selectedOptionIds"
+                                       value="@option.Id"
+                                       id="option_@option.Id">
+                                <label class="form-check-label" for="option_@option.Id">
+                                    @option.Text
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <button type="submit" class="btn figma-bg-blue text-white w-100 py-2 mt-3">
+                SUBMIT TEST
+            </button>
+        </form>
+    }
+    else
+    {
+        <p class="text-muted">No test questions for this lesson yet.</p>
+    }
+</div>
