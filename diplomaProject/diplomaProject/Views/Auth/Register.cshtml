@@ -60,13 +60,13 @@
                         <span asp-validation-for="ConfirmPassword" class="text-danger small mt-1 d-block"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-lg w-100 mb-4 figma-bg-blue" style="border-radius: 8px; font-weight: 500; letter-spacing: 1px; padding: 12px;">
+                    <button type="submit" class="btn btn-lg w-100 mb-4 figma-bg-blue">
                         ЗАРЕЄСТРУВАТИСЯ
                     </button>
                 </form>
 
                 <p class="text-center mb-0 figma-text-blue" style="font-size: 0.95rem;">
-                    Вже маєте акаунт? <a asp-action="Login" class="figma-text-blue fw-bold text-decoration-none" style="border-bottom: 1.5px solid #1C2473; padding-bottom: 1px;">Увійти</a>
+                    Вже маєте акаунт? <a asp-action="Login" class="figma-text-blue fw-bold text-decoration-none" style="border-bottom: 1.5px solid #2B31B4; padding-bottom: 1px;">Увійти</a>
                 </p>
             </div>
         </div>
@@ -75,7 +75,6 @@
 
 @section Scripts {
     <script>
-        // Toggle visibility for any password input
         function toggleVisibility(inputId) {
             const input = document.getElementById(inputId);
             if (input.type === "password") {
@@ -85,7 +84,6 @@
             }
         }
 
-        // Attach events
         document.getElementById('togglePass').addEventListener('click', function () {
             toggleVisibility('passInput');
         });

@@ -34,6 +34,13 @@ namespace diplomaProject.Controllers
                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (lesson == null) return NotFound();
+
+            // Fetch questions and options for this lesson and send them to the View
+            ViewBag.Questions = await _context.Questions
+                .Include(q => q.Options)
+                .Where(q => q.LessonId == id)
+                .ToListAsync();
+
             return View(lesson);
         }
 
@@ -90,6 +97,49 @@ namespace diplomaProject.Controllers
 
             TempData["Message"] = "Homework submitted successfully!";
             return RedirectToAction("Lesson");
+        }
+
+        // 5. Auto-grading homework validation
+        [HttpPost]
+        public async Task<IActionResult> CheckHomework(int lessonId, List<int> selectedOptionIds)
+        {
+            // Fetch questions for this lesson, including their options
+            var questions = await _context.Questions
+                .Include(q => q.Options)
+                .Where(q => q.LessonId == lessonId)
+                .ToListAsync();
+
+            int score = 0;
+            int maxScore = questions.Count;
+
+            // Loop through each question to calculate points
+            foreach (var question in questions)
+            {
+                // Array 1: Extract the array of CORRECT IDs from the database
+                var correctOptionIds = question.Options
+                    .Where(o => o.IsCorrect)
+                    .Select(o => o.Id)
+                    .ToList();
+
+                // Array 2: Extract the array of STUDENT's selected IDs for THIS question
+                var studentIdsForThisQuestion = selectedOptionIds
+                    .Intersect(question.Options.Select(o => o.Id))
+                    .ToList();
+
+                // Compare the two arrays (Strict check for exact match)
+                bool isAnswerPerfect = !correctOptionIds.Except(studentIdsForThisQuestion).Any() &&
+                                       !studentIdsForThisQuestion.Except(correctOptionIds).Any();
+
+                if (isAnswerPerfect)
+                {
+                    score++;
+                }
+            }
+
+            // Save the score to TempData to show on the page
+            TempData["HomeworkResult"] = $"Your score: {score} out of {maxScore}";
+
+            return RedirectToAction("Lesson", new { id = lessonId });
         }
     }
 }
