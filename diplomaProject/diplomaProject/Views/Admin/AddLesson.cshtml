@@ -1,0 +1,139 @@
+﻿@using diplomaProject.DTOs
+@model CreateLessonDTO
+
+@{
+    ViewData["Title"] = "Додати нову лекцію";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="mb-0">Створення лекції</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AddLesson" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label asp-for="Title" class="form-label font-weight-bold">Назва лекції</label>
+                                <input asp-for="Title" class="form-control" placeholder="Наприклад: Основи композиції" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="ModuleId" class="form-label font-weight-bold">Модуль курсу</label>
+                                <select asp-for="ModuleId" class="form-select" asp-items="ViewBag.ModuleList">
+                                    <option value="">-- Оберіть модуль --</option>
+                                </select>
+                                <span asp-validation-for="ModuleId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label font-weight-bold">Короткий опис (для картки курсу)</label>
+                            <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Content" class="form-label font-weight-bold text-primary">Зміст лекції (текст та ілюстрації)</label>
+                            <textarea asp-for="Content" id="editor"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title text-secondary">
+                                    <i class="fas fa-paperclip"></i> Додаткові матеріали до лекції
+                                </h5>
+                                <p class="small text-muted">Сюди можна завантажити PDF, конспекти або архіви з вихідними кодами.</p>
+
+                                <div class="mb-3">
+                                    <label asp-for="ResourceFiles" class="form-label font-weight-bold">Додаткові матеріали (можна вибрати кілька)</label>
+
+                                    <input asp-for="ResourceFiles" type="file" class="form-control" multiple />
+
+                                    <span asp-validation-for="ResourceFiles" class="text-danger"></span>
+                                    <small class="text-muted">Використовуйте Ctrl або Shift, щоб вибрати кілька файлів одночасно.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="GetLessons" class="btn btn-secondary me-md-2">Скасувати</a>
+                            <button type="submit" class="btn btn-primary px-5">Зберегти лекцію</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                ckfinder: {
+                    // Переконайся, що цей шлях збігається з твоїм контролером!
+                    uploadUrl: '/Admin/UploadImage'
+                },
+                toolbar: [
+                    'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                    '|', 'imageUpload', 'blockQuote', 'insertTable', 'undo', 'redo'
+                ]
+            })
+            .then(editor => {
+                console.log('Редактор успішно ініціалізовано');
+            })
+            .catch(error => {
+                console.error('Помилка редактора:', error);
+            });
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    /* Робимо редактор вищим для зручності */
+    .ck-editor__editable_inline {
+        min-height: 400px;
+    }
+
+    .card {
+        border-radius: 12px;
+    }
+
+    .card-header {
+        border-radius: 12px 12px 0 0 !important;
+    }
+</style>
+
+@* <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+
+<div class="form-group mb-3">
+    <label asp-for="Content" class="control-label">Контент лекції</label>
+    <textarea asp-for="Content" id="editor"></textarea>
+    <span asp-validation-for="Content" class="text-danger"></span>
+</div>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            // Налаштування завантаження картинок
+            ckfinder: {
+                // Шлях до методу в контролері, який ми створимо в Кроці 2
+                uploadUrl: '/Lessons/UploadImage'
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script> *@

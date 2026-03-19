@@ -1,4 +1,50 @@
-﻿
-@{
-    
+﻿@{
+    ViewData["Title"] = "Реєстрація успішна";
 }
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-sm p-5">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+
+                    <h1 class="display-5 mb-3">Вітаємо, @User.Identity.Name!</h1>
+                    <h3 class="text-secondary mb-4">Ви успішно зареєструвалися на курс</h3>
+
+                    <hr class="my-4">
+
+                    <div class="alert alert-info py-4">
+                        <h5 class="alert-heading font-weight-bold">Останній крок:</h5>
+                        <p class="mb-0">
+                            Ми надіслали лист для підтвердження на вашу електронну адресу.
+                            Будь ласка, перевірте пошту та перейдіть за посиланням у листі, щоб активувати свій профіль.
+                        </p>
+                    </div>
+
+                    <div class="mt-4">
+                        <p class="text-muted">Після підтвердження ви отримаєте повний доступ до всіх лекцій та тестів.</p>
+                        <a href="/" class="btn btn-outline-primary mt-3">Повернутися на головну</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        border: none;
+    }
+    .display-5 {
+        font-weight: 700;
+        color: #2c3e50;
+    }
+    .btn-outline-primary {
+        border-radius: 25px;
+        padding: 10px 30px;
+    }
+</style>

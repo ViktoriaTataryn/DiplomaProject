@@ -14,5 +14,7 @@ namespace diplomaProject.Models
         //автоматическая дата регистрации (текущее время)
         [Display(Name = "Registration Date")]
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
+
+        
     }
 }

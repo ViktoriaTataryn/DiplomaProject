@@ -28,7 +28,6 @@ namespace diplomaProject.Controllers
             _userManager = userManager;
         }
 
-
         // GET: UserController
         [HttpGet]
         public async Task<IActionResult> Dashboard()

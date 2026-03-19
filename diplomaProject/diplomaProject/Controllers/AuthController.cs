@@ -1,7 +1,9 @@
-﻿using diplomaProject.Models;
+﻿using diplomaProject.Data;
+using diplomaProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace diplomaProject.Controllers
 {
@@ -10,12 +12,14 @@ namespace diplomaProject.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly AppDbContext _context;
 
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender)
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, AppDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [HttpGet]
@@ -44,34 +48,67 @@ namespace diplomaProject.Controllers
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
-                foreach (var error in result.Errors)
+                var registration = new CourseRegistration
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-                return View(model);
-            }
+                    UserId = user.Id,
+                    CourseId = model.CourseId,
+                    RegisterAt = DateTime.Now
+                };
+                _context.CourseRegistrations.Add(registration);
 
-            var roleResult = await _userManager.AddToRoleAsync(user, "Student");
-            if (!roleResult.Succeeded)
+                var roleResult = await _userManager.AddToRoleAsync(user, "Student");
+
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                // 2. Створюємо посилання (Callback URL)
+                var confirmationLink = Url.Action("ConfirmEmail", "Auth",
+                    new { userId = user.Id, token = token }, Request.Scheme);
+
+                await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
+                    $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
+
+                //return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
+
+                return View("RegisterSuccess");
+            }
+            foreach (var error in result.Errors)
             {
-                var errors = string.Join(" | ", roleResult.Errors.Select(e => e.Description));
-                throw new Exception($"ПОМИЛКА ДОДАВАННЯ РОЛІ: {errors}");
+                ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            // model.CourseId збережеться автоматично, бо він є в моделі
+            return View(model);
 
-            // 2. Створюємо посилання (Callback URL)
-            var confirmationLink = Url.Action("ConfirmEmail", "Auth",
-                new { userId = user.Id, token = token }, Request.Scheme);
+            //if (!result.Succeeded)
+            //{
+            //    foreach (var error in result.Errors)
+            //    {
+            //        ModelState.AddModelError(string.Empty, error.Description);
+            //    }
+            //    return View(model);
+            //}
 
-            await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
-                $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
+            // var roleResult = await _userManager.AddToRoleAsync(user, "Student");
+            //if (!roleResult.Succeeded)
+            //{
+            //    var errors = string.Join(" | ", roleResult.Errors.Select(e => e.Description));
+            //    throw new Exception($"ПОМИЛКА ДОДАВАННЯ РОЛІ: {errors}");
+            //}
 
-            //return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
+            //var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            return View("RegisterSuccess");
+            //// 2. Створюємо посилання (Callback URL)
+            //var confirmationLink = Url.Action("ConfirmEmail", "Auth",
+            //    new { userId = user.Id, token = token }, Request.Scheme);
+
+            //await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
+            //    $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
+
+            ////return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
+
+            //return View("RegisterSuccess");
         }
 
         [HttpGet]
