@@ -50,7 +50,7 @@ Thumbs.db
 *.dtbcache.v2
 
 # Ігноруємо всі файли в папці ресурсів
-wwwroot/resources/
+#wwwroot/resources/
 
-# Але дозволяємо Git бачити сам файл .gitkeep (якщо він там є)
-!wwwroot/resources/.gitkeep
+/[Ww]wwroot/[Rr]esources/
+/[Ww]wwroot/[Rr]esources/*
