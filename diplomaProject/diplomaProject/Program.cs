@@ -1,3 +1,4 @@
+using CloudinaryDotNet;
 using diplomaProject.Data;
 using diplomaProject.Interfaces;
 using diplomaProject.Models;
@@ -52,9 +53,19 @@ namespace diplomaProject
                 options.AccessDeniedPath = "/Auth/AccessDenied"; // Якщо немає прав (наприклад, не Адмін)
             });
 
+            var cloudName = builder.Configuration["CloudinarySettings:CloudName"];
+            var apiKey = builder.Configuration["CloudinarySettings:ApiKey"];
+            var apiSecret = builder.Configuration["CloudinarySettings:ApiSecret"];
+
+            Account account = new Account(cloudName, apiKey, apiSecret);
+            Cloudinary cloudinary = new Cloudinary(account);
+
+            builder.Services.AddSingleton(cloudinary);
+
             builder.Services.AddScoped<IProgressService, ProgressService>();
             builder.Services.AddScoped<ProgressService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
+
 
             var app = builder.Build();
 

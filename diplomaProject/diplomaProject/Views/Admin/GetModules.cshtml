@@ -1,5 +1,56 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<diplomaProject.DTOs.ModuleDTO>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Керування модулями</h2>
+        <a asp-action="AddModule" class="btn btn-success">
+            <i class="fas fa-plus"></i> Додати новий модуль
+        </a>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Назва модуля</th>
+                        <th>Студентів завершило</th>
+                        <th>К-сть лекцій</th>
+                        <th class="text-end">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var module in Model)
+                    {
+                        <tr>
+                            <td>@module.Id</td>
+                            <td><strong>@module.Title</strong></td>
+                            <td>@module.UserCompletedNum</td>
+                            <td>@module.LessonsNum</td>
+                            <td class="text-end">
+                                <div class="btn-group">
+                                    <a asp-action="UpdateModule" asp-route-id="@module.Id" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-edit"></i> Редагувати
+                                    </a>
+                                        <a asp-action="DeleteModule" asp-route-id="@module.Id" class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-trash"></i> Видалити
+                                        </a>
+                                
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
