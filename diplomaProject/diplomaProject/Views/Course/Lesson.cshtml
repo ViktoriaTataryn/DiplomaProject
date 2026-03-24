@@ -1,4 +1,4 @@
-﻿ <div class="card shadow-sm mt-4">
+﻿@*  <div class="card shadow-sm mt-4">
      <div class="card-body">
          <h6>Submit Your Work</h6>
          <form asp-action="SubmitHomework" method="post">
@@ -73,4 +73,143 @@
     {
         <p class="text-muted">No test questions for this lesson yet.</p>
     }
+</div> *@
+
+@model Lesson
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2>@Model.Title</h2>
+        </div>
+        <div class="card-body">
+            <div class="lecture-content">
+                @Html.Raw(Model.Content)
+            </div>
+
+            @if (Model.Resources != null && Model.Resources.Any())
+            {
+                <div class="lesson-resources mt-5">
+                    <h4 class="text-secondary border-bottom pb-2 mb-3">Додаткові матеріали (Зображення)</h4>
+
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                        @foreach (var resource in Model.Resources)
+                        {
+                            <div class="col d-flex justify-content-center">
+                                <div class="card h-100 resource-card shadow-sm">
+                                    @{
+                                        // Перевіряємо розширення файлу
+                                        var extension = System.IO.Path.GetExtension(resource.FilePath).ToLower();
+                                        var isImage = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }.Contains(extension);
+                                    }
+
+                                    @if (isImage)
+                                    {
+                                        <img src="@resource.FilePath" class="card-img-top" alt="@resource.FileName" />
+                                    }
+                                    else
+                                    {
+                                        <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                                            <i class="fas fa-file-pdf fa-4x text-danger"></i>
+                                        </div>
+                                    }
+
+                                    <div class="card-body d-flex flex-column justify-content-between p-3">
+                                        <h6 class="card-title text-truncate">@resource.FileName</h6>
+                                       @*  <a href="@resource.FilePath" target="_blank" download="@resource.FileName" class="btn btn-outline-primary btn-sm w-100">
+                                            <i class="fas fa-download"></i> Завантажити файл
+                                        </a> *@
+                                       @*  <a href="@resource.FilePath" target="_blank" class="btn btn-outline-primary btn-sm w-100">
+                                            <i class="fas fa-eye"></i> Переглянути файл
+                                        </a> *@
+                                        @if (extension == ".pdf")
+                                        {
+                                            <a href="@resource.FilePath" target="_blank" class="btn btn-primary btn-sm w-100 mb-2">
+                                                <i class="fas fa-file-pdf"></i> Відкрити PDF
+                                            </a>
+                                        }
+                                        else if (extension == ".pptx" || extension == ".docx")
+                                        {
+                                            <a href="https://view.officeapps.live.com/op/view.aspx?src=@System.Net.WebUtility.UrlEncode(resource.FilePath)"
+                                               target="_blank"
+                                               class="btn btn-outline-success btn-sm w-100 mb-2">
+                                                <i class="fas fa-file-powerpoint"></i> Читати онлайн
+                                            </a>
+                                        }
+
+                                        <a href="@resource.FilePath" download="@resource.FileName" class="btn btn-light btn-sm w-100">
+                                            <i class="fas fa-download"></i> Завантажити файл
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @*   @if (Model.Quiz != null)
+            {
+            <div class="mt-5 text-center">
+            <a asp-action="TakeQuiz" asp-route-lessonId="@Model.Id" class="btn btn-success btn-lg">
+            <i class="fas fa-file-alt"></i> Пройти тест до лекції
+            </a>
+            </div>
+            } *@
+        </div>
+    </div>
 </div>
+
+<style>
+    /* Головний контейнер контенту */
+    .lecture-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        word-wrap: break-word;
+    }
+
+        /* Специфічне обмеження для всіх картинок всередині тексту лекції */
+        .lecture-content img {
+            max-width: 100% !important; /* Не дає вийти за межі екрану */
+            height: auto !important; /* Зберігає пропорції */
+            display: block;
+            margin: 2rem auto; /* Центрує і дає відступи */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Обмежуємо максимальну висоту, щоб картинка не займала три екрани */
+        .lecture-content img {
+            max-height: 600px;
+            object-fit: contain;
+        }
+
+    /* Стилі для сітки додаткових матеріалів */
+    .resource-card {
+        max-width: 350px; /* Обмежуємо максимальну ширину самої картки */
+        margin: 0 auto; /* Центруємо картку в колонці */
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .resource-card .card-img-top {
+            height: 200px; /* Фіксована висота */
+            width: 100%;
+            object-fit: contain; /* КЛЮЧОВЕ: картинка вписується, а не розтягується */
+            background-color: #f8f9fa; /* Світлий фон для пустих місць з боків */
+            padding: 10px; /* Невеликий відступ, щоб картинка не торкалася країв */
+        }
+
+        /* Якщо це іконка (PDF) */
+        .resource-card .bg-light {
+            background-color: #f1f3f5 !important;
+        }
+
+        /* Робимо заголовок файлу красивим */
+        .resource-card .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #495057;
+        }
+</style>

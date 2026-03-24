@@ -1,0 +1,111 @@
+﻿@model diplomaProject.DTOs.UpdateLessonDTO
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4>Редагування лекції: @Model.Title</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="UpdateLesson" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-control-label">Назва лекції</label>
+                    <input asp-for="Title" class="form-control" placeholder="Введіть назву..." />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Оберіть модуль</label>
+                    <select asp-for="ModuleId" class="form-control" asp-items="ViewBag.Modules">
+                        <option value="">-- Оберіть модуль --</option>
+                    </select>
+                    <span asp-validation-for="ModuleId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-control-label">Опис лекції</label>
+                    <input asp-for="Description" class="form-control" placeholder="Введіть опис..." />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-control-label">Зміст лекції</label>
+                    <textarea asp-for="Content" class="form-control" id="editor" rows="10"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-control-label"><strong>Поточні додаткові матеріали:</strong></label>
+
+                    @if (Model.ExistingResources != null && Model.ExistingResources.Any())
+                    {
+                        <div class="list-group mt-2">
+                            @foreach (var resource in Model.ExistingResources)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-file-alt text-primary me-2"></i>
+                                        <a href="@resource.FilePath" target="_blank" class="text-decoration-none">
+                                            @resource.FileName
+                                        </a>
+                                    </div>
+
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                            onclick="deleteResource(@resource.Id, this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted small">Додаткових матеріалів поки немає.</p>
+                    }
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-control-label">Додати нові матеріали (Зображення/PDF)</label>
+                    <input type="file" name="NewResources" class="form-control" multiple />
+                    <small class="text-muted">Ви можете обрати кілька файлів одночасно.</small>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="GetLessons" class="btn btn-secondary">Назад до списку</a>
+                    <button type="submit" class="btn btn-success">Зберегти зміни</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+ 
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                // Твої налаштування (наприклад, для завантаження картинок)
+                ckfinder: {
+                    uploadUrl: '/Admin/UploadImage' 
+                },
+                toolbar: [
+                    'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                    '|', 'imageUpload', 'blockQuote', 'insertTable', 'undo', 'redo'
+                ]
+            })
+            .then(editor => {
+                console.log('Editor was initialized');
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+
+}

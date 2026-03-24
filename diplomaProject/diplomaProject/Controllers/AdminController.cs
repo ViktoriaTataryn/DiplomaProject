@@ -1,4 +1,6 @@
-﻿using diplomaProject.Data;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using diplomaProject.Data;
 using diplomaProject.DTOs;
 using diplomaProject.Models;
 using diplomaProject.Services;
@@ -10,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
+
 
 namespace diplomaProject.Controllers
 {
@@ -20,13 +22,15 @@ namespace diplomaProject.Controllers
         private readonly ProgressService _progressService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly Cloudinary _cloudinary;
 
-        public AdminController(AppDbContext context, ProgressService progressService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public AdminController(AppDbContext context, ProgressService progressService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, Cloudinary cloudinary)
         {
             _context = context;
             _progressService = progressService;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
+            _cloudinary = cloudinary;
         }
 
         // GET: AdminController
@@ -34,7 +38,7 @@ namespace diplomaProject.Controllers
         {
             return View();
         }
-
+       
         [HttpGet]
         public async Task<IActionResult> GetStudents(string searchTerm)
         {
@@ -119,248 +123,6 @@ namespace diplomaProject.Controllers
         //    return RedirectToAction(nameof(GetHomeworkSubmission));
         //}
 
-        [HttpGet]
-        public async Task<IActionResult> GetLessons(string searchTerm)
-        {
-            var lessonQuery = _context.Lessons.Include(l=>l.Module).AsQueryable();
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                searchTerm = searchTerm.Trim().ToLower();
-                lessonQuery = lessonQuery.Where(l => l.Title.ToLower().Contains(searchTerm));
-            }
-
-            var lessons = await lessonQuery
-                .OrderBy(l => l.Module.OrderIndex)
-                .ThenBy(l => l.Id)
-              .Select(l => new LessonDTO
-              {
-                  Id = l.Id,
-                  Title = l.Title,
-                  ModuleIndex= l.Module.OrderIndex,
-                  UserCompletedNum = _context.UserProgresses.Count(u => u.LessonId == l.Id && u.Status == ProgressStatus.Completed),
-              })
-              .ToListAsync();
-
-            ViewBag.CurrentSearch = searchTerm;
-
-            return View(lessons);
-
-             //return Json(lessons); //постман
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> AddLesson()
-        {
-            var modules = await _context.Modules
-                .Select(m => new { m.Id, m.Title })
-                .ToListAsync();
-
-            // Передаємо список у SelectList
-            ViewBag.ModuleList = new SelectList(modules, "Id", "Title");
-
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddLesson(CreateLessonDTO createLessonDTO)
-        {
-            if (!ModelState.IsValid) return View(createLessonDTO);
-
-            var moduleExists = await _context.Modules.AnyAsync(m => m.Id == createLessonDTO.ModuleId);
-            if (!moduleExists)
-            {
-                return BadRequest("Вказаного модуля не існує. Будь ласка, перевірте ModuleId.");
-            }
-            var lesson = new Lesson
-            {
-                Title = createLessonDTO.Title,
-                Description = createLessonDTO.Description,
-                Content = createLessonDTO.Content,
-                ModuleId = createLessonDTO.ModuleId,
-                Resources = new List<Resource>()
-            };
-
-            // Робота з файлами
-            if (createLessonDTO.ResourceFiles != null && createLessonDTO.ResourceFiles.Count > 0)
-            {
-                // Вказуємо шлях до wwwroot/resources
-                var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "resources");
-                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
-
-                foreach (var file in createLessonDTO.ResourceFiles)
-                {
-                    // Генеруємо унікальне ім'я для запобігання дублікатів
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    var fullPath = Path.Combine(folderPath, fileName);
-
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-
-                    // Зберігаємо шлях у базу (відносний шлях для відображення в браузері)
-                    lesson.Resources.Add(new Resource
-                    {
-                        FileName = file.FileName,
-                        FilePath = "/resources/" + fileName 
-                    });
-                }
-            }
-
-            _context.Lessons.Add(lesson);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("GetLessons");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile upload)
-        {
-            if (upload == null || upload.Length == 0) return BadRequest();
-
-            // 1. Шлях до папки wwwroot/resources
-            var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "resources");
-            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
-
-            // 2. Генеруємо унікальне ім'я
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(upload.FileName);
-            var fullPath = Path.Combine(folderPath, fileName);
-
-            // 3. Зберігаємо на диск
-            using (var stream = new FileStream(fullPath, FileMode.Create))
-            {
-                await upload.CopyToAsync(stream);
-            }
-
-            // 4. Формуємо пряме посилання для редактора
-            var url = $"/resources/{fileName}";
-
-            // CKEditor очікує відповідь саме в такому форматі JSON:
-            return Json(new
-            {
-                uploaded = true,
-                url = "/resources/" + fileName
-            });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> DeleteLesson(int lessonId)
-        {
-            var lesson = await _context.Lessons
-               .Include(l => l.Resources)
-               .FirstOrDefaultAsync(l => l.Id == lessonId);
-
-            if (lesson == null)
-            {
-                return NotFound($"Лекцію з ID {lessonId} не знайдено.");
-            }
-
-            return View(lesson);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteLessonConfirmed(int lessonId)
-        {
-            var lesson = await _context.Lessons
-                .Include(l => l.Resources)
-                .FirstOrDefaultAsync(l => l.Id == lessonId);
-
-            if (lesson == null) return NotFound();
-
-            // --- А. ВИДАЛЕННЯ КАРТИНОК З ТЕКСТУ (Regex) ---
-            var content = lesson.Content;
-            if (!string.IsNullOrEmpty(content))
-            {
-                var imgTags = Regex.Matches(content, "<img.+?src=[\"'](.+?)[\"'].*?>");
-                foreach (Match match in imgTags)
-                {
-                    var url = match.Groups[1].Value;
-                    // Обрізаємо можливі параметри запиту, якщо вони є (наприклад, ?v=123)
-                    var cleanUrl = url.Split('?')[0].TrimStart('/');
-                    var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, cleanUrl);
-
-                    if (System.IO.File.Exists(fullPath))
-                    {
-                        System.IO.File.Delete(fullPath);
-                    }
-                }
-            }
-
-            // 2. Видаляємо фізичні файли з папки wwwroot/resources
-            if (lesson.Resources != null && lesson.Resources.Any())
-            {
-                foreach (var resource in lesson.Resources)
-                {
-                    // Формуємо повний шлях до файлу на сервері
-                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, resource.FilePath.TrimStart('/'));
-
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        System.IO.File.Delete(filePath); // Видаляємо файл із диска
-                    }
-                    _context.Resources.Remove(resource);
-                }
-            }
-
-            _context.Lessons.Remove(lesson);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("GetLessons");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> UpdateLesson(int lessonId)
-        {
-            var lesson = await _context.Lessons
-                .Include(l => l.Resources)
-                .FirstOrDefaultAsync(l => l.Id == lessonId);
-            if (lesson == null)
-            {
-                return NotFound($"Лекцію з id {lessonId} не знайдено");
-            }
-            var updateLesson = new UpdateLessonDTO
-            {
-                Id = lesson.Id,
-                Title = lesson.Title,
-                Description = lesson.Description,
-                Content = lesson.Content,
-                ModuleId = lesson.ModuleId,
-                ExistingResources = lesson.Resources.ToList()
-
-            };
-            return View(updateLesson);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateLesson(UpdateLessonDTO updateLessonDTO)
-        {
-            if (!ModelState.IsValid)
-            {
-                updateLessonDTO.ExistingResources = await _context.Resources
-                    .Where(r => r.LessonId == updateLessonDTO.Id).ToListAsync();
-                return View(updateLessonDTO);
-            }
-            var lesson = await _context.Lessons
-                .Include(l => l.Resources)
-                .FirstOrDefaultAsync(l => l.Id == updateLessonDTO.Id);
-
-            if (lesson == null)
-            {
-                return NotFound();
-            }
-
-            lesson.Title = updateLessonDTO.Title;
-            lesson.Description = updateLessonDTO.Description;
-            lesson.Content = updateLessonDTO.Content;
-            lesson.ModuleId=updateLessonDTO.ModuleId;
-            
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("GetLessons");
-
-        }
-
         [HttpPost]
         public async Task<IActionResult> AddModule(CreateModuleDTO createModule)
         {
@@ -420,29 +182,40 @@ namespace diplomaProject.Controllers
 
            // return Json(modules); постман
         }
-        [HttpGet]
-        public async Task<IActionResult> DeleteModule(int moduleId)
-        {
-            var module =await _context.Modules
-                .Include(m => m.Lessons)
-                .FirstOrDefaultAsync(m => m.Id == moduleId); 
 
-            if (module == null) { 
-               return NotFound($"Модуль з ID {moduleId} не знайдено.");
-            }
-            
-            return View(module);
-        }
-        
-        [HttpPost, ActionName("DeleteConfirmed")]
-        public async Task<IActionResult> DeleteConfirmed(int moduleId)
+        [HttpGet]
+        public async Task<IActionResult> DeleteModule(int Id)
         {
             var module = await _context.Modules
                 .Include(m => m.Lessons)
-                .FirstOrDefaultAsync(m => m.Id == moduleId);
+                .FirstOrDefaultAsync(m => m.Id == Id);
+
+            if (module == null)
+            {
+                return NotFound($"Модуль з ID {Id} не знайдено.");
+            }
+
+            return View(module);
+        }
+
+        [HttpPost, ActionName("DeleteModule")]
+        public async Task<IActionResult> DeleteModuleConfirmed(int Id)
+        {
+            var module = await _context.Modules
+                .Include(m => m.Lessons)
+                .FirstOrDefaultAsync(m => m.Id == Id);
 
             if (module != null)
             {
+                foreach (var lesson in module.Lessons)
+                {
+                    foreach (var resource in lesson.Resources)
+                    {
+                        var publicId = GetPublicIdFromUrl(resource.FilePath);
+                        await _cloudinary.DestroyAsync(new DeletionParams(publicId));
+                    }
+                }
+
                 _context.Modules.Remove(module);
                 await _context.SaveChangesAsync();
             }
@@ -489,9 +262,25 @@ namespace diplomaProject.Controllers
             return RedirectToAction("GetModules");
         }
 
+        private string GetPublicIdFromUrl(string url)
+        {
+            try
+            {
+                var uri = new Uri(url);
+                // Отримуємо останній сегмент шляху, наприклад "v12345/public_id.jpg"
+                var segments = uri.Segments;
+                var fileNameWithExtension = segments.Last();
 
+                // Видаляємо розширення (.jpg, .png тощо), щоб отримати чистий PublicId
+                var publicId = Path.GetFileNameWithoutExtension(fileNameWithExtension);
 
-
+                return publicId;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
 
         public async Task<int> GetModulesNumber()
         {

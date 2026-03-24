@@ -1,31 +1,29 @@
 ﻿@model diplomaProject.Models.Module
 
-<div class="alert alert-danger">
-    <h3>Ви впевнені, що хочете видалити цей модуль?</h3>
-    <p><strong>Назва:</strong> @Model.Title</p>
+<div class="container mt-5">
+    <div class="card border-danger shadow">
+        <div class="card-header bg-danger text-white">
+            <h4><i class="fas fa-exclamation-triangle"></i> Підтвердження видалення</h4>
+        </div>
+        <div class="card-body">
+            <p class="lead">Ви впевнені, що хочете видалити модуль <strong>"@Model.Title"</strong>?</p>
+            
+            <div class="alert alert-warning">
+                <strong>Увага:</strong> Це призведе до видалення:
+                <ul>
+                    <li>Усіх лекцій (@Model.Lessons?.Count) у цьому модулі.</li>
+                    <li>Усіх файлів, завантажених у ці лекції (Cloudinary).</li>
+                </ul>
+            </div>
 
-    @if (Model.Lessons.Any())
-
-    {
-        <p class="text-bold">Разом з модулем будуть видалені такі лекції (@Model.Lessons.Count):</p>
-        <ul>
-            @foreach (var lesson in Model.Lessons)
-
-            {
-                <li>@lesson.Title</li>
-            }
-        </ul>
-    }
-
-    else
-
-    {
-        <p>У цьому модулі поки немає лекцій.</p>
-    }
+            <form asp-action="DeleteModule" method="post">
+                <input type="hidden" asp-for="Id" />
+                
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Так, видалити все
+                </button>
+                <a asp-action="GetModules" class="btn btn-secondary">Скасувати</a>
+            </form>
+        </div>
+    </div>
 </div>
-
-<form asp-action="DeleteConfirmed" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <button type="submit" class="btn btn-danger">Так, видалити все</button>
-    <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
-</form>

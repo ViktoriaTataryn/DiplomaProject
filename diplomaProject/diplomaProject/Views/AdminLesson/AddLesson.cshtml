@@ -76,11 +76,30 @@
 @section Scripts {
     <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
 
+@*      <script>
+         ClassicEditor
+             .create(document.querySelector('#editor'), {
+                 ckfinder: {
+                     // Переконайся, що цей шлях збігається з твоїм контролером!
+                     // uploadUrl: '/Admin/UploadImage'
+                     uploadUrl: '@Url.Action("UploadImage", "Admin")'
+                 },
+                 toolbar: [
+                     'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                     '|', 'imageUpload', 'blockQuote', 'insertTable', 'undo', 'redo'
+                 ]
+             })
+             .then(editor => {
+                 console.log('Редактор успішно ініціалізовано');
+             })
+             .catch(error => {
+                 console.error('Помилка редактора:', error);
+             });
+     </script> *@
     <script>
         ClassicEditor
             .create(document.querySelector('#editor'), {
                 ckfinder: {
-                    // Переконайся, що цей шлях збігається з твоїм контролером!
                     uploadUrl: '/Admin/UploadImage'
                 },
                 toolbar: [
@@ -88,11 +107,8 @@
                     '|', 'imageUpload', 'blockQuote', 'insertTable', 'undo', 'redo'
                 ]
             })
-            .then(editor => {
-                console.log('Редактор успішно ініціалізовано');
-            })
             .catch(error => {
-                console.error('Помилка редактора:', error);
+                console.error(error);
             });
     </script>
 
@@ -113,6 +129,21 @@
 
     .card-header {
         border-radius: 12px 12px 0 0 !important;
+    }
+    /* Стилі для контенту лекції */
+    .lecture-content img {
+        max-width: 100%; /* Картинка не буде ширшою за текст */
+        height: auto; /* Зберігаємо пропорції */
+        display: block; /* Прибираємо зайві відступи знизу */
+        margin: 20px auto; /* Центруємо картинку та додаємо відступи зверху/знизу */
+        border-radius: 8px; /* Робимо кути трохи закругленими (як у твоїх карток) */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Додаємо легку тінь для об'єму */
+    }
+
+    /* Якщо ти хочеш, щоб у самому редакторі CKEditor вони теж не були величезними */
+    .ck-content img {
+        max-width: 100%;
+        height: auto;
     }
 </style>
 

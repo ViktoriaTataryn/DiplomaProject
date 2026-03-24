@@ -1,0 +1,64 @@
+﻿@model IEnumerable<diplomaProject.DTOs.LessonDTO>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Керування лекціями</h2>
+        <a asp-action="AddLesson" class="btn btn-success">
+            <i class="fas fa-plus"></i> Додати нову лекцію
+        </a>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Назва лекції</th>
+                        <th>Модуль</th>
+                        <th>Студентів завершило</th>
+                        <th class="text-end">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var lesson in Model)
+                    {
+                        <tr>
+                            <td>@lesson.Id</td>
+                            <td>
+                              @lesson.Title
+                            </td>
+                            <td>@lesson.ModuleIndex</td>
+                            <td>@lesson.UserCompletedNum</td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group">
+                                    <a asp-action="UpdateLesson" asp-controller="AdminLesson" asp-route-id="@lesson.Id" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-edit"></i> Редагувати
+                                    </a>
+                                    <form asp-action="DeleteLesson" asp-route-id="@lesson.Id" method="post"
+                                          onsubmit="return confirm('Ви впевнені, що хочете видалити лекцію?');"
+                                          style="display:inline;">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-trash"></i> Видалити
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
