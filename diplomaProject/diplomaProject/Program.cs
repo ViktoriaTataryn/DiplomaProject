@@ -62,6 +62,7 @@ namespace diplomaProject
 
             builder.Services.AddSingleton(cloudinary);
 
+            builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IProgressService, ProgressService>();
             builder.Services.AddScoped<ProgressService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
@@ -108,7 +109,7 @@ namespace diplomaProject
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=User}/{action=Dashboard}/{id?}");
 
             app.Run();
         }

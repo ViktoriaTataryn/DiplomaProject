@@ -167,7 +167,8 @@ namespace diplomaProject.Controllers
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Course");
+                    //return RedirectToAction("Index", "Course");
+                    return RedirectToAction("Dashboard", "User");
                 }
 
                 // Handle Account Lockout

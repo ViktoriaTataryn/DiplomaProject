@@ -23,16 +23,20 @@ namespace diplomaProject.Services
                 .ThenInclude(m=>m.Module)
                 .Where(u=>u.UserId==userId&&u.CourseId==courseId&&u.LessonId!=0)
                 .OrderByDescending(a=>a.LastActivity)
-                .FirstOrDefaultAsync(s=>s.Status==ProgressStatus.InProgress);
+                .FirstOrDefaultAsync(s=>s.Status==ProgressStatus.InProgress||s.Status==ProgressStatus.Open);
 
-            if (activeLesson == null) { 
-                var openLesson = await _context.UserProgresses
-                .Include(l => l.Lesson)
-                .ThenInclude(m => m.Module)
-                .Where(u => u.UserId == userId && u.CourseId == courseId && u.LessonId != 0)
-                .OrderBy(l=>l.LessonId)
-                .FirstOrDefaultAsync(s => s.Status == ProgressStatus.Open);
-                return openLesson.Lesson.Title;
+            //if (activeLesson == null) { 
+            //    var openLesson = await _context.UserProgresses
+            //    .Include(l => l.Lesson)
+            //    .ThenInclude(m => m.Module)
+            //    .Where(u => u.UserId == userId && u.CourseId == courseId && u.LessonId != 0)
+            //    .OrderBy(l=>l.LessonId)
+            //    .FirstOrDefaultAsync(s => s.Status == ProgressStatus.Open);
+            //    return openLesson.Lesson.Title;
+            //}
+            if (activeLesson == null)
+            {
+                throw new ArgumentNullException(nameof(activeLesson), "Урок не знайдено в системі.");
             }
             return activeLesson.Lesson.Title;
 
@@ -75,13 +79,13 @@ namespace diplomaProject.Services
 
             foreach (var module in modules)
             {
-                
+
                 progressEntries.Add(new UserProgress
                 {
                     UserId = userId,
                     CourseId = courseId,
                     ModuleId = module.Id,
-                    LessonId = 0, 
+                    LessonId = null,
                     Status = isFirstModule ? ProgressStatus.Open : ProgressStatus.Close,
                     LastActivity = DateTime.Now
                 });

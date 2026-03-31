@@ -26,5 +26,7 @@ namespace diplomaProject.Models
         [Display(Name = "Resources")]
         public ICollection<Resource> Resources { get; set; } = new List<Resource>();
         public ICollection<Homework> Homeworks { get; set; }
+
+        public int LessonIndex { get; set; }
     }
 }

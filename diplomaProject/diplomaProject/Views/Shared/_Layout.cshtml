@@ -60,7 +60,7 @@
     <div id="sidebar">
         <h4 class="mb-5">ARTLINE</h4>
         <nav class="nav flex-column">
-            <a class="nav-link active" asp-controller="Home" asp-action="Index">
+            <a class="nav-link active" asp-controller="User" asp-action="Dashboard">
                 <i class="bi bi-house-door me-2"></i> Dashboard
             </a>
             <a class="nav-link" asp-controller="Course" asp-action="Index">
@@ -77,14 +77,20 @@
 
     <div id="main-wrapper">
         <header id="header">
+            
             <button class="btn d-md-none me-3" id="sidebarToggle" style="border: none; background: transparent;">
                 <i class="bi bi-list fs-2"></i>
             </button>
+       
 
             <div class="ms-auto d-flex align-items-center">
                 <span class="me-3">@User.Identity?.Name</span>
-                <i class="bi bi-person-circle fs-4 me-3"></i>
-
+               
+              @*    <i class="bi bi-person-circle fs-4 me-3 pointer-event"></i> *@
+                <a asp-controller="User" asp-action="UpdateData" class="text-decoration-none text-dark">
+                    <i class="bi bi-person-circle fs-4 me-3" style="cursor: pointer;"></i>
+                </a>
+             
                 <form asp-controller="Auth" asp-action="LogOut" method="post" class="d-inline m-0">
                     <button type="submit" class="btn btn-outline-danger btn-sm">
                         LOGOUT

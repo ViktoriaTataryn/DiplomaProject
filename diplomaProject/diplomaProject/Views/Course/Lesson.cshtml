@@ -1,4 +1,5 @@
-﻿@*  <div class="card shadow-sm mt-4">
+﻿ @model Lesson
+@* <div class="card shadow-sm mt-4">
      <div class="card-body">
          <h6>Submit Your Work</h6>
          <form asp-action="SubmitHomework" method="post">
@@ -24,7 +25,7 @@
     <div class="alert alert-info mt-4">
         <strong>Test Result:</strong> @TempData["HomeworkResult"]
     </div>
-}
+} *@
 
 <div class="mt-5">
     <h3>Test Your Knowledge</h3>
@@ -73,9 +74,9 @@
     {
         <p class="text-muted">No test questions for this lesson yet.</p>
     }
-</div> *@
+</div>
 
-@model Lesson
+@* @model Lesson
 
 <div class="container mt-4">
     <div class="card shadow-sm">
@@ -116,13 +117,13 @@
 
                                     <div class="card-body d-flex flex-column justify-content-between p-3">
                                         <h6 class="card-title text-truncate">@resource.FileName</h6>
-                                       @*  <a href="@resource.FilePath" target="_blank" download="@resource.FileName" class="btn btn-outline-primary btn-sm w-100">
+                                        <a href="@resource.FilePath" target="_blank" download="@resource.FileName" class="btn btn-outline-primary btn-sm w-100">
                                             <i class="fas fa-download"></i> Завантажити файл
-                                        </a> *@
-                                       @*  <a href="@resource.FilePath" target="_blank" class="btn btn-outline-primary btn-sm w-100">
+                                        </a> 
+                                        <a href="@resource.FilePath" target="_blank" class="btn btn-outline-primary btn-sm w-100">
                                             <i class="fas fa-eye"></i> Переглянути файл
-                                        </a> *@
-                                        @if (extension == ".pdf")
+                                        </a>
+                                         @if (extension == ".pdf")
                                         {
                                             <a href="@resource.FilePath" target="_blank" class="btn btn-primary btn-sm w-100 mb-2">
                                                 <i class="fas fa-file-pdf"></i> Відкрити PDF
@@ -148,18 +149,18 @@
                 </div>
             }
 
-            @*   @if (Model.Quiz != null)
+               @if (Model.Quiz != null)
             {
             <div class="mt-5 text-center">
             <a asp-action="TakeQuiz" asp-route-lessonId="@Model.Id" class="btn btn-success btn-lg">
             <i class="fas fa-file-alt"></i> Пройти тест до лекції
             </a>
             </div>
-            } *@
+            }
         </div>
     </div>
 </div>
-
+ *@
 <style>
     /* Головний контейнер контенту */
     .lecture-content {
@@ -212,4 +213,4 @@
             font-weight: 600;
             color: #495057;
         }
-</style>
+</style> 

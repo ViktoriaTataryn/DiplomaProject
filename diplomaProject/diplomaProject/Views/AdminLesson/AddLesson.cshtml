@@ -1,5 +1,4 @@
-﻿@using diplomaProject.DTOs
-@model CreateLessonDTO
+﻿@model diplomaProject.DTOs.CreateLessonDTO
 
 @{
     ViewData["Title"] = "Додати нову лекцію";
@@ -100,7 +99,7 @@
         ClassicEditor
             .create(document.querySelector('#editor'), {
                 ckfinder: {
-                    uploadUrl: '/Admin/UploadImage'
+                    uploadUrl: '/AdminLesson/UploadImage'
                 },
                 toolbar: [
                     'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
