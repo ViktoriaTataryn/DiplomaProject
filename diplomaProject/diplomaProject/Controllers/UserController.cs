@@ -53,24 +53,24 @@ namespace diplomaProject.Controllers
 
 
 
-        //те що студент бачить після превірки адміна
-        [HttpGet]
-        public async Task<IActionResult> GetUserHomework()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var homeworks=await _context.HomeworkSubmissions
-                .Include(u=>u.Homework)
-                .ThenInclude(u=>u.Lesson)
-                .Where(u=>u.StudentId==userId)
-                .Where(s => _context.UserProgresses.Any(p =>
-                        p.UserId == userId &&
-                        p.LessonId == s.Homework.LessonId &&
-                        p.Status != ProgressStatus.Close))
-                .OrderByDescending(u=>u.SubmissionDate)
-                .ToListAsync();
+        ////те що студент бачить після превірки адміна
+        //[HttpGet]
+        //public async Task<IActionResult> GetUserHomework()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var homeworks=await _context.HomeworkSubmissions
+        //        .Include(u=>u.Homework)
+        //        .ThenInclude(u=>u.Lesson)
+        //        .Where(u=>u.StudentId==userId)
+        //        .Where(s => _context.UserProgresses.Any(p =>
+        //                p.UserId == userId &&
+        //                p.LessonId == s.Homework.LessonId &&
+        //                p.Status != ProgressStatus.Close))
+        //        .OrderByDescending(u=>u.SubmissionDate)
+        //        .ToListAsync();
 
-            return View(homeworks);
-        }
+        //    return View(homeworks);
+        //}
 
        
         [HttpGet]

@@ -38,10 +38,10 @@ namespace diplomaProject.Models
         // дата и время последнего захода в материалы курса
         [Display(Name = "Last Activity Date")]
         public DateTime LastActivity { get; set; } = DateTime.Now;
-        public int LessonId { get; set; }
-        public Lesson Lesson { get; set; }
-        public int ModuleId { get; set; }
-        public Module Module { get; set; }
+        public int? LessonId { get; set; }
+        public Lesson? Lesson { get; set; }
+        public int? ModuleId { get; set; }
+        public Module? Module { get; set; }
 
         public ProgressStatus Status { get; set; }= ProgressStatus.Close;
     }

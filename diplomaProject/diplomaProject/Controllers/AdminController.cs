@@ -2,8 +2,10 @@
 using CloudinaryDotNet.Actions;
 using diplomaProject.Data;
 using diplomaProject.DTOs;
+using diplomaProject.Migrations;
 using diplomaProject.Models;
 using diplomaProject.Services;
+using diplomaProject.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -21,16 +23,18 @@ namespace diplomaProject.Controllers
         private readonly AppDbContext _context;
         private readonly ProgressService _progressService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+    
         private readonly Cloudinary _cloudinary;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public AdminController(AppDbContext context, ProgressService progressService, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, Cloudinary cloudinary)
+        public AdminController(AppDbContext context, ProgressService progressService, UserManager<ApplicationUser> userManager, Cloudinary cloudinary, ICloudinaryService cloudinaryService)
         {
             _context = context;
             _progressService = progressService;
             _userManager = userManager;
-            _webHostEnvironment = webHostEnvironment;
+
             _cloudinary = cloudinary;
+            _cloudinaryService = cloudinaryService;
         }
 
         // GET: AdminController
@@ -51,32 +55,32 @@ namespace diplomaProject.Controllers
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 searchTerm = searchTerm.Trim().ToLower();
-                studentsQuery = studentsQuery.Where(u=>u.User.LastName.ToLower().Contains(searchTerm)
+                studentsQuery = studentsQuery.Where(u => u.User.LastName.ToLower().Contains(searchTerm)
                 || u.User.FirstName.ToLower().Contains(searchTerm));
             }
-            var students = studentsQuery.ToList();
+            var students =await studentsQuery.ToListAsync();
             ViewBag.CurrentSearch = searchTerm;
-            //return View(students);
-             return Json(students); //постман
+            return View(students);
+             //return Json(students); //постман
         }
 
-        [HttpGet]
-        public async Task<IActionResult> DeleteUser(string userId)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            if (user == null) return NotFound();
-            return View(user);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> DeleteUser(string userId)
+        //{
+        //    var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        //    if (user == null) return NotFound();
+        //    return View(user);
+        //}
 
-        [HttpPost, ActionName("DeleteUserConfirmed")]
+        [HttpPost]
         [ValidateAntiForgeryToken] // Захист від підробки запитів
-        public async Task<IActionResult> DeleteUserConfirmed(string userId)
+        public async Task<IActionResult> DeleteUserConfirmed(string Id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _context.Users.FindAsync(Id);
             if (user == null) return NotFound();
 
           
-            var userProgress = _context.UserProgresses.Where(p => p.UserId == userId);
+            var userProgress = _context.UserProgresses.Where(p => p.UserId == Id);
             _context.UserProgresses.RemoveRange(userProgress);
             _context.Users.Remove(user);
 
@@ -123,6 +127,12 @@ namespace diplomaProject.Controllers
         //    return RedirectToAction(nameof(GetHomeworkSubmission));
         //}
 
+        [HttpGet]
+        public IActionResult AddModule()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddModule(CreateModuleDTO createModule)
         {
@@ -133,26 +143,30 @@ namespace diplomaProject.Controllers
                 ModelState.AddModelError("OrderIndex", "Модуль з таким номером уже існує.");
                 return View(createModule);
             }
+
+            string imageUrl = null;
+            if (createModule.imageFile != null && createModule.imageFile.Length > 0)
+            {
+               
+                imageUrl = await _cloudinaryService.UploadToCloudinary(createModule.imageFile);
+            }
             var module = new Models.Module
             {
                 Title = createModule.Title,
                 OrderIndex = createModule.OrderIndex,
                 Description = createModule.Description,
-                CourseId = createModule.CourseId
+                CourseId = createModule.CourseId,
+                ImageUrl = imageUrl,
             };
             
             _context.Add(module);
             await _context.SaveChangesAsync();
-             return RedirectToAction("Index");
+             return RedirectToAction("GetModules");
 
            // return Ok(new { message = "Модуль успішно створений!", moduleId = module.Id });  постман
         }
 
-        [HttpGet]
-        public IActionResult AddModule()
-        {
-            return View();
-        }
+      
 
         [HttpGet]
         public async Task<IActionResult> GetModules(string searchTerm)
@@ -171,7 +185,6 @@ namespace diplomaProject.Controllers
                 Id = m.Id,
                 Title = m.Title,
                   LessonsNum= m.Lessons.Count(),
-                  //LessonsNum = 1,
                   UserCompletedNum = _context.UserProgresses.Count(u=>u.ModuleId==m.Id&& u.Status==ProgressStatus.Completed),
             })
               .ToListAsync();
@@ -203,16 +216,25 @@ namespace diplomaProject.Controllers
         {
             var module = await _context.Modules
                 .Include(m => m.Lessons)
+                .ThenInclude(l=>l.Resources)
                 .FirstOrDefaultAsync(m => m.Id == Id);
 
             if (module != null)
             {
+                if (!string.IsNullOrEmpty(module.ImageUrl))
+                {
+                    var publicId = _cloudinaryService.GetPublicIdFromUrl(module.ImageUrl);
+                    await _cloudinaryService.DeleteFromCloudinary(publicId);
+                }
                 foreach (var lesson in module.Lessons)
                 {
-                    foreach (var resource in lesson.Resources)
+                    if (lesson.Resources != null)
                     {
-                        var publicId = GetPublicIdFromUrl(resource.FilePath);
-                        await _cloudinary.DestroyAsync(new DeletionParams(publicId));
+                        foreach (var resource in lesson.Resources)
+                        {
+                            var resPublicId = _cloudinaryService.GetPublicIdFromUrl(resource.FilePath);
+                            await _cloudinaryService.DeleteFromCloudinary(resPublicId);
+                        }
                     }
                 }
 
@@ -224,19 +246,21 @@ namespace diplomaProject.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> UpdateModule(int moduleId)
+        public async Task<IActionResult> UpdateModule(int Id)
         {
             var module = await _context.Modules
                 .Include(m=>m.Lessons)
-                .FirstOrDefaultAsync(m => m.Id == moduleId);
+                .FirstOrDefaultAsync(m => m.Id == Id);
             if (module == null) {
-                return NotFound($"Модуль з ID {moduleId} не знайдено.");
+                return NotFound($"Модуль з ID {Id} не знайдено.");
             }
             var updateModule = new UpdateModuleDTO
             {
+                Id = Id,
                 Title = module.Title,
                 Description = module.Description,
                 OrderIndex = module.OrderIndex,
+                ImageForUser = module.ImageUrl,
                 LessonNames = module.Lessons.Select(l=>l.Title).ToList()
 
             };
@@ -246,7 +270,7 @@ namespace diplomaProject.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateModule(UpdateModuleDTO updateModuleDTO)
         {
-            if (!ModelState.IsValid) return View(updateModuleDTO);
+            //if (!ModelState.IsValid) return View(updateModuleDTO);
             var module = await _context.Modules
                .Include(m => m.Lessons)
                .FirstOrDefaultAsync(m => m.Id == updateModuleDTO.Id);
@@ -254,33 +278,31 @@ namespace diplomaProject.Controllers
             if (module == null) {
                 return NotFound($"Модуль з ID {updateModuleDTO.Id} не знайдено.");
             }
-            updateModuleDTO.Title = module.Title;
-            updateModuleDTO.OrderIndex = module.OrderIndex;
-            updateModuleDTO.Description = module.Description;
-            
+
+            if (updateModuleDTO.ImageUrl != null && updateModuleDTO.ImageUrl.Length > 0)
+            {
+                // Видаляємо стару картинку, якщо вона була
+                if (!string.IsNullOrEmpty(module.ImageUrl))
+                {
+                    var oldPublicId = _cloudinaryService.GetPublicIdFromUrl(module.ImageUrl);
+                    await _cloudinaryService.DeleteFromCloudinary(oldPublicId);
+                }
+
+                // Завантажуємо нову
+                module.ImageUrl = await _cloudinaryService.UploadToCloudinary(updateModuleDTO.ImageUrl);
+            }
+            module.Title = updateModuleDTO.Title;
+            module.Description = updateModuleDTO.Description;
+            module.OrderIndex = updateModuleDTO.OrderIndex;
+
+            _context.Modules.Update(module);
+            TempData["Success"] = "МЕТОД ДІЙШОВ ДО ЗБЕРЕЖЕННЯ!";
             await _context.SaveChangesAsync();
+
             return RedirectToAction("GetModules");
         }
 
-        private string GetPublicIdFromUrl(string url)
-        {
-            try
-            {
-                var uri = new Uri(url);
-                // Отримуємо останній сегмент шляху, наприклад "v12345/public_id.jpg"
-                var segments = uri.Segments;
-                var fileNameWithExtension = segments.Last();
-
-                // Видаляємо розширення (.jpg, .png тощо), щоб отримати чистий PublicId
-                var publicId = Path.GetFileNameWithoutExtension(fileNameWithExtension);
-
-                return publicId;
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
-        }
+       
 
         public async Task<int> GetModulesNumber()
         {

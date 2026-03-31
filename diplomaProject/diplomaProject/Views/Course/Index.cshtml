@@ -4,6 +4,7 @@
     ViewData["Title"] = "Course Curriculum";
 }
 
+
 <div class="container mt-5">
     <h1 class="mb-4">Course Curriculum</h1>
 
@@ -37,6 +38,7 @@
                                         <br />
                                         <span class="text-muted small">@lesson.Description</span>
                                     }
+                                   
                                 </div>
                                 <a asp-action="Lesson" asp-route-id="@lesson.Id" class="btn btn-sm btn-outline-primary">Open Lesson</a>
                             </li>

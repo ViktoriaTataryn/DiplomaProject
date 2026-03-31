@@ -9,5 +9,6 @@ namespace diplomaProject.DTOs
         public int OrderIndex { get; set; }
         public string? Description { get; set; }
         public int CourseId { get; set; } = 3;
+         public IFormFile? imageFile { get; set; } 
     }
 }

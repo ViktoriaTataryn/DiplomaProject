@@ -4,6 +4,7 @@ using diplomaProject.Data;
 using diplomaProject.DTOs;
 using diplomaProject.Models;
 using diplomaProject.Services;
+using diplomaProject.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,45 +19,18 @@ namespace diplomaProject.Controllers
         private readonly AppDbContext _context;
         private readonly ProgressService _progressService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ICloudinaryService _cloudinaryService;
         private readonly Cloudinary _cloudinary;
 
-        public AdminLessonController(AppDbContext context, ProgressService progressService, UserManager<ApplicationUser> userManager, Cloudinary cloudinary)
+        public AdminLessonController(AppDbContext context, ProgressService progressService, UserManager<ApplicationUser> userManager, ICloudinaryService cloudinaryService, Cloudinary cloudinary)
         {
             _context = context;
             _progressService = progressService;
             _userManager = userManager;
+            _cloudinaryService = cloudinaryService;
             _cloudinary = cloudinary;
         }
 
-        private async Task<string> UploadToCloudinary(IFormFile file)
-        {
-            using var stream = file.OpenReadStream();
-            var extension = Path.GetExtension(file.FileName).ToLower();
-            var isImage = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }.Contains(extension);
-
-            // ВАЖЛИВО: Визначаємо тип ресурсу для Cloudinary
-            // Для фото - "image", для всього іншого (pdf, pptx) - "raw"
-            string resourceType = isImage ? "image" : "raw";
-
-            var uploadParams = isImage
-                ? (object)new ImageUploadParams
-                {
-                    File = new FileDescription(file.FileName, stream),
-                    Transformation = new Transformation().Width(1200).Crop("limit").Quality("auto")
-                }
-                : (object)new RawUploadParams
-                {
-                    File = new FileDescription(file.FileName, stream)
-                };
-
-            // ПЕРЕДАЄМО resourceType ЯВНО
-            var uploadResult = await _cloudinary.UploadAsync((dynamic)uploadParams);
-
-            if (uploadResult.Error != null)
-                throw new Exception($"Cloudinary Error: {uploadResult.Error.Message}");
-
-            return uploadResult.SecureUrl.ToString();
-        }
 
         [HttpGet]
         public async Task<IActionResult> GetLessons(string searchTerm)
@@ -125,7 +99,7 @@ namespace diplomaProject.Controllers
                 foreach (var file in createLessonDTO.ResourceFiles)
                 {
                     // Завантажуємо в хмару і отримуємо URL
-                    var cloudUrl = await UploadToCloudinary(file);
+                    var cloudUrl = await _cloudinaryService.UploadToCloudinary(file);
 
                     lesson.Resources.Add(new MyResource
                     {
@@ -160,7 +134,7 @@ namespace diplomaProject.Controllers
                     var url = match.Groups[1].Value;
                     if (url.Contains("cloudinary.com"))
                     {
-                        var publicId = GetPublicIdFromUrl(url);
+                        var publicId = _cloudinaryService.GetPublicIdFromUrl(url);
                         await _cloudinary.DestroyAsync(new DeletionParams(publicId));
                     }
                 }
@@ -173,11 +147,10 @@ namespace diplomaProject.Controllers
                 {
                     if (resource.FilePath.Contains("cloudinary.com"))
                     {
-                        var publicId = GetPublicIdFromUrl(resource.FilePath);
+                        var publicId = _cloudinaryService.GetPublicIdFromUrl(resource.FilePath);
                         // Видаляємо з хмари
                         await _cloudinary.DestroyAsync(new DeletionParams(publicId));
                     }
-                    // Видаляємо запис із бази (це залишається)
                     _context.Resources.Remove(resource);
                 }
             }
@@ -241,7 +214,7 @@ namespace diplomaProject.Controllers
             {
                 foreach (var file in updateLessonDTO.NewResourceFiles)
                 {
-                    var cloudUrl = await UploadToCloudinary(file);
+                    var cloudUrl = await _cloudinaryService.UploadToCloudinary(file);
 
                     lesson.Resources.Add(new MyResource
                     {
@@ -252,9 +225,7 @@ namespace diplomaProject.Controllers
                 }
             }
 
-
             //await _context.SaveChangesAsync();
-
             try
             {
                 await _context.SaveChangesAsync();
@@ -282,7 +253,7 @@ namespace diplomaProject.Controllers
             try
             {
                 // 1. Завантажуємо в Cloudinary
-                var cloudUrl = await UploadToCloudinary(upload);
+                var cloudUrl = await _cloudinaryService.UploadToCloudinary(upload);
 
                 // 2. ВАЖЛИВО: CKEditor 5 очікує саме такий JSON
                 return Ok(new
@@ -293,29 +264,10 @@ namespace diplomaProject.Controllers
             }
             catch (Exception ex)
             {
-                // Якщо сталася помилка (наприклад, у Cloudinary), повертаємо її у форматі редактора
                 return Json(new { uploaded = false, error = new { message = ex.Message } });
             }
         }
 
-        private string GetPublicIdFromUrl(string url)
-        {
-            try
-            {
-                var uri = new Uri(url);
-                // Отримуємо останній сегмент шляху, наприклад "v12345/public_id.jpg"
-                var segments = uri.Segments;
-                var fileNameWithExtension = segments.Last();
-
-                // Видаляємо розширення (.jpg, .png тощо), щоб отримати чистий PublicId
-                var publicId = Path.GetFileNameWithoutExtension(fileNameWithExtension);
-
-                return publicId;
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
-        }
+       
     }
 }

@@ -4,6 +4,7 @@ using diplomaProject.Data;
 using diplomaProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using diplomaProject.Interfaces;
 
 namespace diplomaProject.Controllers
 {
@@ -12,11 +13,13 @@ namespace diplomaProject.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IProgressService _progressService;
 
-        public CourseController(AppDbContext context, UserManager<ApplicationUser> userManager)
+        public CourseController(AppDbContext context, UserManager<ApplicationUser> userManager, IProgressService progressService)
         {
             _context = context;
             _userManager = userManager;
+            _progressService = progressService;
         }
 
         // 1. Список курсов
@@ -29,14 +32,28 @@ namespace diplomaProject.Controllers
         // 2. Страница урока
         public async Task<IActionResult> Lesson(int id)
         {
+            var userId = _userManager.GetUserId(User);
+
             var lesson = await _context.Lessons
                 .Include(l => l.Resources)
                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (lesson == null) return NotFound();
 
-            // Fetch questions and options for this lesson and send them to the View
-            ViewBag.Questions = await _context.Questions
+            var progress = await _context.UserProgresses
+        .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
+            if (progress != null && progress.Status == ProgressStatus.Open)
+            {
+                await _progressService.StartLessonAsync(userId,lesson.Id);
+            } 
+            if  (progress == null || progress.Status == ProgressStatus.Close)
+            {
+                TempData["Error"] = "лекція не доступна. Пройдіть попередні матеріали.";
+                return RedirectToAction("Index");
+            }
+
+                // Fetch questions and options for this lesson and send them to the View
+                ViewBag.Questions = await _context.Questions
                 .Include(q => q.Options)
                 .Where(q => q.LessonId == id)
                 .ToListAsync();

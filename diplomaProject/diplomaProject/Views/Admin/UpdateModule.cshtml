@@ -1,5 +1,69 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model diplomaProject.DTOs.UpdateModuleDTO
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i> Редагування модуля</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="UpdateModule" method="post" enctype="multipart/form-data">
+                        @*  Приховане поле для ID *@
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-bold">Назва модуля</label>
+                            <input asp-for="Title" class="form-control" placeholder="Введіть назву..." />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="OrderIndex" class="form-label fw-bold">Порядковий номер (черговість)</label>
+                            <input asp-for="OrderIndex" type="number" class="form-control" />
+                            <span asp-validation-for="OrderIndex" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold">Опис модуля</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Короткий опис модуля..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold d-block">Зображення модуля</label>
+
+                            @if (!string.IsNullOrEmpty(Model.ImageForUser))
+                            {
+                                <div class="mb-2">
+                                    <p class="text-muted small mb-1">Поточне зображення:</p>
+                                    <img src="@Model.ImageForUser" class="rounded shadow-sm" style="width: 200px; height: 120px; object-fit: cover;" alt="Module Image" />
+                                </div>
+                            }
+
+                            <input asp-for="ImageUrl" type="file" class="form-control" accept="image/*" />
+                            <div class="form-text">Оберіть новий файл, якщо хочете замінити поточне зображення.</div>
+                        </div>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="GetModules" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Назад до списку
+                            </a>
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="fas fa-save me-1"></i> Зберегти зміни
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
