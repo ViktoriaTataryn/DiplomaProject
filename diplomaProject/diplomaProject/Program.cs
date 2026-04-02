@@ -6,6 +6,7 @@ using diplomaProject.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace diplomaProject
 {
@@ -57,13 +58,12 @@ namespace diplomaProject
             var apiKey = builder.Configuration["CloudinarySettings:ApiKey"];
             var apiSecret = builder.Configuration["CloudinarySettings:ApiSecret"];
 
-            // Initialize Cloudinary ONLY if credentials are provided to prevent app crashô
-            if (!string.IsNullOrWhiteSpace(cloudName) && !string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(apiSecret))
-            {
-                Account account = new Account(cloudName, apiKey, apiSecret);
-                Cloudinary cloudinary = new Cloudinary(account);
-                builder.Services.AddSingleton(cloudinary);
-            }
+            CloudinaryDotNet.Account account = new CloudinaryDotNet.Account(cloudName, apiKey, apiSecret);
+            Cloudinary cloudinary = new Cloudinary(account);
+
+            builder.Services.AddSingleton(cloudinary);
+
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IProgressService, ProgressService>();

@@ -118,7 +118,19 @@ namespace diplomaProject.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task StartLessonAsync(string userId, int lessonId)
+        public async Task OpenLessonAsync(string userId, int lessonId)
+        {
+            var lessonProgress = await _context.UserProgresses.FirstOrDefaultAsync(p => p.UserId == userId && p.LessonId == lessonId && p.LessonId != 0);
+            if (lessonProgress != null && lessonProgress.Status == ProgressStatus.Close)
+            {
+                lessonProgress.Status = ProgressStatus.Open;
+
+            }
+            await _context.SaveChangesAsync();
+        }
+
+
+        public async Task LessonInProgressAsync(string userId, int lessonId)
         {
            
             var lessonProgress = await _context.UserProgresses.FirstOrDefaultAsync(p => p.UserId == userId && p.LessonId == lessonId && p.LessonId != 0);
@@ -153,14 +165,18 @@ namespace diplomaProject.Services
                 .FirstOrDefaultAsync();
             if (nextLesson != null)
             {
-                var nextLessonStatus = await _context.UserProgresses.FirstOrDefaultAsync(l => l.UserId == userId && l.LessonId == nextLesson.Id);
-                if (nextLessonStatus != null && nextLessonStatus.Status == ProgressStatus.Close) { 
-                    nextLessonStatus .Status=ProgressStatus.Open;
-                }
-                else
-                {
-                  await  UnlockNextModuleAsync(userId, lessonProgress.Id);
-                }
+                //var nextLessonStatus = await _context.UserProgresses.FirstOrDefaultAsync(l => l.UserId == userId && l.LessonId == nextLesson.Id);
+                //if (nextLessonStatus != null && nextLessonStatus.Status == ProgressStatus.Close) { 
+                //    nextLessonStatus .Status=ProgressStatus.Open;
+                //}
+                
+                
+                    await OpenLessonAsync(userId, nextLesson.Id);
+                
+                //else
+                //{
+                //  await  UnlockNextModuleAsync(userId, lessonProgress.Id);
+                //}
             }
             await _context.SaveChangesAsync();  
         }
@@ -187,7 +203,7 @@ namespace diplomaProject.Services
                     {
                         var nextModuleProgress = await _context.UserProgresses.FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == currentModuleId && m.LessonId == 0);
                         if (nextModuleProgress != null) {
-                            nextModuleProgress.Status = ProgressStatus.Open;
+                            nextModuleProgress.Status = ProgressStatus.InProgress;
                         }
                     }
 

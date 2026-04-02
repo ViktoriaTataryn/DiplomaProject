@@ -1,4 +1,7 @@
-﻿@model diplomaProject.DTOs.DashboardViewDTO
+﻿@using diplomaProject.Models
+@using diplomaProject.DTOs
+@model diplomaProject.DTOs.DashboardViewDTO
+
 
 
 <div class="container py-4">
@@ -25,110 +28,196 @@
        
     }
 
+    @{
+        var progress = (List<UserProgress>)ViewBag.UserProgress;
+
+        var lessons = ViewBag.Lessons as List<diplomaProject.Models.Lesson>;
+        var lessonProgress = ViewBag.UserProgress as List<diplomaProject.Models.UserProgress>;
+
+        // Безпечна перевірка на null
+        var firstLesson = lessons?.OrderBy(l => l.LessonIndex).FirstOrDefault();
+        var secondLesson = lessons?.OrderBy(l => l.LessonIndex).Skip(1).FirstOrDefault();
+
+        // Логіка статусів
+        bool isFirstCompleted = lessonProgress?.Any(p => p.LessonId == firstLesson?.Id && p.Status == ProgressStatus.Completed) ?? false;
+        bool isSecondOpen = lessonProgress?.Any(p => p.LessonId == secondLesson?.Id && (p.Status == ProgressStatus.Open || p.Status == ProgressStatus.InProgress)) ?? false;
+    }
+    
+
+    <div class="actions">
+        <button id="buyButton" class="btn btn-success @(Model.Progress.CourseId == 0 ? "disabled" : "")">
+            Придбати повний доступ
+            </button>
+      @*   @if (!isFirstCompleted)
+        {
+            <p>Пройдіть першу лекцію, щоб розблокувати курс.</p>
+        }
+        else if (isFirstCompleted && !isSecondOpen)
+        {
+            <button id="buyButton" class="btn btn-success">Придбати повний доступ</button>
+        } *@
+    </div>
 
     <div class="row justify-content-center">
         @* Центруємо контент *@
-        <div class="col-md-8 col-lg-6 col-sm-10">
+        <div class="col-md-8 text-center">
 
             <h5 class="mb-4">Модулі курсу</h5>
-<div class="accordion shadow-sm" id="moduleAccordion">
-    @foreach (var module in Model.Progress.ModuleProgress)
-
-    {
-        <div class="accordion-item mb-3 border-0 shadow-sm rounded">
-           
-           @*  <h2 class="accordion-header" id="heading-@module.ModuleId">
-                <button class="accordion-button collapsed py-4" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#collapse-@module.ModuleId">
-                    <div class="d-flex justify-content-between w-100 align-items-center pe-3">
-                        <span>
-                            <i class="fas fa-layer-group me-3 text-primary"></i>
-                            Модуль @module.ModuleNumber
-                        </span>
-                        <span>
-                            <i class="fas fa-layer-group me-3 text-primary"></i>
-                            <strong>@module.Name</strong>
-                        </span>
-                        <span>
-                            <i class="fas fa-layer-group me-3 text-primary"></i>
-                            Пройдено @module.Percent%
-                        </span>
-                       
-                    </div>
-                </button>
-            </h2>
-            *@
-
-            <h2 class="accordion-header" id="heading-@module.ModuleId">
-                <button class="accordion-button collapsed p-0 overflow-hidden" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#collapse-@module.ModuleId"
-                        style="display: block;">
-                    @* Важливо: display: block, щоб картинка була зверху *@
-
-                    <div class="module-card-image" style="height: 160px; width: 100%; overflow: hidden;">
-                        @if (!string.IsNullOrEmpty(module.ImageForUser))
-
-                        {
-                            <img src="@module.ImageForUser" class="w-100 h-100" style="object-fit: cover;" alt="@module.Name" />
-                        }
-
-                        else
-
-                        {
-                            <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            </div>
-                        }
-                    </div>
-
-                    <div class="p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-primary-soft text-primary">
-                                <i class="fas fa-layer-group me-1"></i> Модуль @module.ModuleNumber
-                            </span>
-                                        @* <span class="text-muted small">
-                                            <i class="fas fa-chart-line me-1"></i> @module.Status
-                                        </span> *@
-                                        <span class="text-muted small">
-                                            <i class="fas fa-chart-line me-1"></i>
-                                          
-                                            @if (module.Status == "Completed")
-                                            {
-                                                <span class="text-success">Пройдено</span>
-                                            }
-                                            else if (module.Status == "InProgress")
-                                            {
-                                                <span class="text-warning">У процесі</span>
-                                            }
-                                            else if (module.Status == "Open")
-                                            {
-                                                <span class="text-primary">Відкрито</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-danger"><i class="fas fa-lock me-1"></i> Заблоковано</span>
-                                            }
-                                        </span>
-                            <span class="text-muted small">
-                                <i class="fas fa-chart-line me-1"></i> Пройдено @module.Percent%
-                            </span>
-                        </div>
-
-                        <h5 class="fw-bold mb-0 text-dark">@module.Name</h5>
-
-                        <div class="progress mt-2" style="height: 6px;">
-                            <div class="progress-bar bg-success" role="progressbar"
-                                 style="width: @module.Percent %" aria-valuenow="@module.Percent"
-                                 aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                </button>
-            </h2>
-        
 
         </div>
-    }
-</div>
-</div>
-</div>
-</div>
+    </div>
+                @{
+                    // Це локальна функція, яка дозволяє не дублювати HTML
+                    void RenderModuleContent(ModuleProgressDTO module)
+                    {
+                        <div class="module-card-image" style="height: 140px; width: 100%; overflow: hidden;">
+                            @if (!string.IsNullOrEmpty(module.ImageForUser))
+
+                            {
+                                <img src="@module.ImageForUser" class="w-100 h-100" style="object-fit: cover;" alt="@module.Name" />
+                            }
+
+                            else
+
+                            {
+                                <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-primary-soft text-primary">
+                                    <i class="fas fa-layer-group me-1"></i> Модуль @module.ModuleNumber
+                                </span>
+                                @* <span class="text-muted small">
+                        <i class="fas fa-chart-line me-1"></i> @module.Status
+                        </span> *@
+                                <span class="text-muted small">
+                                    <i class="fas fa-chart-line me-1"></i>
+
+                                    @if (module.Status == "Completed")
+                                    {
+                                        <span class="text-success">Пройдено</span>
+                                    }
+                                    else if (module.Status == "InProgress")
+                                    {
+                                        <span class="text-warning">У процесі</span>
+                                    }
+                                    else if (module.Status == "Open")
+                                    {
+                                        <span class="text-primary">Відкрито</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger"><i class="fas fa-lock me-1"></i> Заблоковано</span>
+                                    }
+                                </span>
+                                <span class="text-muted small">
+                                    <i class="fas fa-chart-line me-1"></i> Пройдено @module.Percent%
+                                </span>
+                            </div>
+
+                            <h5 class="fw-bold mb-0 text-dark">@module.Name</h5>
+
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-success" role="progressbar"
+                                     style="width: @module.Percent %" aria-valuenow="@module.Percent"
+                                     aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                       
+                }
+                }
+                <div class="row">
+                    @foreach (var module in Model.Progress.ModuleProgress)
+                    {
+            <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                            <div id="heading-@module.ModuleId" class="h-100">
+
+                                @if (module.Status == "Close")
+                                {
+                                    <div class="card-link shadow-sm d-block border rounded overflow-hidden opacity-75 h-100 bg-white"
+                                         style="cursor: not-allowed; min-height: 250px;">
+                                     
+                                        @{
+                                            RenderModuleContent(module);
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Course" asp-action="Index"
+                                       asp-route-id="@module.ModuleId"
+                                       class="card-link text-decoration-none shadow-sm d-block border rounded overflow-hidden fs-6 h-100 bg-white"
+                                       style="cursor: pointer; min-height: 250px;">
+                                        @{
+                                            RenderModuleContent(module);
+                                        }
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+
+    
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buyButton = document.getElementById('buyButton');
+
+            if (buyButton) {
+                buyButton.addEventListener('click', async function () {
+                    // Вимикаємо кнопку, щоб уникнути повторних кліків
+                    buyButton.disabled = true;
+                    buyButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Обробка...';
+
+                    try {
+                        // Отримуємо ID курсу з моделі
+                        const courseId = "@Model.Progress.CourseId";
+                        console.log("Курс ID для оплати:", courseId);
+
+                        // Виконуємо запит до контролера
+                        const response = await fetch(`/api/Payment/create-checkout-session?courseId=${courseId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Помилка мережі або сервера');
+                        }
+
+                        const data = await response.json();
+
+                        if (data.url) {
+                            // Перенаправлення на сторінку Stripe
+                            window.location.href = data.url;
+                        } else {
+                            alert('Не вдалося отримати посилання на оплату.');
+                            resetButton();
+                        }
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Сталася помилка при з’єднанні зі Stripe. Перевірте консоль.');
+                        resetButton();
+                    }
+                });
+            }
+
+            function resetButton() {
+                buyButton.disabled = false;
+                buyButton.innerHTML = 'Придбати повний доступ';
+            }
+        });
+    </script>
+}
+
+
+@* stripe listen --forward-to https://localhost:5115/api/Payment/webhook *@

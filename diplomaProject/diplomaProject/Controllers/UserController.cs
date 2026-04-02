@@ -48,6 +48,17 @@ namespace diplomaProject.Controllers
             }
            // var course = 1;
             var data =await _dashboardService.GetDashboardView(userId,course);
+
+            var lessons = await _context.Lessons.Include(l=>l.Module)
+        .Where(l => l.Module.CourseId == course)
+        .OrderBy(l => l.LessonIndex)
+        .ToListAsync();
+
+            // Передаємо лекції та прогрес окремо
+            ViewBag.Lessons = lessons;
+            ViewBag.UserProgress = await _context.UserProgresses
+                .Where(p => p.UserId == userId && p.CourseId == course)
+                .ToListAsync();
             return View(data);
         }
 
@@ -119,6 +130,7 @@ namespace diplomaProject.Controllers
                     return View(editUser);
                 }
             }
+            
             TempData["SuccessMessage"] = "Профіль успішно оновлено!";
             return RedirectToAction("UpdateData");
         }

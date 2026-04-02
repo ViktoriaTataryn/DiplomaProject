@@ -45,10 +45,9 @@ namespace diplomaProject.Controllers
 
             if (progress != null && progress.Status == ProgressStatus.Open)
             {
-                await _progressService.StartLessonAsync(userId, lesson.Id);
-            }
-
-            if (progress == null || progress.Status == ProgressStatus.Close)
+                await _progressService.LessonInProgressAsync(userId,lesson.Id);
+            } 
+            if  (progress == null || progress.Status == ProgressStatus.Close)
             {
                 TempData["Error"] = "лекція не доступна. Пройдіть попередні матеріали.";
                 return RedirectToAction("Index");
