@@ -32,6 +32,10 @@
                         <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
                     </div>
 
+                    <div class="mb-3 text-end">
+                        <a asp-action="ForgotPassword" asp-controller="Auth" class="figma-text-blue text-decoration-none small">Забули пароль?</a>
+                    </div>
+
                     <div class="mb-5 form-check d-flex align-items-center">
                         <input asp-for="RememberMe" class="form-check-input me-2" style="border-color: #2B31B4; cursor: pointer; width: 1.2rem; height: 1.2rem;" />
                         <label class="form-check-label figma-text-blue" style="font-size: 0.95rem; cursor: pointer; padding-top: 2px;">Запам'ятати мене</label>
@@ -53,7 +57,6 @@
 <script>
     document.getElementById('togglePassword').addEventListener('click', function () {
         const passwordInput = document.getElementById('passwordInput');
-
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
         } else {
