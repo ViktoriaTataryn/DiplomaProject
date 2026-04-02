@@ -41,7 +41,8 @@ namespace diplomaProject.Controllers
             if (lesson == null) return NotFound();
 
             var progress = await _context.UserProgresses
-        .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
+                .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
+
             if (progress != null && progress.Status == ProgressStatus.Open)
             {
                 await _progressService.LessonInProgressAsync(userId,lesson.Id);
@@ -52,8 +53,8 @@ namespace diplomaProject.Controllers
                 return RedirectToAction("Index");
             }
 
-                // Fetch questions and options for this lesson and send them to the View
-                ViewBag.Questions = await _context.Questions
+            // Fetch questions and options for this lesson and send them to the View
+            ViewBag.Questions = await _context.Questions
                 .Include(q => q.Options)
                 .Where(q => q.LessonId == id)
                 .ToListAsync();
@@ -62,7 +63,6 @@ namespace diplomaProject.Controllers
         }
 
         // 3. Метод для ресурсов (как просила Вика)
-        // Позволяет получить список файлов отдельно, если нужно
         [HttpGet]
         public async Task<IActionResult> GetResources(int lessonId)
         {
@@ -72,55 +72,49 @@ namespace diplomaProject.Controllers
             return PartialView("_ResourcesPartial", resources);
         }
 
-
-        //// 4. Отправка домашки через POST (без отдельной вьюшки)
-        //[HttpPost]
-        //public async Task<IActionResult> SubmitHomework(int homeworkId, string homeworkText)
-        //{
-        //    // Тут в будущем будет логика сохранения в базу через ProgressService Вики
-        //    // Пока просто делаем заглушку, чтобы кнопка работала
-
-        //    if (string.IsNullOrWhiteSpace(homeworkText))
-        //    {
-        //        ModelState.AddModelError("", "Текст завдання не може бути порожнім.");
-        //        return RedirectToAction( "Lesson", new { id = homeworkId }); // Повертаємо на сторінку уроку
-
-        //    }
-        //    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "submissions");
-        //    if (!Directory.Exists(folderPath))
-        //    {
-        //        Directory.CreateDirectory(folderPath);
-        //    }
-           
-        //    var fileName = $"homework_{homeworkId}_{Guid.NewGuid()}.txt";
-        //    var fullPath = Path.Combine(folderPath, fileName);
-
-        //    //  Записуємо текст у файл
-        //    await System.IO.File.WriteAllTextAsync(fullPath, homeworkText);
-
-        //    var userId = _userManager.GetUserId(User);
-
-        //    var submission = new HomeworkSubmission
-        //    {
-        //        HomeworkId = homeworkId,
-        //        StudentId = userId,
-        //        FilePath = "/submissions/" + fileName,
-        //        SubmissionDate = DateTime.Now,
-        //        Status = HomeworkStatus.Pending
-        //    };
-
-        //    _context.HomeworkSubmissions.Add(submission);
-        //    await _context.SaveChangesAsync();
-
-        //    TempData["Message"] = "Homework submitted successfully!";
-        //    return RedirectToAction("Lesson");
-        //}
-
-        // 5. Auto-grading homework validation
+        // 4. Отправка текста домашнего задания в базу данных и файловую систему
         [HttpPost]
-        public async Task<IActionResult> CheckHomework(int lessonId, List<int> selectedOptionIds)
+        public async Task<IActionResult> SubmitHomework(int homeworkId, string homeworkText)
         {
-            // Fetch questions for this lesson, including their options
+            if (string.IsNullOrWhiteSpace(homeworkText))
+            {
+                ModelState.AddModelError("", "Homework text cannot be empty.");
+                return RedirectToAction("Lesson", new { id = homeworkId });
+            }
+
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "submissions");
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var fileName = $"homework_{homeworkId}_{Guid.NewGuid()}.txt";
+            var fullPath = Path.Combine(folderPath, fileName);
+
+            await System.IO.File.WriteAllTextAsync(fullPath, homeworkText);
+
+            var userId = _userManager.GetUserId(User);
+
+            var submission = new HomeworkSubmission
+            {
+                HomeworkId = homeworkId,
+                StudentId = userId,
+                FilePath = "/submissions/" + fileName,
+                SubmissionDate = DateTime.Now,
+                Status = HomeworkStatus.Pending
+            };
+
+            _context.HomeworkSubmissions.Add(submission);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Homework submitted successfully!";
+            return RedirectToAction("Lesson", new { id = homeworkId });
+        }
+
+        // 5. Автоматическая проверка и подтверждение домашних заданий
+        [HttpPost]
+        public async Task<IActionResult> CheckHomework(int lessonId, int homeworkId, List<int> selectedOptionIds)
+        {
             var questions = await _context.Questions
                 .Include(q => q.Options)
                 .Where(q => q.LessonId == lessonId)
@@ -129,21 +123,17 @@ namespace diplomaProject.Controllers
             int score = 0;
             int maxScore = questions.Count;
 
-            // Loop through each question to calculate points
             foreach (var question in questions)
             {
-                // Array 1: Extract the array of CORRECT IDs from the database
                 var correctOptionIds = question.Options
                     .Where(o => o.IsCorrect)
                     .Select(o => o.Id)
                     .ToList();
 
-                // Array 2: Extract the array of STUDENT's selected IDs for THIS question
                 var studentIdsForThisQuestion = selectedOptionIds
                     .Intersect(question.Options.Select(o => o.Id))
                     .ToList();
 
-                // Compare the two arrays (Strict check for exact match)
                 bool isAnswerPerfect = !correctOptionIds.Except(studentIdsForThisQuestion).Any() &&
                                        !studentIdsForThisQuestion.Except(correctOptionIds).Any();
 
@@ -153,10 +143,50 @@ namespace diplomaProject.Controllers
                 }
             }
 
-            // Save the score to TempData to show on the page
+            var userId = _userManager.GetUserId(User);
+            var submission = new HomeworkSubmission
+            {
+                HomeworkId = homeworkId,
+                StudentId = userId,
+                SubmissionDate = DateTime.Now,
+                Status = HomeworkStatus.Approved,
+                Grade = score
+            };
+
+            _context.HomeworkSubmissions.Add(submission);
+            await _context.SaveChangesAsync();
+
             TempData["HomeworkResult"] = $"Your score: {score} out of {maxScore}";
 
             return RedirectToAction("Lesson", new { id = lessonId });
+        }
+
+        // 6.Способ добавления домашнего задания (для администрации/учителя)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddHomework(Homework model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Homeworks.Add(model);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Homework added successfully!";
+            }
+            return RedirectToAction("Lesson", new { id = model.LessonId });
+        }
+
+        // 7. Отдельная страница для выполненных домашних заданий
+        [HttpGet]
+        public async Task<IActionResult> CompletedHomeworks()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var completedTasks = await _context.HomeworkSubmissions
+                .Include(s => s.Homework)
+                .Where(s => s.StudentId == userId && s.Status == HomeworkStatus.Approved)
+                .ToListAsync();
+
+            return View(completedTasks);
         }
     }
 }

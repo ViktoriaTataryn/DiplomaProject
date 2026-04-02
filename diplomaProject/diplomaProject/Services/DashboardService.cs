@@ -16,16 +16,15 @@ namespace diplomaProject.Services
         public DashboardService(AppDbContext context, IProgressService progressService)
         {
             _context = context;
-            _progressService=progressService;
-
+            _progressService = progressService;
         }
 
         public async Task<DashboardViewDTO> GetDashboardView(string userId, int courseId)
         {
-             var progressData = await GetUserStatistic(userId, courseId);
+            var progressData = await GetUserStatistic(userId, courseId);
             //var modulesList = await GetModulesWithProgress(userId, courseId);
-          
-            var gradesList =await GetGrades(userId);
+
+            var gradesList = await GetGrades(userId);
 
             //var progressData = new DashboardProgressDTO
             //{
@@ -35,41 +34,36 @@ namespace diplomaProject.Services
             //    CurrentLesson = await _progressService.GetActiveLessonAsync(userId, courseId)
             //};
 
-           
-
             return new DashboardViewDTO
             {
                 //Progress= progressData,
-                Progress=progressData,
-          
-                Grades= gradesList,
-            }; 
-           
+                Progress = progressData,
+
+                Grades = gradesList,
+            };
+
         }
 
         public async Task<List<int>> GetGrades(string userId)
         {
-            return  await _context.HomeworkSubmissions
-                .Where(g => g.StudentId == userId&&g.Status==HomeworkStatus.Approved)
-                .Where(g=>g.Grade.HasValue)
-                .Select(g=>g.Grade.Value)
+            return await _context.HomeworkSubmissions
+                .Where(g => g.StudentId == userId && g.Status == HomeworkStatus.Approved)
+                .Where(g => g.Grade.HasValue)
+                .Select(g => g.Grade.Value)
                 .ToListAsync();
         }
-
-
 
         public async Task<DashboardProgressDTO> GetUserStatistic(string userId, int courseId)
         {
             var allModules = await _context.Modules
-        .Where(m => m.CourseId == courseId)
-        .Include(m => m.Lessons)
-        .OrderBy(m => m.OrderIndex)
-        .ToListAsync();
-
+                .Where(m => m.CourseId == courseId)
+                .Include(m => m.Lessons)
+                .OrderBy(m => m.OrderIndex)
+                .ToListAsync();
 
             var moduleProgress = await _context.UserProgresses
-                .Include(m=>m.Module)
-                .Where(m => m.UserId == userId && m.CourseId == courseId && (m.LessonId == null || m.LessonId == 0))// m.LessonId == 0 вибираємо тільки модулі
+                .Include(m => m.Module)
+                .Where(m => m.UserId == userId && m.CourseId == courseId && (m.LessonId == null || m.LessonId == 0))
                 .ToListAsync();
 
             int total = moduleProgress.Count;
@@ -79,18 +73,17 @@ namespace diplomaProject.Services
                 .Include(m => m.Lesson)
                 .ThenInclude(l => l.Module)
                 .Where(m => m.UserId == userId && m.CourseId == courseId && m.LessonId != 0 &&
-                    m.LessonId != null) // m.LessonId != 0 вибираємо тільки лекції
+                    m.LessonId != null)
                 .ToListAsync();
 
-           
             var moduleStats = lessonsProgress
                 .GroupBy(m => m.ModuleId)
                 .Select(group =>
                 {
                     var firstItem = group.FirstOrDefault();
-                    var module = firstItem?.Lesson?.Module; // Отримуємо посилання на об'єкт модуля
+                    var module = firstItem?.Lesson?.Module;
                     var moduleRecord = moduleProgress.FirstOrDefault(mp =>
-      mp.ModuleId == group.Key && (mp.LessonId == null || mp.LessonId == 0));
+                        mp.ModuleId == group.Key && (mp.LessonId == null || mp.LessonId == 0));
                     var currentModuleStatus = moduleRecord?.Status ?? ProgressStatus.Close;
 
                     return new ModuleProgressDTO
@@ -122,13 +115,10 @@ namespace diplomaProject.Services
                 CompletedModule = moduleStats.Count(m => m.Status == ProgressStatus.Completed.ToString()),
                 ModuleProgress = moduleStats
             };
-
         }
-
 
         public async Task<List<ModuleProgressDTO>> GetModulesWithProgress(string userId, int courseId)
         {
-            // Отримуємо структуру курсу (модулі та їхні лекції)
             var modules = await _context.Modules
                 .Where(m => m.CourseId == courseId)
                 .Include(m => m.Lessons)
@@ -136,20 +126,16 @@ namespace diplomaProject.Services
                 .ToListAsync();
 
             var moduleProgresses = await _context.UserProgresses
-        .Where(p => p.UserId == userId && p.CourseId == courseId && p.LessonId == 0)
-        .ToListAsync();
+                .Where(p => p.UserId == userId && p.CourseId == courseId && p.LessonId == 0)
+                .ToListAsync();
 
-            // Отримуємо тільки завершені лекції користувача
             var completedLessons = await _context.UserProgresses
                 .Where(p => p.UserId == userId && p.CourseId == courseId && p.Status == ProgressStatus.Completed)
                 .ToListAsync();
 
             return modules.Select(m =>
             {
-                // Шукаємо запис прогресу для конкретного модуля
                 var progress = moduleProgresses.FirstOrDefault(p => p.ModuleId == m.Id);
-
-                // Якщо запису немає (новий модуль), за замовчуванням Close
                 var status = progress?.Status ?? ProgressStatus.Close;
 
                 return new ModuleProgressDTO
@@ -159,12 +145,11 @@ namespace diplomaProject.Services
                     ModuleNumber = m.OrderIndex,
                     ImageForUser = m.ImageUrl,
                     Percent = m.Lessons.Any()
-            ? (completedLessons.Count(cp => cp.ModuleId == m.Id) * 100) / m.Lessons.Count()
-            : 0,
-                    Status = status.ToString() // Тепер статус береться з БД
+                        ? (completedLessons.Count(cp => cp.ModuleId == m.Id) * 100) / m.Lessons.Count()
+                        : 0,
+                    Status = status.ToString()
                 };
             }).ToList();
-
         }
     }
 }

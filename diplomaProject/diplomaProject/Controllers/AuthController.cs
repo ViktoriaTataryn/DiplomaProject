@@ -191,7 +191,6 @@ namespace diplomaProject.Controllers
             return View(model);
         }
 
-        // The existing Logout method is already here and perfectly valid
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOut(string? returnUrl = null) // Fixed CS8625 Warning
@@ -205,6 +204,102 @@ namespace diplomaProject.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+        }
+
+        // --- НОВІ МЕТОДИ ДЛЯ ВІДНОВЛЕННЯ ПАРОЛЯ ---
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    // Don't reveal that the user does not exist or is not confirmed
+                    return RedirectToAction(nameof(ForgotPasswordConfirmation));
+                }
+
+                // Generate password reset token
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                // Create callback link
+                var callbackUrl = Url.Action("ResetPassword", "Auth",
+                    new { email = user.Email, token = token }, Request.Scheme);
+
+                // Send email
+                await _emailSender.SendEmailAsync(model.Email, "Reset Password",
+                    $"Будь ласка, скиньте ваш пароль, перейшовши за посиланням: <a href='{callbackUrl}'>Скинути пароль</a>");
+
+                return RedirectToAction(nameof(ForgotPasswordConfirmation));
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        // GET: Displays the reset password form
+        [HttpGet]
+        public IActionResult ResetPassword(string? token = null, string? email = null)
+        {
+            if (token == null || email == null)
+            {
+                // Invalid password reset token or missing email
+                return BadRequest("Недійсний токен або email.");
+            }
+
+            var model = new ResetPasswordViewModel { Token = token, Email = email };
+            return View(model);
+        }
+
+        // POST: Processes the reset password request
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+        // GET: Confirmation page after successful password reset
+        [HttpGet]
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
         }
     }
 }

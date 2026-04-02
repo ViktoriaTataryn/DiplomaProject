@@ -16,7 +16,7 @@ namespace diplomaProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-         
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -28,7 +28,7 @@ namespace diplomaProject
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
 
-                
+
                 // Налаштування паролів 
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 6;
@@ -90,7 +90,7 @@ namespace diplomaProject
                 }
             }
 
-          
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -100,7 +100,7 @@ namespace diplomaProject
                 app.UseHsts();
             }
 
-           
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
