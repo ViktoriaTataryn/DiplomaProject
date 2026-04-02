@@ -15,7 +15,7 @@ namespace diplomaProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-         
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -27,7 +27,7 @@ namespace diplomaProject
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
 
-                
+
                 // Налаштування паролів 
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 6;
@@ -57,10 +57,13 @@ namespace diplomaProject
             var apiKey = builder.Configuration["CloudinarySettings:ApiKey"];
             var apiSecret = builder.Configuration["CloudinarySettings:ApiSecret"];
 
-            Account account = new Account(cloudName, apiKey, apiSecret);
-            Cloudinary cloudinary = new Cloudinary(account);
-
-            builder.Services.AddSingleton(cloudinary);
+            // Initialize Cloudinary ONLY if credentials are provided to prevent app crashф
+            if (!string.IsNullOrWhiteSpace(cloudName) && !string.IsNullOrWhiteSpace(apiKey) && !string.IsNullOrWhiteSpace(apiSecret))
+            {
+                Account account = new Account(cloudName, apiKey, apiSecret);
+                Cloudinary cloudinary = new Cloudinary(account);
+                builder.Services.AddSingleton(cloudinary);
+            }
 
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IProgressService, ProgressService>();
@@ -87,7 +90,7 @@ namespace diplomaProject
                 }
             }
 
-          
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -97,7 +100,7 @@ namespace diplomaProject
                 app.UseHsts();
             }
 
-           
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
