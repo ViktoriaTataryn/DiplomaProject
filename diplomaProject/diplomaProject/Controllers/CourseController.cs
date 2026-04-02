@@ -44,7 +44,7 @@ namespace diplomaProject.Controllers
         .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
             if (progress != null && progress.Status == ProgressStatus.Open)
             {
-                await _progressService.StartLessonAsync(userId,lesson.Id);
+                await _progressService.LessonInProgressAsync(userId,lesson.Id);
             } 
             if  (progress == null || progress.Status == ProgressStatus.Close)
             {

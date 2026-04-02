@@ -116,6 +116,7 @@ namespace diplomaProject.Services
 
             return new DashboardProgressDTO
             {
+                CourseId = courseId,
                 CurrentLesson = curLesson,
                 TotalModule = moduleStats.Count,
                 CompletedModule = moduleStats.Count(m => m.Status == ProgressStatus.Completed.ToString()),

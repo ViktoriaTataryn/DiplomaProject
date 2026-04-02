@@ -2,6 +2,7 @@
 {
     public class DashboardProgressDTO
     {
+        public int CourseId { get; set; }
         public string? CurrentLesson { get; set; }
         public int CompletedModule {  get; set; }
         public int TotalModule { get; set; }

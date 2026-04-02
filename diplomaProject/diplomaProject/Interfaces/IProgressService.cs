@@ -9,7 +9,9 @@ namespace diplomaProject.Interfaces
         Task<ProgressStatus> GetLessonStatusAsync(string userId, int lessonId);
 
         // Змінити Open -> InProgress (коли студент відкрив лекцію)
-        Task StartLessonAsync(string userId, int lessonId);
+        Task LessonInProgressAsync(string userId, int lessonId);
+
+        Task OpenLessonAsync(string userId, int lessonId);
 
 
         // Метод для розблокування наступної лекції (Close -> Open)
