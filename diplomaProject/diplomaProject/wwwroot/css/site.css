@@ -48,9 +48,30 @@ body {
     font-style: normal;
 }
 
-/* 3. Global typography settings */
+/* 3. Import ShellyAllegroC font (Cursive) - ДОБАВЛЕНО */
+@font-face {
+    font-family: 'ShellyAllegroC';
+    src: url('/fonts/ShellyAllegroC.woff2') format('woff2'), url('/fonts/ShellyAllegroC.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 4. Global typography settings */
 body {
     font-family: 'Gilroy', sans-serif;
+    background-color: #F2F2FA; /* Цвет фона из Figma (светло-серый) */
+    color: #000000;
+}
+
+/* Применение Accia Piano к заголовкам и кнопкам */
+h1, h2, h3, .figma-bg-blue, .figma-btn-primary {
+    font-family: 'Accia Piano', serif;
+}
+
+/* Специальный класс для рукописного текста (например, слова Course в логотипе) */
+.figma-cursive {
+    font-family: 'ShellyAllegroC', cursive;
+    text-transform: none !important;
 }
 
 .figma-text-blue {
@@ -62,9 +83,9 @@ body {
     background-color: #2B31B4; /* Точный цвет из Figma */
     color: white;
     transition: all 0.3s ease;
-    font-family: 'Accia Piano', serif;
     border-radius: 0 !important; /* Убираем скругления */
     font-size: 18px; /* Задаем размер шрифта */
+    text-transform: uppercase;
 }
 
     .figma-bg-blue:hover {
@@ -124,7 +145,7 @@ h2.figma-title {
 }
 
 /* =========================================
-   Mobile Responsiveness (Sidebar)
+   Mobile Responsiveness (Sidebar) - ОСТАВЛЕНО БЕЗ ИЗМЕНЕНИЙ
    ========================================= */
 
 /* Sidebar default transition for smooth animation */
@@ -153,3 +174,143 @@ h2.figma-title {
         padding: 0 15px;
     }
 }
+
+/* =========================================
+   Figma Module List Styles (Новое добавление)
+   ========================================= */
+
+.figma-modules-container {
+    padding-bottom: 50px;
+}
+
+.figma-page-title {
+    font-family: 'Accia Piano', serif; /* Используем Accia для заголовка страницы */
+    color: #333;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.figma-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Отступы между модулями как в Figma */
+}
+
+.figma-module-item {
+    background-color: #FFFFFF;
+    border-radius: 8px; /* Скругление углов белых плашек */
+    padding: 25px 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02); /* Легкая тень */
+    transition: all 0.3s ease;
+}
+
+.figma-module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.figma-module-text h3 {
+    font-family: 'Accia Piano', serif; /* Заголовки модулей */
+    color: #000;
+    margin: 8px 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.figma-module-text p {
+    font-family: 'Gilroy', sans-serif;
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Статус "В процесі" */
+.figma-status-in-progress {
+    display: inline-block;
+    background-color: #E6E8F6; /* Светло-синий фон */
+    color: #2B31B4;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-family: 'Gilroy', sans-serif;
+}
+
+.figma-toggle-icon {
+    font-size: 1.2rem;
+    color: #2B31B4;
+    font-weight: bold;
+}
+
+.figma-module-body {
+    display: none;
+    padding-top: 25px;
+    margin-top: 25px;
+    border-top: 1px solid #EAEAEA; /* Линия разделения */
+}
+
+.figma-module-item.expanded .figma-module-body {
+    display: block;
+}
+
+.figma-lessons-title {
+    font-family: 'Accia Piano', serif;
+    color: #2B31B4;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.figma-lessons-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.figma-lesson-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.figma-lesson-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1rem;
+}
+
+.figma-bullet {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+    border: 2px solid #2B31B4;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.figma-btn-primary {
+    background-color: #2B31B4;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 4px;
+    font-family: 'Accia Piano', serif;
+    transition: background-color 0.2s;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+    .figma-btn-primary:hover {
+        background-color: #1e2285;
+        color: #FFFFFF;
+    }

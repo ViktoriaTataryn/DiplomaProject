@@ -1,4 +1,6 @@
-﻿ @model Lesson
+﻿@model Lesson
+
+@* --- VIKA'S ORIGINAL HOMEWORK FORM (STAYING AS HISTORY) --- *@
 @* <div class="card shadow-sm mt-4">
      <div class="card-body">
          <h6>Submit Your Work</h6>
@@ -13,7 +15,7 @@
              <button type="submit" class="btn btn-success btn-sm w-100">Send Homework</button>
          </form>
      </div>
- </div>
+</div>
 
 @if (TempData["Message"] != null)
 {
@@ -27,6 +29,7 @@
     </div>
 } *@
 
+@* --- ACTIVE TEST SECTION --- *@
 <div class="mt-5">
     <h3>Test Your Knowledge</h3>
     <hr />
@@ -76,6 +79,7 @@
     }
 </div>
 
+@* --- VIKA'S ORIGINAL LESSON CONTENT & RESOURCES (STAYING AS HISTORY) --- *@
 @* @model Lesson
 
 <div class="container mt-4">
@@ -160,7 +164,8 @@
         </div>
     </div>
 </div>
- *@
+*@
+
 <style>
     /* Головний контейнер контенту */
     .lecture-content {
@@ -213,4 +218,4 @@
             font-weight: 600;
             color: #495057;
         }
-</style> 
+</style>

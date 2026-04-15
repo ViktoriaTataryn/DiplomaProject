@@ -19,33 +19,26 @@ namespace diplomaProject.Services
         public async Task<string> GetActiveLessonAsync(string userId, int courseId)
         {
             var activeLesson = await _context.UserProgresses
-                .Include(l=>l.Lesson)
-                .ThenInclude(m=>m.Module)
-                .Where(u=>u.UserId==userId&&u.CourseId==courseId&&u.LessonId!=0)
-                .OrderByDescending(a=>a.LastActivity)
-                .FirstOrDefaultAsync(s=>s.Status==ProgressStatus.InProgress||s.Status==ProgressStatus.Open);
+                .Include(l => l.Lesson)
+                .ThenInclude(m => m.Module)
+                .Where(u => u.UserId == userId && u.CourseId == courseId && u.LessonId != 0)
+                .OrderByDescending(a => a.LastActivity)
+                .FirstOrDefaultAsync(s => s.Status == ProgressStatus.InProgress || s.Status == ProgressStatus.Open);
 
-            //if (activeLesson == null) { 
-            //    var openLesson = await _context.UserProgresses
-            //    .Include(l => l.Lesson)
-            //    .ThenInclude(m => m.Module)
-            //    .Where(u => u.UserId == userId && u.CourseId == courseId && u.LessonId != 0)
-            //    .OrderBy(l=>l.LessonId)
-            //    .FirstOrDefaultAsync(s => s.Status == ProgressStatus.Open);
-            //    return openLesson.Lesson.Title;
-            //}
             if (activeLesson == null)
             {
-                throw new ArgumentNullException(nameof(activeLesson), "Урок не знайдено в системі.");
+                // Вместо ошибки возвращаем заглушку, чтобы Dashboard не падал
+                return "Уроків ще немає";
             }
-            return activeLesson.Lesson.Title;
 
+            return activeLesson.Lesson.Title;
         }
 
         public async Task<HomeworkStatus> GetHomeworkStatusAsync(string userId, int homeworkId)
         {
-            var status = await _context.HomeworkSubmissions.FirstOrDefaultAsync(s => s.StudentId == userId&&s.HomeworkId==homeworkId);
-            if (status == null) { 
+            var status = await _context.HomeworkSubmissions.FirstOrDefaultAsync(s => s.StudentId == userId && s.HomeworkId == homeworkId);
+            if (status == null)
+            {
                 return HomeworkStatus.NotSubmitted;
             }
             return status.Status;
@@ -53,7 +46,7 @@ namespace diplomaProject.Services
 
         public async Task<ProgressStatus> GetLessonStatusAsync(string userId, int lessonId)
         {
-            var status= await _context.UserProgresses.FirstOrDefaultAsync(s=>s.UserId == userId&&s.LessonId==lessonId && s.LessonId != 0);
+            var status = await _context.UserProgresses.FirstOrDefaultAsync(s => s.UserId == userId && s.LessonId == lessonId && s.LessonId != 0);
             if (status == null)
             {
                 return ProgressStatus.Close;
@@ -61,14 +54,11 @@ namespace diplomaProject.Services
             return status.Status;
         }
 
-      
-
         public async Task StartCourse(string userId, int courseId)
         {
-            
             var modules = await _context.Modules
                 .Include(m => m.Lessons)
-                .Where(m => m.CourseId == courseId )
+                .Where(m => m.CourseId == courseId)
                 .OrderBy(m => m.Id)
                 .ToListAsync();
 
@@ -79,7 +69,6 @@ namespace diplomaProject.Services
 
             foreach (var module in modules)
             {
-
                 progressEntries.Add(new UserProgress
                 {
                     UserId = userId,
@@ -95,17 +84,15 @@ namespace diplomaProject.Services
 
                 foreach (var lesson in module.Lessons.OrderBy(l => l.Id))
                 {
-                    // Створюємо запис для ЛЕКЦІЇ
                     progressEntries.Add(new UserProgress
                     {
                         UserId = userId,
                         CourseId = courseId,
                         ModuleId = module.Id,
                         LessonId = lesson.Id,
-                        // Відкриваємо тільки ПЕРШУ лекцію ПЕРШОГО модуля
                         Status = (isFirstLessonInCourse && isFirstLessonInModule)
-                                 ? ProgressStatus.Open
-                                 : ProgressStatus.Close,
+                                     ? ProgressStatus.Open
+                                     : ProgressStatus.Close,
                         LastActivity = DateTime.Now
                     });
                     isFirstLessonInModule = false;
@@ -113,7 +100,6 @@ namespace diplomaProject.Services
                 isFirstModule = false;
             }
 
-            
             _context.UserProgresses.AddRange(progressEntries);
             await _context.SaveChangesAsync();
         }
@@ -124,73 +110,69 @@ namespace diplomaProject.Services
             if (lessonProgress != null && lessonProgress.Status == ProgressStatus.Close)
             {
                 lessonProgress.Status = ProgressStatus.Open;
-
             }
             await _context.SaveChangesAsync();
         }
 
-
         public async Task LessonInProgressAsync(string userId, int lessonId)
         {
-           
             var lessonProgress = await _context.UserProgresses.FirstOrDefaultAsync(p => p.UserId == userId && p.LessonId == lessonId && p.LessonId != 0);
-            if (lessonProgress != null && lessonProgress.Status==ProgressStatus.Open) {
+            if (lessonProgress != null && lessonProgress.Status == ProgressStatus.Open)
+            {
                 lessonProgress.Status = ProgressStatus.InProgress;
-               
             }
-            var moduleProgress = await _context.UserProgresses.FirstOrDefaultAsync(m=>m.UserId==userId&&m.ModuleId==lessonProgress.ModuleId );
-            if (moduleProgress !=null && moduleProgress.Status == ProgressStatus.Open) { 
-                moduleProgress.Status = ProgressStatus.InProgress;
+
+            if (lessonProgress != null)
+            {
+                var moduleProgress = await _context.UserProgresses.FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == lessonProgress.ModuleId);
+                if (moduleProgress != null && moduleProgress.Status == ProgressStatus.Open)
+                {
+                    moduleProgress.Status = ProgressStatus.InProgress;
+                }
             }
             await _context.SaveChangesAsync();
-             
         }
 
         public async Task UnlockNextLessonAsync(string userId, int currentLessonId)
         {
-            //homework status=aproved
-            //lesson status = completed
-            //next lesson = in progress
             var lessonProgress = await _context.UserProgresses.FirstOrDefaultAsync(l => l.UserId == userId && l.LessonId == currentLessonId && l.LessonId != 0);
             var homeworkStatus = await _context.HomeworkSubmissions
                 .Include(h => h.Homework)
                 .FirstOrDefaultAsync(h => h.StudentId == userId && h.Homework.LessonId == currentLessonId);
-            if (homeworkStatus != null && homeworkStatus.Status == HomeworkStatus.Approved) {
-                lessonProgress.Status=ProgressStatus.Completed;
-                lessonProgress.IsCompleted = true;
 
-            }
-            var nextLesson = await _context.Lessons.Where(l=>l.ModuleId== lessonProgress.ModuleId&&l.Id>currentLessonId)
-                .OrderBy(l=>l.Id)
-                .FirstOrDefaultAsync();
-            if (nextLesson != null)
+            if (lessonProgress != null && homeworkStatus != null && homeworkStatus.Status == HomeworkStatus.Approved)
             {
-                //var nextLessonStatus = await _context.UserProgresses.FirstOrDefaultAsync(l => l.UserId == userId && l.LessonId == nextLesson.Id);
-                //if (nextLessonStatus != null && nextLessonStatus.Status == ProgressStatus.Close) { 
-                //    nextLessonStatus .Status=ProgressStatus.Open;
-                //}
-                
-                
-                    await OpenLessonAsync(userId, nextLesson.Id);
-                
-                //else
-                //{
-                //  await  UnlockNextModuleAsync(userId, lessonProgress.Id);
-                //}
+                lessonProgress.Status = ProgressStatus.Completed;
+                lessonProgress.IsCompleted = true;
             }
-            await _context.SaveChangesAsync();  
+
+            if (lessonProgress != null)
+            {
+                var nextLesson = await _context.Lessons.Where(l => l.ModuleId == lessonProgress.ModuleId && l.Id > currentLessonId)
+                    .OrderBy(l => l.Id)
+                    .FirstOrDefaultAsync();
+
+                if (nextLesson != null)
+                {
+                    await OpenLessonAsync(userId, nextLesson.Id);
+                }
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task UnlockNextModuleAsync(string userId, int currentModuleId)
         {
             var allLessonsOfModule = _context.UserProgresses
                     .Where(p => p.UserId == userId && p.ModuleId == currentModuleId && p.LessonId != 0);
+
             bool isAllCompleted = await allLessonsOfModule.AllAsync(p => p.Status == ProgressStatus.Completed);
+
             if (isAllCompleted)
             {
                 var module = await _context.UserProgresses
                     .Include(p => p.Module)
                     .FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == currentModuleId && m.LessonId == 0);
+
                 if (module != null)
                 {
                     module.Status = ProgressStatus.Completed;
@@ -199,21 +181,19 @@ namespace diplomaProject.Services
                     var nextModule = await _context.Modules.Where(m => m.OrderIndex > module.Module.OrderIndex)
                         .OrderBy(m => m.OrderIndex)
                         .FirstOrDefaultAsync();
+
                     if (nextModule != null)
                     {
-                        var nextModuleProgress = await _context.UserProgresses.FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == currentModuleId && m.LessonId == 0);
-                        if (nextModuleProgress != null) {
+                        var nextModuleProgress = await _context.UserProgresses.FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == nextModule.Id && m.LessonId == 0);
+                        if (nextModuleProgress != null)
+                        {
                             nextModuleProgress.Status = ProgressStatus.InProgress;
                         }
                     }
 
                     await _context.SaveChangesAsync();
                 }
-
             }
-
         }
-
-       
     }
 }

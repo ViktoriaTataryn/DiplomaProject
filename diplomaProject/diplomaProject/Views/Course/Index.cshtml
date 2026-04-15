@@ -4,9 +4,8 @@
     ViewData["Title"] = "Course Curriculum";
 }
 
-
-<div class="container mt-5">
-    <h1 class="mb-4">Course Curriculum</h1>
+<div class="figma-modules-container container mt-5">
+    <h1 class="mb-4 figma-page-title">Course Curriculum</h1>
 
     @if (!Model.Any())
     {
@@ -16,36 +15,60 @@
     }
     else
     {
-        <div class="accordion" id="courseAccordion">
+        <div class="figma-accordion" id="courseAccordion">
             @foreach (var module in Model)
             {
-                <div class="card mb-3">
-                    <div class="card-header bg-light">
-                        <h3 class="h5 mb-0">@module.Title</h3>
-                        @if (!string.IsNullOrEmpty(module.Description))
-                        {
-                            <small class="text-muted">@module.Description</small>
-                        }
+                <div class="figma-module-item collapsed">
+
+                    <div class="figma-module-header" onclick="toggleFigmaModule(this)">
+                        <div class="figma-module-info">
+                            <div class="figma-module-text">
+                                <span class="figma-status-in-progress">В процесі</span> <h3>@module.Title</h3>
+                                @if (!string.IsNullOrEmpty(module.Description))
+                                {
+                                    <p>@module.Description</p>
+                                }
+                            </div>
+                        </div>
+                        <span class="figma-toggle-icon">▼</span>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        @foreach (var lesson in module.Lessons)
-                        {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>@lesson.Title</strong>
-                                    @if (!string.IsNullOrEmpty(lesson.Description))
-                                    {
-                                        <br />
-                                        <span class="text-muted small">@lesson.Description</span>
-                                    }
-                                   
-                                </div>
-                                <a asp-action="Lesson" asp-route-id="@lesson.Id" class="btn btn-sm btn-outline-primary">Open Lesson</a>
-                            </li>
-                        }
-                    </ul>
+
+                    <div class="figma-module-body">
+                        <h4 class="figma-lessons-title">Лекції:</h4>
+                        <ul class="figma-lessons-list">
+                            @foreach (var lesson in module.Lessons)
+                            {
+                                <li class="figma-lesson-item">
+                                    <div class="figma-lesson-content">
+                                        <span class="figma-bullet"></span>
+                                        <strong>@lesson.Title</strong>
+                                        @if (!string.IsNullOrEmpty(lesson.Description))
+                                        {
+                                            <span class="text-muted small ms-2">@lesson.Description</span>
+                                        }
+                                    </div>
+                                    <a asp-action="Lesson" asp-route-id="@lesson.Id" class="btn figma-btn-primary btn-sm">Open Lesson</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             }
         </div>
     }
 </div>
+
+<script>
+    function toggleFigmaModule(element) {
+        var moduleItem = element.closest('.figma-module-item');
+        if (moduleItem.classList.contains('expanded')) {
+            moduleItem.classList.remove('expanded');
+            moduleItem.classList.add('collapsed');
+            element.querySelector('.figma-toggle-icon').innerText = '▼';
+        } else {
+            moduleItem.classList.remove('collapsed');
+            moduleItem.classList.add('expanded');
+            element.querySelector('.figma-toggle-icon').innerText = '▲';
+        }
+    }
+</script>

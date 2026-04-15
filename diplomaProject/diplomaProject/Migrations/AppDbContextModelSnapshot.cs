@@ -177,7 +177,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("AnswerOptions");
+                    b.ToTable("AnswerOptions", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.ApplicationUser", b =>
@@ -277,7 +277,7 @@ namespace diplomaProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.CourseRegistration", b =>
@@ -300,7 +300,7 @@ namespace diplomaProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CourseRegistrations");
+                    b.ToTable("CourseRegistrations", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Homework", b =>
@@ -325,7 +325,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Homeworks");
+                    b.ToTable("Homeworks", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.HomeworkSubmission", b =>
@@ -365,7 +365,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("HomeworkSubmissions");
+                    b.ToTable("HomeworkSubmissions", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Lesson", b =>
@@ -400,7 +400,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lessons", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Module", b =>
@@ -431,7 +431,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Modules");
+                    b.ToTable("Modules", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Question", b =>
@@ -454,7 +454,7 @@ namespace diplomaProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Resource", b =>
@@ -480,7 +480,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Resources");
+                    b.ToTable("Resources", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Review", b =>
@@ -506,7 +506,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("diplomaProject.Models.UserProgress", b =>
@@ -550,7 +550,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserProgresses");
+                    b.ToTable("UserProgresses", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
