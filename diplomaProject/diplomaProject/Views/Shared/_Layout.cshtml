@@ -7,102 +7,75 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-    <style>
-        /* Базовые стили для структуры ARTLINE */
+<style>
         body {
             display: flex;
             min-height: 100vh;
             background-color: #f8f9fa;
-        }
-
-        #sidebar {
-            width: 280px;
-            background: #fff;
-            border-right: 1px solid #dee2e6;
-            padding: 20px;
-        }
-
-        #main-wrapper {
-            flex: 1;
-            display: flex;
             flex-direction: column;
+            /*  background-color: #F3F3FB; */
         }
-
-        #header {
-            height: 70px;
-            background: #fff;
-            border-bottom: 1px solid #dee2e6;
-            display: flex;
-            align-items: center;
-            padding: 0 30px;
-        }
-
-        #content {
-            padding: 30px;
-            flex: 1;
-        }
-
-        .nav-link {
-            color: #333;
-            margin-bottom: 10px;
-            border-radius: 8px;
-        }
-
-            .nav-link.active {
-                background-color: #000;
-                color: #fff;
-            }
-    </style>
+</style>
 </head>
-<body>
-
-    <div id="sidebar">
-        <h4 class="mb-5">ARTLINE</h4>
-        <nav class="nav flex-column">
-            <a class="nav-link active" asp-controller="User" asp-action="Dashboard">
-                <i class="bi bi-house-door me-2"></i> Dashboard
-            </a>
-            <a class="nav-link" asp-controller="Course" asp-action="Index">
-                <i class="bi bi-book me-2"></i> My Courses
-            </a>
-            <a class="nav-link" href="#">
-                <i class="bi bi-chat-left-text me-2"></i> Messages
-            </a>
-            <a class="nav-link" href="#">
-                <i class="bi bi-gear me-2"></i> Settings
-            </a>
-        </nav>
-    </div>
-
-    <div id="main-wrapper">
+<body >
+   
         <header id="header">
-            
-            <button class="btn d-md-none me-3" id="sidebarToggle" style="border: none; background: transparent;">
-                <i class="bi bi-list fs-2"></i>
-            </button>
-       
+        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646612/Logo_jhzjc9.svg"style="width:225px" alt="logo" />
+             <button class="btn d-md-none me-3" id="sidebarToggle" style="border: none; background: transparent;">
+                 <i class="bi bi-list fs-2"></i>
+             </button>
+
 
             <div class="ms-auto d-flex align-items-center">
                 <span class="me-3">@User.Identity?.Name</span>
-               
-              @*    <i class="bi bi-person-circle fs-4 me-3 pointer-event"></i> *@
+
+                @*    <i class="bi bi-person-circle fs-4 me-3 pointer-event"></i> *@
                 <a asp-controller="User" asp-action="UpdateData" class="text-decoration-none text-dark">
                     <i class="bi bi-person-circle fs-4 me-3" style="cursor: pointer;"></i>
                 </a>
-             
-              @*   <form asp-controller="Auth" asp-action="LogOut" method="post" class="d-inline m-0">
-                    <button type="submit" class="btn btn-outline-danger btn-sm">
-                        LOGOUT
-                    </button>
+
+                @*   <form asp-controller="Auth" asp-action="LogOut" method="post" class="d-inline m-0">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                LOGOUT
+                </button>
                 </form> *@
             </div>
         </header>
 
+    <div id="layout-body">
+
+        <aside id="sidebar">
+       
+        <nav class="nav flex-column">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Dashboard" ? "active" : "")" 
+                asp-controller="User" asp-action="Dashboard">
+                 Головна
+            </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Course" ? "active" : "")" asp-controller="Course" asp-action="Index">
+              Лекції
+            </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Homework" ? "active" : "")" href="#">
+               Домашні завдання
+            </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "GetResources" ? "active" : "")" href="#">
+                Додаткові матеріали
+            </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "UpdateData" ? "active" : "")" href="#">
+                   Акаунт
+                </a>
+        </nav>
+            <div class="sidebar-img">
+                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075814/Sidebar_Decoration_ljpp8v.webp" alt="Alternate Text" />
+
+            </div>
+    </aside>
+      
+    
+
         <main id="content">
             @RenderBody()
         </main>
-    </div>
+        </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

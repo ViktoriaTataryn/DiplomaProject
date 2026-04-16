@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using diplomaProject.Data;
 
@@ -11,9 +12,11 @@ using diplomaProject.Data;
 namespace diplomaProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260413182702_AddIsPaidToRegistration")]
+    partial class AddIsPaidToRegistration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,7 +180,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("AnswerOptions", (string)null);
+                    b.ToTable("AnswerOptions");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.ApplicationUser", b =>
@@ -277,7 +280,7 @@ namespace diplomaProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.CourseRegistration", b =>
@@ -303,7 +306,7 @@ namespace diplomaProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CourseRegistrations", (string)null);
+                    b.ToTable("CourseRegistrations");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Homework", b =>
@@ -328,7 +331,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Homeworks", (string)null);
+                    b.ToTable("Homeworks");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.HomeworkSubmission", b =>
@@ -368,7 +371,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("HomeworkSubmissions", (string)null);
+                    b.ToTable("HomeworkSubmissions");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Lesson", b =>
@@ -403,7 +406,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Module", b =>
@@ -434,7 +437,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Modules", (string)null);
+                    b.ToTable("Modules");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Question", b =>
@@ -457,7 +460,7 @@ namespace diplomaProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Resource", b =>
@@ -483,7 +486,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Resources", (string)null);
+                    b.ToTable("Resources");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.Review", b =>
@@ -509,7 +512,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("diplomaProject.Models.UserProgress", b =>
@@ -553,7 +556,7 @@ namespace diplomaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserProgresses", (string)null);
+                    b.ToTable("UserProgresses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -6,7 +6,7 @@
             <h4>Редагування лекції: @Model.Title</h4>
         </div>
         <div class="card-body">
-            <form asp-action="UpdateLesson" method="post" enctype="multipart/form-data">
+            <form asp-action="UpdateLesson" id="editLessonForm" method="post" enctype="multipart/form-data">
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
@@ -29,11 +29,8 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Content" class="form-control-label">Зміст лекції</label>
-                    <textarea asp-for="Content" class="form-control" id="editor" rows="10"></textarea>
-                    <span asp-validation-for="Content" class="text-danger"></span>
-                </div>
+                <div id="editorjs" class="border rounded bg-white p-3" style="min-height: 400px;"></div>
+                <input type="hidden" asp-for="Content" id="contentHiddenInput" />
 
                 <div class="mb-4">
                     <label class="form-control-label"><strong>Поточні додаткові матеріали:</strong></label>
@@ -81,31 +78,112 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/list@@1.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/image@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/audio@@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/quote@latest"></script>
 
- 
-    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
     <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'), {
-                // Твої налаштування (наприклад, для завантаження картинок)
-                ckfinder: {
-                    uploadUrl: '/Admin/UploadImage' 
-                },
-                toolbar: [
-                    'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
-                    '|', 'imageUpload', 'blockQuote', 'insertTable', 'undo', 'redo'
-                ]
-            })
-            .then(editor => {
-                console.log('Editor was initialized');
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    </script>
+        // 2. Отримуємо початкові дані з моделі
+        // Якщо Content порожній, передаємо структуру з порожнім масивом блоків
+        const initialData = @Html.Raw(string.IsNullOrEmpty(Model.Content) ? "{\"blocks\":[]}" : Model.Content);
 
+        // 3. Ініціалізація Editor.js
+        const editor = new EditorJS({
+            holder: 'editorjs',
+            placeholder: 'Продовжуйте редагування лекції...',
+
+            // Завантажуємо дані з бази
+            data: initialData,
+
+            tools: {
+               
+                header: {
+                    class: Header,
+                    inlineToolbar: ['link'],
+          
+                },
+               
+                quote: {
+                    class: Quote,
+                    inlineToolbar: true,
+                    config: {
+                        quotePlaceholder: 'Введіть цитату',
+                        captionPlaceholder: 'Автор цитати',
+                    },
+                },
+                // audio: {
+                //     class: AudioTool,
+                //     config: {
+                //         endpoints: {
+                //             byFile: '/AdminLesson/UploadAudio', // Твій метод для завантаження
+
+                //         },
+                //         field: 'audio', // Назва параметра в C# методі
+                //         types: 'audio/mp3, audio/wav, audio/mpeg', // Дозволені типи
+                //     }
+                // },
+                list: {
+                    class: List,
+                    inlineToolbar: true
+                },
+                image: {
+                    class: ImageTool,
+                    config: {
+                        endpoints: {
+                            // Шлях до твого методу в контролері
+                            byFile: '/AdminLesson/UploadImage'
+                        },
+                        // Якщо в C# параметр методу називається 'file', вказуємо це тут
+                        field: 'file',
+                        actions: [
+                            {
+                                name: 'size_small',
+                                icon: 'S', // Можна вставити іконку або просто текст
+                                title: 'Маленька (30%)',
+                                toggle: true,
+                            },
+                            {
+                                name: 'size_medium',
+                                icon: 'M',
+                                title: 'Середня (60%)',
+                                toggle: true,
+                            }
+                        ]
+                    }
+                }
+            },
+
+            // Додаткові налаштування для зручності
+            onReady: () => {
+                console.log('Editor.js готовий до роботи!');
+            }
+        });
+
+        // 4. Обробка відправки форми
+        const editForm = document.getElementById('editLessonForm'); // Переконайся, що у <form> такий id
+
+        editForm.addEventListener('submit', async (e) => {
+            // Зупиняємо стандартну відправку, щоб зібрати дані з редактора
+            e.preventDefault();
+
+            try {
+                // Отримуємо JSON-об'єкт із редактора
+                const savedData = await editor.save();
+
+                // Записуємо JSON як рядок у приховане поле input
+                const contentInput = document.getElementById('contentHiddenInput');
+                contentInput.value = JSON.stringify(savedData);
+
+                // Тепер відправляємо форму на сервер
+                editForm.submit();
+            } catch (error) {
+                console.error('Помилка при збереженні контенту:', error);
+                alert('Сталася помилка при спробі зберегти контент лекції.');
+            }
+        });
+    </script>
 }

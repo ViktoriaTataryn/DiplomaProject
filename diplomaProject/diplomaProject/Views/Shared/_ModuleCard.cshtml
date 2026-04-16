@@ -1,0 +1,74 @@
+﻿@model diplomaProject.DTOs.ModuleProgressDTO
+
+@{
+    string openFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655858/Frame_available_stjkiv.png";
+    string lockedFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655701/Frame_blocked_w4cquk.png";
+    string currentFrame = (Model.Status == "Close") ? lockedFrame : openFrame;
+}
+
+<div class="module-card ">
+    <div class="art-frame-wrapper">
+        <img src="@currentFrame" class="frame-overlay" alt="frame" />
+
+        <div class="module-image-inner">
+            @if (!string.IsNullOrEmpty(Model.ImageForUser))
+
+            {
+                if (Model.Status == "Close")
+                {
+                    <img src="@Model.ImageForUser" class="w-100 h-100" style="object-fit: cover; opacity:0.5" alt="@Model.Name" />
+                }
+                else
+                {
+                    <img src="@Model.ImageForUser" class="w-100 h-100" style="object-fit: cover;" alt="@Model.Name" />
+
+                }
+            }
+            else
+            {
+                <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-image fa-3x text-muted"></i>
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <div class="py-0 px-3 lh-sm">
+        <div class="d-flex justify-content-between align-items-center ">
+            <span class="text ">
+                Модуль @Model.ModuleNumber
+            </span>
+
+            <span class="text-muted small">
+                <i class="fas fa-chart-line me-1"></i>
+
+                @if (Model.Status == "Completed")
+                {
+                    <span class="status">Пройдено</span>
+                }
+                else if (Model.Status == "InProgress")
+                {
+                    <span class="status">В процесі</span>
+                }
+                else if (Model.Status == "Open")
+                {
+                    <span class="status">Відкрито</span>
+                }
+                else
+                {
+                    <span class="status"> Заблоковано</span>
+                }
+            </span>
+
+        </div>
+
+        <span class=" text ">@Model.Name</span>
+
+        <div class="progress mt-3  progress-container" style="height: 7px;">
+            <div class="progress-success " role="progressbar"
+                 style="width: @Model.Percent %" aria-valuenow="@Model.Percent"
+                 aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+</div>

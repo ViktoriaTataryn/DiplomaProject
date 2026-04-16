@@ -6,5 +6,6 @@
         public string UserId { get; set; }
         public int CourseId { get; set; }
         public DateTime RegisterAt { get; set; } = DateTime.UtcNow;
+        public bool IsPaid { get; set; } = false;
     }
 }

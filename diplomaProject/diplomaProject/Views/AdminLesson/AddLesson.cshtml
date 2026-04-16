@@ -12,7 +12,7 @@
                     <h3 class="mb-0">Створення лекції</h3>
                 </div>
                 <div class="card-body">
-                    <form asp-action="AddLesson" method="post" enctype="multipart/form-data">
+                    <form asp-action="AddLesson" id="lessonForm" method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <div class="row">
@@ -21,6 +21,15 @@
                                 <input asp-for="Title" class="form-control" placeholder="Наприклад: Основи композиції" />
                                 <span asp-validation-for="Title" class="text-danger"></span>
                             </div>
+
+                           
+                                <div class="col-md-8 mb-3">
+                                    <label asp-for="LessonIndex" class="form-label font-weight-bold">ННомер лекції</label>
+                                    <input asp-for="LessonIndex" class="form-control"  />
+                                    <span asp-validation-for="LessonIndex" class="text-danger"></span>
+                                </div>
+
+                      
 
                             <div class="col-md-4 mb-3">
                                 <label asp-for="ModuleId" class="form-label font-weight-bold">Модуль курсу</label>
@@ -37,11 +46,16 @@
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-4">
-                            <label asp-for="Content" class="form-label font-weight-bold text-primary">Зміст лекції (текст та ілюстрації)</label>
-                            <textarea asp-for="Content" id="editor"></textarea>
-                            <span asp-validation-for="Content" class="text-danger"></span>
-                        </div>
+                            <div class="mb-4">
+                                <label asp-for="Content" class="form-label font-weight-bold text-primary">Зміст лекції (текст та ілюстрації)</label>
+
+                                <div id="editorjs" class="border rounded bg-white p-3" style="min-height: 400px; cursor: text;"></div>
+
+                                <input type="hidden" asp-for="Content" id="contentHiddenInput" />
+
+                                <span asp-validation-for="Content" class="text-danger"></span>
+                            </div>
+
                         <div class="card bg-light mb-4">
                             <div class="card-body">
                                 <h5 class="card-title text-secondary">
@@ -72,39 +86,216 @@
     </div>
 </div>
 
+
+
+@* @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/list@@1.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/image@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/audio@@0.0.6/dist/bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/quote@latest"></script>
+ 
+
+    <script>
+
+        const audioPlugin = typeof AudioTool !== 'undefined' ? AudioTool : (typeof Audio !== 'undefined' ? Audio : null);
+        console.log("AudioTool object:", AudioTool);
+        // Ініціалізація редактора
+        const editor = new EditorJS({
+            holder: 'editorjs',
+            placeholder: 'Почніть писати вашу  лекцію тут...',
+            tools: {
+               
+                header: {
+                    class: Header,
+                    inlineToolbar: ['link'],
+                  
+                },
+               
+                quote: {
+                    class: Quote,
+                    inlineToolbar: true,
+                    config: {
+                        quotePlaceholder: 'Введіть цитату',
+                        captionPlaceholder: 'Автор цитати',
+                    },
+                },
+                list: {
+                    class: List,
+                    inlineToolbar: true
+                },
+                ...(audioPlugin && {
+                    audio: {
+                        class: audioPlugin,
+                        config: {
+                            endpoints: {
+                                byFile: '/AdminLesson/UploadAudio'
+                            },
+                            field: 'audio'
+                        }
+                    }
+                }),
+                image: {
+                    class: ImageTool,
+                    config: {
+                        field: 'file',
+                        endpoints: {
+                            byFile: '/AdminLesson/UploadImage', // Переконайся, що цей маршрут співпадає з контролером
+                        },
+                        actions: [
+                            {
+                                name: 'size_small',
+                                icon: 'S', // Можна вставити іконку або просто текст
+                                title: 'Маленька (30%)',
+                                toggle: true,
+                            },
+                            {
+                                name: 'size_medium',
+                                icon: 'M',
+                                title: 'Середня (60%)',
+                                toggle: true,
+                            }
+                        ]
+                    }
+                }
+            },
+            // Якщо ми редагуємо, підвантажуємо старі дані
+            data: @Html.Raw(string.IsNullOrEmpty(Model?.Content) ? "{\"blocks\":[]}" : Model.Content)
+                });
+
+        // Обробка відправки форми
+        const form = document.getElementById('lessonForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Зупиняємо відправку, щоб встигнути витягти дані
+
+            try {
+                const savedData = await editor.save();
+                // Записуємо JSON у приховане поле
+                document.getElementById('contentHiddenInput').value = JSON.stringify(savedData);
+
+                // Тепер відправляємо форму вручну
+                form.submit();
+            } catch (error) {
+                console.error('Помилка збереження Editor.js:', error);
+                alert('Не вдалося зберегти контент лекції.');
+            }
+        });
+    </script>
+}
+ *@
+
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/list@@1.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/image@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/audio@@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/quote@latest"></script>
+
+
+    <script>
+        // 1. Створюємо конфігурацію інструментів окремо
+        const editorTools = {
+           
+            header: {
+                class: Header,
+              
+            },
+          
+            list: List,
+            quote: Quote,
+            image: {
+                class: ImageTool,
+                config: {
+                    field: 'file',
+                    endpoints: { byFile: '/AdminLesson/UploadImage' },
+                    actions: [
+                        { name: 'size_small', icon: 'S', title: 'Маленька (30%)', toggle: true },
+                        { name: 'size_medium', icon: 'M', title: 'Середня (60%)', toggle: true }
+                    ]
+                }
+            }
+        };
+
+        // 2. Додаємо аудіо ТІЛЬКИ якщо воно завантажилось без помилок
+        if (typeof AudioTool !== 'undefined') {
+            editorTools.audio = {
+                class: AudioTool,
+                config: {
+                    endpoints: { byFile: '/AdminLesson/UploadAudio' },
+                    field: 'audio'
+                }
+            };
+        } else if (typeof Audio !== 'undefined') {
+            editorTools.audio = {
+                class: Audio,
+                config: {
+                    endpoints: { byFile: '/AdminLesson/UploadAudio' },
+                    field: 'audio'
+                }
+            };
+        }
+
+        // 3. Запуск редактора з перевіркою даних
+        let initialData = @Html.Raw(string.IsNullOrEmpty(Model?.Content) ? "{\"blocks\":[]}" : Model.Content);
+
+        // Якщо раптом у базу потрапив не JSON, а текст (HTML), ініціалізуємо порожнім
+        if (typeof initialData !== 'object') {
+            initialData = { "blocks": [] };
+        }
+
+        const editor = new EditorJS({
+            holder: 'editorjs',
+            placeholder: 'Почніть писати вашу лекцію тут...',
+            tools: editorTools,
+            data: initialData
+        });
+
+        // Форма збереження
+        const form = document.getElementById('lessonForm');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    const savedData = await editor.save();
+                    document.getElementById('contentHiddenInput').value = JSON.stringify(savedData);
+                    form.submit();
+                } catch (error) {
+                    console.error('Помилка збереження:', error);
+                }
+            });
+        }
+    </script>
+}
+
+
+
+@* @section Scripts {
     <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
 
-@*      <script>
-         ClassicEditor
-             .create(document.querySelector('#editor'), {
-                 ckfinder: {
-                     // Переконайся, що цей шлях збігається з твоїм контролером!
-                     // uploadUrl: '/Admin/UploadImage'
-                     uploadUrl: '@Url.Action("UploadImage", "Admin")'
-                 },
-                 toolbar: [
-                     'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
-                     '|', 'imageUpload', 'blockQuote', 'insertTable', 'undo', 'redo'
-                 ]
-             })
-             .then(editor => {
-                 console.log('Редактор успішно ініціалізовано');
-             })
-             .catch(error => {
-                 console.error('Помилка редактора:', error);
-             });
-     </script> *@
+
     <script>
+       
+
         ClassicEditor
             .create(document.querySelector('#editor'), {
                 ckfinder: {
                     uploadUrl: '/AdminLesson/UploadImage'
                 },
-                toolbar: [
-                    'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
-                    '|', 'imageUpload', 'blockQuote', 'insertTable', 'undo', 'redo'
-                ]
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'link', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'imageUpload', 'mediaEmbed', '|', // Додали mediaEmbed для відео/аудіо
+                        'insertTable', 'blockQuote', '|',
+                        'undo', 'redo'
+                    ],
+                    shouldNotGroupWhenFull: true // Щоб кнопки не ховалися, якщо їх багато
+                },
+          
+                        placeholder: 'Почніть писати лекцію тут...'
             })
             .catch(error => {
                 console.error(error);
@@ -114,7 +305,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+} *@
 
 <style>
     /* Робимо редактор вищим для зручності */
@@ -144,26 +335,31 @@
         max-width: 100%;
         height: auto;
     }
+
+    .ck-editor__editable_inline {
+        min-height: 400px;
+        border-radius: 0 0 8px 8px !important;
+    }
+
+    /* Стилізуємо панель інструментів (toolbar) */
+    .ck.ck-toolbar {
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+        border-radius: 8px 8px 0 0 !important;
+    }
+
+    /* Змінюємо колір фокусу (коли натискаєш на редактор) */
+    .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    }
+
+    :root {
+        --ck-color-base-foreground: #2c3e50;
+        --ck-color-base-background: #ffffff;
+        --ck-color-toolbar-background: #f1f1f1;
+        --ck-border-radius: 10px;
+    }
 </style>
 
-@* <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
 
-<div class="form-group mb-3">
-    <label asp-for="Content" class="control-label">Контент лекції</label>
-    <textarea asp-for="Content" id="editor"></textarea>
-    <span asp-validation-for="Content" class="text-danger"></span>
-</div>
-
-<script>
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            // Налаштування завантаження картинок
-            ckfinder: {
-                // Шлях до методу в контролері, який ми створимо в Кроці 2
-                uploadUrl: '/Lessons/UploadImage'
-            }
-        })
-        .catch(error => {
-            console.error(error);
-        });
-</script> *@

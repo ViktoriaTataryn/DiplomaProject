@@ -1,11 +1,14 @@
-﻿namespace diplomaProject.DTOs
+﻿using diplomaProject.Models;
+
+namespace diplomaProject.DTOs
 {
     public class DashboardProgressDTO
     {
         public int CourseId { get; set; }
-        public string? CurrentLesson { get; set; }
+        public Lesson? CurrentLesson { get; set; }
         public int CompletedModule {  get; set; }
         public int TotalModule { get; set; }
         public List<ModuleProgressDTO> ModuleProgress { get; set; }
+        public string NextLessonTitle { get; set; }
     }
 }

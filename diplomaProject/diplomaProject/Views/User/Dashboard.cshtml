@@ -2,168 +2,271 @@
 @using diplomaProject.DTOs
 @model diplomaProject.DTOs.DashboardViewDTO
 
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+
+<div class=" d-flex justify-content-between welcome-section mb-3">
+    <div class="welcome-text ">
+        <div class="title d-none d-md-block">Раді бачити вас на платформі ARTLINE</div>
+        <div class="title d-block d-md-none">ВІТАЄМО на платформі ARTLINE!</div>
+        <div class="mt-3 subtitle">Нижче - ваш поточний прогрес у курсі</div>
+        <div class="subtitle">«@Model.CourseTitle».</div>
+    </div>
+    <div class="welcome-picture">
+        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776072847/BG_fbakmk.webp" alt="background" />
+    </div>
+</div>
+
+<div class="m-3">
+    <div class="row d-flex justify-content-start " id="progressContainer">
+        <div class=" progress-inner-content">
+        <span class="title mb-3 mt-4 ">ПРОГРЕС КУРСУ </span>
+
+        @* Контейнер для всього прогресу *@
+        <div class="progress-timeline-container mt-3">
+
+            <div class="statue-avatar-container is-hidden">
+                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075828/Progress_Avatar_fri9bd.png" class="statue-img" alt="Статус курсу" />
+            </div>
+
+            @* Рядок із сегментами модулів *@
+            <div class="progress-segments d-flex align-items-center">
+
+              
+                @foreach (var module in Model.Progress.ModuleProgress)
+                {
+                    var isCompleted = module.Status == "Completed";
+                    var isInProgress = module.Status == "InProgress";
+
+                    @* Сегмент прогрес-бару для одного модуля *@
+                    <div class="progress-segment-wrapper flex-grow-1 mx-3 pos-relative">
+
+                        @* Сама смужка сегмента *@
+                        <div class="progress-line @(isCompleted ? "is-completed" : "")"></div>
+
+                        @* Якщо модуль в процесі — показуємо над ним фігурку статуї *@
+                        @if (isInProgress)
+                        {
+                         
+                            <div class="statue-avatar-container text-center">
+                                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075828/Progress_Avatar_fri9bd.png" class="statue-img" alt="Ви тут" />
+                            </div>
+                        }
 
 
-<div class="container py-4">
-    <h4 class="mb-4">Навчальна платформа</h4>
-    <h5 class="mb-4">Прогрес курсу </h5>
-    <p class="text-muted small">
-        Пройдено: @Model.Progress.CompletedModule з @Model.Progress.TotalModule
-    </p>
-    @if (string.IsNullOrEmpty(Model.Progress.CurrentLesson) || Model.Progress.CurrentLesson == "Немає активної лекції")
-    {
-        <div class="alert alert-light border-0 p-0 mb-0">
-            <p class="text-muted mb-0">
-                <i class="fas fa-info-circle text-info me-2"></i>
-                Наразі у вас **немає активної лекції**. Оберіть модуль нижче, щоб розпочати навчання.
-            </p>
+                    </div>
+                }
+            </div>
         </div>
-    }
-    else
-    {
-        <p class="text-muted small">
-            <i class="fas fa-play-circle text-primary me-2">
-            Поточний урок:  @Model.Progress.CurrentLesson</i>
+
+
+        <p class="small-text">
+            Пройдено: @Model.Progress.CompletedModule з @Model.Progress.TotalModule модулів
         </p>
-       
-    }
-
-    @{
-        var progress = (List<UserProgress>)ViewBag.UserProgress;
-
-        var lessons = ViewBag.Lessons as List<diplomaProject.Models.Lesson>;
-        var lessonProgress = ViewBag.UserProgress as List<diplomaProject.Models.UserProgress>;
-
-        // Безпечна перевірка на null
-        var firstLesson = lessons?.OrderBy(l => l.LessonIndex).FirstOrDefault();
-        var secondLesson = lessons?.OrderBy(l => l.LessonIndex).Skip(1).FirstOrDefault();
-
-        // Логіка статусів
-        bool isFirstCompleted = lessonProgress?.Any(p => p.LessonId == firstLesson?.Id && p.Status == ProgressStatus.Completed) ?? false;
-        bool isSecondOpen = lessonProgress?.Any(p => p.LessonId == secondLesson?.Id && (p.Status == ProgressStatus.Open || p.Status == ProgressStatus.InProgress)) ?? false;
-    }
-    
-
-    <div class="actions">
-        <button id="buyButton" class="btn btn-success @(Model.Progress.CourseId == 0 ? "disabled" : "")">
-            Придбати повний доступ
-            </button>
-      @*   @if (!isFirstCompleted)
+        @if (Model.Progress.CurrentLesson != null)
         {
-            <p>Пройдіть першу лекцію, щоб розблокувати курс.</p>
+           
+            <p class="hometask-text"> Поточний урок: @Model.Progress.CurrentLesson.Title</p>
+        }
+        else
+        {
+           
+            <h2>Немає активної лекції</h2>
+        }
+
+        <p class="hometask-text"> Наступний урок: @Model.Progress.NextLessonTitle</p>
+
+
+
+        @*   <div class="mb-2 actions">
+
+        @if (!isFirstCompleted)
+        {
+        <p>Пройдіть першу лекцію, щоб розблокувати курс.</p>
         }
         else if (isFirstCompleted && !isSecondOpen)
         {
-            <button id="buyButton" class="btn btn-success">Придбати повний доступ</button>
-        } *@
-    </div>
+        <button id="buyButton" class="btn btn-success">Придбати повний доступ</button>
+        }
+        </div> *@
+        <div class="m-3 mt-4 buy-button">
+            @if (Model.IsPaid)
+            {
+                @* Стан 3: Курс оплачено *@
+                <a href="@Url.Action("Index", "Course")" class="d-block btn-text">
+                    ПРОДОВЖИТИ НАВЧАННЯ
+                </a>
+            }
+            else if (Model.FirstModuleCompleted)
+            {
+                @* Стан 2: Модуль 1 пройдено, потрібна оплата *@
+                <a href="@Url.Action("CreateCheckoutSession", "Payment", new { courseId= Model.CourseId })" class="d-block btn-text">
+                    ПЕРЕЙТИ ДО ОПЛАТИ
+                </a>
+            }
+            else if (!Model.HasStarted)
+            {
+                @* Стан 1: Новий користувач *@
+                <a href="@Url.Action("Index", "Course")" class="d-block btn-text">
+                    РОЗПОЧАТИ НАВЧАННЯ
+                </a>
+            }
+            else
+            {
+                var lessonId = Model.Progress?.CurrentLesson?.Id;
 
-    <div class="row justify-content-center">
-        @* Центруємо контент *@
-        <div class="col-md-8 text-center">
-
-            <h5 class="mb-4">Модулі курсу</h5>
-
+                if (lessonId != null)
+                {
+                    <a href="@Url.Action("Lesson", "Course", new { id = lessonId })" class="d-block btn-text">
+                        ПРОДОВЖИТИ НАВЧАННЯ
+                    </a>
+                }
+                else
+                {
+                    @* Запасний варіант: якщо поточної лекції немає, ведемо на загальну сторінку курсу *@
+                    <a href="@Url.Action("Index", "Course")" class="d-block btn-text">
+                        ПРОДОВЖИТИ НАВЧАННЯ
+                    </a>
+                }
+            }
+            </div>
         </div>
+       
+
     </div>
-                @{
-                    // Це локальна функція, яка дозволяє не дублювати HTML
-                    void RenderModuleContent(ModuleProgressDTO module)
-                    {
-                        <div class="module-card-image" style="height: 140px; width: 100%; overflow: hidden;">
-                            @if (!string.IsNullOrEmpty(module.ImageForUser))
 
-                            {
-                                <img src="@module.ImageForUser" class="w-100 h-100" style="object-fit: cover;" alt="@module.Name" />
-                            }
 
-                            else
+    <div class="row d-flex justify-content-between mb-1 mt-1 py-4 " id="conteiner2" >
 
-                            {
-                                <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-image fa-3x text-muted"></i>
+        <div class="col-6 py-4  " id="hometask">
+            <span class="title">ДОМАШНІ ЗАВДАННЯ</span>
+
+            <div class=" d-flex  justify-content-sm-evenly align-content-center gap-3 p-2 mt-3">
+                <div class="d-flex flex-column px-4 hometask-box" style="border-right: 2px solid #8588D1; ">
+                    <span class="hometask-text">Доступних завдань:</span>
+                    <span class="hometask-num">@Model.HomeworkStats.AvailableWork</span>
+            </div>
+
+                <div class="d-flex flex-column  px-4 hometask-box " style="border-right: 2px solid #8588D1">
+                    <span class="hometask-text">Завдань виконано:</span>
+                    <span class="hometask-num">@Model.HomeworkStats.Completed</span>
+            </div>
+
+                <div class="d-flex flex-column  px-4 hometask-box ">
+                    <span class="hometask-text">Завдань залишилось:</span>
+                     <span class="hometask-num">@Model.HomeworkStats.Remaining</span>
+            </div>
+            </div>
+    </div>
+
+        <div class="col-5 py-4  " id="grades">
+            <span class="title">ОЦІНКИ</span>
+
+            <div class=" d-flex  justify-content-between align-content-center gap-3 p-2 mt-3">
+            
+                <div class="px-1 flex-grow-1 " style="border-right: 2px solid #8588D1 !important; min-width: 150px;">
+                    
+                        @if (!Model.Grades.Any())
+                        {
+                        <span class="small-text" style=" display: block;">Поки немає оцінок</span>
+                    }
+                    else{
+                        var groupedGrades = Model.Grades
+                        .GroupBy(g => g.Date.ToString("MMMM", new System.Globalization.CultureInfo("uk-UA")))
+                        .ToList();
+                        foreach(var group in groupedGrades)
+                        {
+                            <div class="grade-item-container">
+                                <span>@group.Key</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var grade in group)
+                                    {
+                                        <div class="grade-square">@grade.Value</div>
+                                    }
                                 </div>
-                            }
-                        </div>
+                                </div>
+                        }
 
-                        <div class="p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-primary-soft text-primary">
-                                    <i class="fas fa-layer-group me-1"></i> Модуль @module.ModuleNumber
-                                </span>
-                                @* <span class="text-muted small">
-                        <i class="fas fa-chart-line me-1"></i> @module.Status
-                        </span> *@
-                                <span class="text-muted small">
-                                    <i class="fas fa-chart-line me-1"></i>
+                        }
 
-                                    @if (module.Status == "Completed")
-                                    {
-                                        <span class="text-success">Пройдено</span>
-                                    }
-                                    else if (module.Status == "InProgress")
-                                    {
-                                        <span class="text-warning">У процесі</span>
-                                    }
-                                    else if (module.Status == "Open")
-                                    {
-                                        <span class="text-primary">Відкрито</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-danger"><i class="fas fa-lock me-1"></i> Заблоковано</span>
-                                    }
-                                </span>
-                                <span class="text-muted small">
-                                    <i class="fas fa-chart-line me-1"></i> Пройдено @module.Percent%
-                                </span>
+                </div>
+                <div class="d-flex flex-column px-4  hometask-box">
+                    <span class="hometask-text">Середній бал:</span>
+                    <span class="hometask-num" >@(Model.Grades.Any() ? Model.Grades.Average(g => g.Value).ToString("F1") : "0")</span>
+                </div>
+                </div>
+    </div>
+    </div>
+
+
+    <div class="row mb-3 mt-1 py-3 " id="modulesList">
+        <div class="d-flex justify-content-between mb-2 mt-2 align-items-center ">
+        <span class="title">МОДУЛІ КУРСУ</span>
+            <span class="title" style="font-size:16px; letter-spacing:0">ПЕРЕГЛЯНУТИ ДЕТАЛЬНІШЕ</span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-1 mt-4 align-items-center px-3 ">
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
+         
+                 class="slider-arrow-img"
+                 onclick="scrollSlider(-1)"
+            alt="scrollLeft" />
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
+           
+                 class="slider-arrow-img"
+                 onclick="scrollSlider(1)"
+            alt="scrollRight" />
+        </div>
+      
+
+        <div class="slider-container">
+         
+            <div class="slider-wrapper" id="modulesSlider">
+            @foreach (var module in Model.Progress.ModuleProgress)
+            {
+                    <div class="slider-item mb-0">
+                 
+
+                        @if (module.Status == "Close")
+                        {
+                            <div style="cursor: not-allowed; ">
+
+                                <partial name="_ModuleCard" model="module" />
                             </div>
-
-                            <h5 class="fw-bold mb-0 text-dark">@module.Name</h5>
-
-                            <div class="progress mt-2" style="height: 6px;">
-                                <div class="progress-bar bg-success" role="progressbar"
-                                     style="width: @module.Percent %" aria-valuenow="@module.Percent"
-                                     aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+                                // @{
+                                //     RenderModuleContent(module);
+                                // }
+                            
+                        }
+                        else
+                        {
+                            <a asp-controller="Course" asp-action="Index"
+                               asp-route-id="@module.ModuleId"
+                               class=" module-item-container text-decoration-none d-block">
+                                <partial name="_ModuleCard" model="module" />
+                            </a>
+                                // @{
+    
+                                //   RenderModuleContent(module);
+   
+                                // }
+                                  
+                        }
                         </div>
                        
-                }
-                }
-                <div class="row">
-                    @foreach (var module in Model.Progress.ModuleProgress)
-                    {
-            <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
-                            <div id="heading-@module.ModuleId" class="h-100">
+                // </div>
+            }
+            </div>
+            
+        
 
-                                @if (module.Status == "Close")
-                                {
-                                    <div class="card-link shadow-sm d-block border rounded overflow-hidden opacity-75 h-100 bg-white"
-                                         style="cursor: not-allowed; min-height: 250px;">
-                                     
-                                        @{
-                                            RenderModuleContent(module);
-                                        }
-                                    </div>
-                                }
-                                else
-                                {
-                                    <a asp-controller="Course" asp-action="Index"
-                                       asp-route-id="@module.ModuleId"
-                                       class="card-link text-decoration-none shadow-sm d-block border rounded overflow-hidden fs-6 h-100 bg-white"
-                                       style="cursor: pointer; min-height: 250px;">
-                                        @{
-                                            RenderModuleContent(module);
-                                        }
-                                    </a>
-                                }
-                            </div>
-                        </div>
-                    }
-                </div>
+    </div>
+   
+   
+    </div>
+</div>
+ 
 
-
-    
 
 @section Scripts {
     <script>
@@ -177,11 +280,11 @@
                     buyButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Обробка...';
 
                     try {
-                        // Отримуємо ID курсу з моделі
+                        
                         const courseId = "@Model.Progress.CourseId";
                         console.log("Курс ID для оплати:", courseId);
 
-                        // Виконуємо запит до контролера
+                       
                         const response = await fetch(`/api/Payment/create-checkout-session?courseId=${courseId}`, {
                             method: 'POST',
                             headers: {
@@ -216,8 +319,26 @@
                 buyButton.innerHTML = 'Придбати повний доступ';
             }
         });
+
+            function scrollSlider(direction) {
+                
+                const slider = document.getElementById('modulesSlider');
+
+                if (slider) {
+                    const itemWidth = 280; // ширина картки + gap
+                    slider.scrollBy({
+                        left: direction * itemWidth,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    console.error("Елемент modulesSlider не знайдено!");
+                }
+            }
     </script>
 }
 
 
 @* stripe listen --forward-to https://localhost:5115/api/Payment/webhook *@
+
+
+

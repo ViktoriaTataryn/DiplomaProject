@@ -24,10 +24,12 @@ namespace diplomaProject.Interfaces
 
         Task StartCourse(string userId, int courseId);
 
-        Task<string> GetActiveLessonAsync(string userId, int courseId);
+        Task<Lesson> GetActiveLessonAsync(string userId, int courseId);
 
         Task <HomeworkStatus>GetHomeworkStatusAsync(string userId, int homeworkId);
-       
-        
+        Task<bool> IsFirstModuleCompletedAsync(string userId, int courseId);
+
+
+
     }
 }

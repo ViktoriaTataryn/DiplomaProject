@@ -44,7 +44,7 @@ namespace diplomaProject.Controllers
 
             var lessons = await lessonQuery
                 .OrderBy(l => l.Module.OrderIndex)
-                .ThenBy(l => l.Id)
+                .ThenBy(l => l.LessonIndex)
               .Select(l => new LessonDTO
               {
                   Id = l.Id,
@@ -89,6 +89,7 @@ namespace diplomaProject.Controllers
                 Title = createLessonDTO.Title,
                 Description = createLessonDTO.Description,
                 Content = createLessonDTO.Content,
+                LessonIndex = createLessonDTO.LessonIndex,
                 ModuleId = createLessonDTO.ModuleId,
                 Resources = new List<MyResource>()
             };
@@ -241,33 +242,87 @@ namespace diplomaProject.Controllers
 
         }
 
+        //[HttpPost]
+        //[IgnoreAntiforgeryToken]
+        //public async Task<IActionResult> UploadImage(IFormFile upload) 
+        //{
+        //    if (upload == null || upload.Length == 0)
+        //    {
+        //        return Json(new { error = new { message = "Файл не отримано сервером." } });
+        //    }
+
+        //    try
+        //    {
+        //        // 1. Завантажуємо в Cloudinary
+        //        var cloudUrl = await _cloudinaryService.UploadToCloudinary(upload);
+
+        //        // 2. ВАЖЛИВО: CKEditor 5 очікує саме такий JSON
+        //        return Ok(new
+        //        {
+        //            uploaded = true,
+        //            url = cloudUrl
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { uploaded = false, error = new { message = ex.Message } });
+        //    }
+        //}
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public async Task<IActionResult> UploadImage(IFormFile upload) // CKEditor надсилає файл під назвою "upload"
+        public async Task<IActionResult> UploadImage(IFormFile file)
         {
-            if (upload == null || upload.Length == 0)
+            if (file == null || file.Length == 0)
             {
-                return Json(new { error = new { message = "Файл не отримано сервером." } });
+                return Json(new { success = 0 });
             }
 
             try
             {
-                // 1. Завантажуємо в Cloudinary
-                var cloudUrl = await _cloudinaryService.UploadToCloudinary(upload);
+                // Використовуємо твій існуючий сервіс Cloudinary
+                var cloudUrl = await _cloudinaryService.UploadToCloudinary(file);
 
-                // 2. ВАЖЛИВО: CKEditor 5 очікує саме такий JSON
-                return Ok(new
+                // Editor.js вимагає саме таку структуру відповіді:
+                return Json(new
                 {
-                    uploaded = true,
-                    url = cloudUrl
+                    success = 1,
+                    file = new { url = cloudUrl }
                 });
             }
             catch (Exception ex)
             {
-                return Json(new { uploaded = false, error = new { message = ex.Message } });
+                return Json(new { success = 0, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> UploadAudio(IFormFile audio)
+        {
+            if (audio == null) return Json(new { success = 0 });
+
+            try
+            {
+                // ВАЖЛИВО: У Cloudinary для аудіо ставимо ResourceType = "video"
+                var uploadParams = new VideoUploadParams()
+                {
+                    File = new FileDescription(audio.FileName, audio.OpenReadStream()),
+                    Folder = "ArtLine_Audio"
+                };
+
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                var url = uploadResult.SecureUrl.ToString();
+
+                return Json(new
+                {
+                    success = 1,
+                    file = new { url = url }
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = 0, message = ex.Message });
             }
         }
 
-       
+
     }
 }

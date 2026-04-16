@@ -1,4 +1,6 @@
-﻿ @model Lesson
+﻿@model Lesson
+
+@* --- VIKA'S ORIGINAL HOMEWORK FORM (STAYING AS HISTORY) --- *@
 @* <div class="card shadow-sm mt-4">
      <div class="card-body">
          <h6>Submit Your Work</h6>
@@ -13,7 +15,7 @@
              <button type="submit" class="btn btn-success btn-sm w-100">Send Homework</button>
          </form>
      </div>
- </div>
+</div>
 
 @if (TempData["Message"] != null)
 {
@@ -27,6 +29,7 @@
     </div>
 } *@
 
+@* --- ACTIVE TEST SECTION --- *@
 <div class="mt-5">
     <h3>Test Your Knowledge</h3>
     <hr />
@@ -74,8 +77,9 @@
     {
         <p class="text-muted">No test questions for this lesson yet.</p>
     }
-</div>
+</div> *@
 
+@* --- VIKA'S ORIGINAL LESSON CONTENT & RESOURCES (STAYING AS HISTORY) --- *@
 @* @model Lesson
 
 <div class="container mt-4">
@@ -85,7 +89,7 @@
         </div>
         <div class="card-body">
             <div class="lecture-content">
-                @Html.Raw(Model.Content)
+                <div id="editorjs-content" class="artline-lecture-view"></div>
             </div>
 
             @if (Model.Resources != null && Model.Resources.Any())
@@ -148,8 +152,84 @@
                     </div>
                 </div>
             }
+            </div>
+            </div>
+            </div>
 
-               @if (Model.Quiz != null)
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Отримуємо JSON дані з моделі.
+            // Якщо Content порожній, використовуємо об'єкт з порожнім масивом блоків.
+            const rawContent = @Html.Raw(string.IsNullOrEmpty(Model.Content) ? "{\"blocks\":[]}" : Model.Content);
+            const container = document.getElementById('editorjs-content');
+
+            if (rawContent && rawContent.blocks) {
+                const html = rawContent.blocks.map(block => {
+                    switch (block.type) {
+                        case 'header':
+                            // Витягуємо вирівнювання з tunes (якщо воно є)
+                            const headerAlign = block.tunes?.anyTuneName?.alignment || 'left';
+                            return `<h${block.data.level} class="fw-bold mt-4 mb-3" style="text-align: ${headerAlign}">
+                        ${block.data.text}
+                    </h${block.data.level}>`;
+
+                        case 'paragraph':
+                            const pAlign = block.tunes?.anyTuneName?.alignment || 'left';
+                            return `<p class="mb-3" style="line-height: 1.6; font-size: 1.1rem; text-align: ${pAlign}">
+                        ${block.data.text}
+                    </p>`;
+
+                        case 'quote':
+                            return `<blockquote class="border-start border-4 border-primary ps-3 py-2 my-4 bg-light shadow-sm" style="font-style: italic;">
+                        <p class="mb-1">${block.data.text}</p>
+                        ${block.data.caption ? `<cite class="small text-muted">— ${block.data.caption}</cite>` : ''}
+                    </blockquote>`;
+
+                        case 'image':
+                            // const caption = block.data.caption ? `<p class="text-center text-muted small mt-2">${block.data.caption}</p>` : '';
+                            // return `<div class="text-center my-4">
+                            //             <img src="${block.data.file.url}" class="img-fluid rounded shadow-sm" style="max-height: 500px;" alt="Lesson Image" />
+                            //             ${caption}
+                            //         </div>`;
+                            const caption = block.data.caption ? `<p class="text-center text-muted small mt-2">${block.data.caption}</p>` : '';
+
+                            // 1. Визначаємо розмір на основі активованих екшенів
+                            let sizeClass = 'w-100'; // По замовчуванню (на всю ширину)
+
+                            if (block.data.size_small) {
+                                sizeClass = 'img-size-small';
+                            } else if (block.data.size_medium) {
+                                sizeClass = 'img-size-medium';
+                            }
+
+                            // 2. Додаємо класи до картинки
+                            return `<div class="text-center my-4">
+                        <img src="${block.data.file.url}"
+                             class="img-fluid rounded shadow-sm ${sizeClass}"
+                             alt="Lesson Image" />
+                        ${caption}
+                    </div>`;
+
+                        case 'list':
+                            const listTag = block.data.style === 'ordered' ? 'ol' : 'ul';
+                            const items = block.data.items.map(i => `<li class="mb-1">${i}</li>`).join('');
+                            return `<${listTag} class="ps-4 mb-3">${items}</${listTag}>`;
+
+                       
+
+                        default:
+                            return '';
+                    }
+                }).join('');
+
+                container.innerHTML = html;
+            }
+        });
+    </script>
+}
+
+             @*   @if (Model.Quiz != null)
             {
             <div class="mt-5 text-center">
             <a asp-action="TakeQuiz" asp-route-lessonId="@Model.Id" class="btn btn-success btn-lg">
@@ -160,8 +240,35 @@
         </div>
     </div>
 </div>
- *@
+*@
+
 <style>
+    .img-size-small {
+        width: 30% !important;
+        margin: 0 auto;
+    }
+
+    /* Середня картинка (60% від ширини контейнера) */
+    .img-size-medium {
+        width: 60% !important;
+        margin: 0 auto;
+    }
+    .artline-lecture-view {
+        color: #333;
+        word-wrap: break-word;
+    }
+
+        .artline-lecture-view h2, .artline-lecture-view h3 {
+            color: #2b31b4; /* Твій фірмовий синій */
+        }
+
+        .artline-lecture-view img {
+            transition: transform 0.3s ease;
+        }
+
+            .artline-lecture-view img:hover {
+                transform: scale(1.01); /* Легкий ефект при наведенні на картинки в тексті */
+            }
     /* Головний контейнер контенту */
     .lecture-content {
         font-size: 1.1rem;
@@ -213,4 +320,4 @@
             font-weight: 600;
             color: #495057;
         }
-</style> 
+</style>
