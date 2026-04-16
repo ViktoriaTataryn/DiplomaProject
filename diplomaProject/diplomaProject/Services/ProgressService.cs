@@ -38,11 +38,11 @@ namespace diplomaProject.Services
             if (activeLesson == null || activeLesson.Lesson == null)
             {
                 // Вместо ошибки возвращаем заглушку, чтобы Dashboard не падал
-                return "Уроків ще немає";
+                return null;
             }
             return activeLesson.Lesson;
 
-            return activeLesson.Lesson.Title;
+          
         }
 
         public async Task<HomeworkStatus> GetHomeworkStatusAsync(string userId, int homeworkId)
@@ -157,7 +157,7 @@ namespace diplomaProject.Services
                 lessonProgress.IsCompleted = true;
             }
 
-            }
+            
             var nextLesson = await _context.Lessons.Where(l => l.ModuleId == lessonProgress.ModuleId && l.Id > currentLessonId)
                 .OrderBy(l => l.LessonIndex)
                 .FirstOrDefaultAsync();
@@ -171,7 +171,7 @@ namespace diplomaProject.Services
                 
                     await OpenLessonAsync(userId, nextLesson.Id);
                 }
-            }
+            
             await _context.SaveChangesAsync();
         }
 
