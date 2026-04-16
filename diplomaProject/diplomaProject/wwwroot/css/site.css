@@ -18,8 +18,110 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
+    margin-bottom: 30px;
 }
+
+
+/*Layout styles*/
+
+#layout-body {
+    display: flex; 
+    /*flex: 1;*/
+    align-items: stretch;
+    min-height: 100vh; 
+    width: 100%;
+}
+.sidebar-img img {
+    width: 180px;
+    height: auto;
+}
+.sidebar-img {
+    margin-top: auto;
+    padding: 20px;
+    text-align: center;
+}
+#sidebar {
+    min-width: 284px;
+    background: #FFFFFF;
+    top: 88px;
+    flex-shrink: 0;
+    height: auto;
+    display:flex;
+    justify-content: space-between;
+    flex-direction: column;
+  /*  margin-bottom:30px;*/
+    /*     position: sticky; */
+    /*   z-index: 100; */
+    /*    border-right: 1px solid ; */
+    /*       height: 1678px; */
+    /*   padding: 20px; */
+}
+
+#main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#header {
+    height: 88px;
+    background: #fff;
+    border-bottom: 2px solid #2B31B4;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    width: 100%;
+    /*   position: sticky;  */
+    top: 0;
+}
+
+#content {
+    /* margin-left:20px;
+    margin-right:15px;*/
+    padding: 20px;
+    padding-left: 17px;
+    flex: 1;
+    background-color: #F3F3FB;
+    overflow: hidden;
+    max-width: 1920px;
+    flex-grow: 1; 
+    min-width: 0;
+    /*   flex:1;
+           padding top: 10px;
+            left: 305px;
+            padding-top: 10px;
+            gap: 32px;
+            angle: 0 deg;
+            opacity: 1; */
+}
+
+.nav-link {
+    color: #2B31B4;
+    margin-bottom: 10px;
+    /*     margin-left: 6px; */
+    position: relative;
+    display: flex;
+    padding: 10px 20px 10px 30px;
+    align-items: center;
+    text-decoration: none;
+}
+
+    .nav-link.active {
+        background-color: #F3F3FB;
+        /*   border-left: 2px solid #2B31B4; */
+        /* color: #fff; */
+    }
+
+        .nav-link.active::before {
+            content: "";
+            position: absolute;
+            left: 20px; 
+            top: 27%; 
+            height: 50%; 
+            width: 1.5px; 
+            background-color: #2B31B4; 
+           
+        }
 
 /* =========================================
    Figma Auth Styles (Login & Register)
@@ -136,12 +238,16 @@ h2.figma-title {
 @media (max-width: 768px) {
     /* Hide the sidebar completely off-screen to the left */
     #sidebar {
-        position: fixed;
-        left: -280px;
+        /*position: fixed;*/
+        left: -284px;
         height: 100vh;
         z-index: 1050; /* Bring it above other content */
         box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        min-width: 230px;
+        position: absolute ; 
+        top: 60px ;
     }
+  
 
         /* Class to show the sidebar when the button is clicked */
         #sidebar.show {
@@ -150,6 +256,49 @@ h2.figma-title {
 
     /* Adjust header padding for mobile */
     #header {
-        padding: 0 15px;
+        /*padding: 0 15px;*/
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important; /* Розносить елементи по краях */
+        padding: 0px 15px !important;
+        position: relative !important;
+        max-height:55px;
     }
+        #header img {
+            order: 2 !important; /* Робимо його другим елементом */
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important; /* Ідеальне центрування */
+            max-width: 140px !important; /* Налаштуй висоту під свій логотип */
+            width: auto !important;
+        }
+    #content {
+        padding-top: 10px;
+        padding-left: 10px;
+        padding-right: 5px;
+    }
+    #sidebarToggle {
+        order: -1 !important; /* Робимо її першим елементом */
+        margin-right: 0 !important;
+        padding: 0 !important;
+        z-index: 10;
+    }
+    .ms-auto.d-flex.align-items-center span.me-3 {
+        display: none !important;
+    }
+    .ms-auto {
+        order: 3 !important; /* Ставимо в кінець після логотипу */
+        margin-left: auto !important;
+        display: flex !important;
+        z-index: 10;
+    }
+
+        /* 3. Прибираємо зайві відступи в іконки, щоб вона не тиснула на край екрана */
+        .ms-auto i.bi-person-circle {
+            margin-right: 10px !important;
+            font-size: 1.5rem !important; /* Можна трохи підправити розмір */
+        }
+  /*  #header img{
+       align-content:center;
+    }*/
 }

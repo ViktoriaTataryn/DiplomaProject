@@ -29,7 +29,7 @@ namespace diplomaProject.Controllers
         }
 
         [HttpPost("create-checkout-session")]
-        public async Task<IActionResult> CreateCheckoutSession(int courseId)
+        public async Task<IActionResult> CreateCheckoutSession(int courseId) //Створення оплати
         {
             var domain = $"{Request.Scheme}://{Request.Host}";
 
@@ -122,8 +122,10 @@ namespace diplomaProject.Controllers
         //    }
         //}
 
+
+      
         [HttpPost("webhook")]
-        public async Task<IActionResult> Webhook()
+        public async Task<IActionResult> Webhook()   //Підтвердження оплати
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             try
@@ -145,18 +147,27 @@ namespace diplomaProject.Controllers
                         var userId = session.Metadata.ContainsKey("userId") ? session.Metadata["userId"] : null;
                         var courseIdStr = session.Metadata.ContainsKey("courseId") ? session.Metadata["courseId"] : null;
 
+
                         if (userId != null && int.TryParse(courseIdStr, out int courseId))
                         {
-                            var secondLesson = await _context.Lessons
-                                .Include(m => m.Module)
-                                .Where(l => l.Module.CourseId == courseId)
-                                .OrderBy(l => l.LessonIndex)
-                                .Skip(1)
-                                .FirstOrDefaultAsync();
+                            var registration = await _context.CourseRegistrations
+                .FirstOrDefaultAsync(cr => cr.UserId == userId && cr.CourseId == courseId);
 
-                            if (secondLesson != null)
+                            if (registration != null)
                             {
-                                await _progressService.OpenLessonAsync(userId, secondLesson.Id);
+                                registration.IsPaid = true;
+                                // Тут ми не робимо SaveChanges окремо, можна зробити один раз в кінці
+                            }
+
+
+
+                            if (await _progressService.IsFirstModuleCompletedAsync(userId,courseId))
+                            {
+                                await _progressService.UnlockNextModuleAsync(userId,courseId);
+                            }
+                            else
+                            {
+                                await _context.SaveChangesAsync();
                             }
                         }
                     }

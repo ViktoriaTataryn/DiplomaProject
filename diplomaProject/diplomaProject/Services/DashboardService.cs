@@ -22,35 +22,73 @@ namespace diplomaProject.Services
         public async Task<DashboardViewDTO> GetDashboardView(string userId, int courseId)
         {
             var progressData = await GetUserStatistic(userId, courseId);
-            //var modulesList = await GetModulesWithProgress(userId, courseId);
 
             var gradesList = await GetGrades(userId);
 
-            //var progressData = new DashboardProgressDTO
-            //{
-            //    ModuleProgress = modulesList, // Передаємо наш список сюди
-            //    TotalModule = modulesList.Count,
-            //    CompletedModule = modulesList.Count(m => m.Percent == 100), // Модуль пройдено, якщо 100%
-            //    CurrentLesson = await _progressService.GetActiveLessonAsync(userId, courseId)
-            //};
+            var homeworkStats = await GetHomeworkStats(userId);
+
+            var title =await _context.Courses.Where(x => x.Id == courseId).Select(t=>t.Title).FirstOrDefaultAsync();
+
+            var registration = await _context.CourseRegistrations
+        .FirstOrDefaultAsync(cr => cr.UserId == userId && cr.CourseId == courseId);
+
+            bool isStarted = await _context.UserProgresses
+         .AnyAsync(up => up.UserId == userId && up.CourseId == courseId && up.Status != ProgressStatus.Close);
+
+
+            
+
+           
 
             return new DashboardViewDTO
             {
                 //Progress= progressData,
+                CourseTitle = title ?? "Курс не знайдено",
+                CourseId = courseId,
                 Progress = progressData,
 
                 Grades = gradesList,
+                HomeworkStats = homeworkStats,
+
+                HasStarted = await _context.UserProgresses
+                    .AnyAsync(up => up.UserId == userId && up.CourseId == courseId && up.Status != ProgressStatus.Close),
+                IsPaid= registration?.IsPaid ?? false,
+                FirstModuleCompleted=await _progressService.IsFirstModuleCompletedAsync(userId,courseId)
+
             };
 
         }
 
-        public async Task<List<int>> GetGrades(string userId)
+        public async Task<List<GradeDTO>> GetGrades(string userId)
         {
             return await _context.HomeworkSubmissions
-                .Where(g => g.StudentId == userId && g.Status == HomeworkStatus.Approved)
-                .Where(g => g.Grade.HasValue)
-                .Select(g => g.Grade.Value)
-                .ToListAsync();
+        .Where(g => g.StudentId == userId && g.Status == HomeworkStatus.Approved && g.Grade.HasValue)
+        .Select(g => new GradeDTO
+        {
+            Value = g.Grade.Value,
+            Date = g.SubmissionDate 
+        })
+        .OrderBy(g => g.Date) 
+        .ToListAsync();
+           
+        }
+       
+        public async Task<HomeworkStatsDTO> GetHomeworkStats(string userId)
+        {
+            int total =await _context.Lessons.CountAsync();
+            int completed = await _context.HomeworkSubmissions
+                        .Where(s => s.StudentId == userId && s.Status == HomeworkStatus.Approved)
+                      .CountAsync();
+            int available = await _context.UserProgresses
+                .Where(s => s.UserId == userId && s.Status == ProgressStatus.InProgress && s.LessonId!=null)
+                 .CountAsync(); 
+
+            return new HomeworkStatsDTO
+            {
+                TotalWork = total,
+                AvailableWork = available,
+                Completed = completed
+            };
         }
 
         public async Task<DashboardProgressDTO> GetUserStatistic(string userId, int courseId)
@@ -76,24 +114,23 @@ namespace diplomaProject.Services
                     m.LessonId != null)
                 .ToListAsync();
 
-            var moduleStats = lessonsProgress
-                .GroupBy(m => m.ModuleId)
-                .Select(group =>
+            var moduleStats = allModules
+                .Select(module =>
                 {
-                    var firstItem = group.FirstOrDefault();
-                    var module = firstItem?.Lesson?.Module;
+                    var moduleLessonsProgress = lessonsProgress.Where(lp => lp.Lesson?.ModuleId == module.Id).ToList();
                     var moduleRecord = moduleProgress.FirstOrDefault(mp =>
-                        mp.ModuleId == group.Key && (mp.LessonId == null || mp.LessonId == 0));
-                    var currentModuleStatus = moduleRecord?.Status ?? ProgressStatus.Close;
+                                                         mp.ModuleId == module.Id && (mp.LessonId == null || mp.LessonId == 0));
 
+                    var currentModuleStatus = moduleRecord?.Status ?? ProgressStatus.Close;
                     return new ModuleProgressDTO
                     {
-                        ModuleId = group.Key.Value,
-                        Name = module?.Title ?? "Модуль",
-                        ModuleNumber = module?.OrderIndex ?? 0,
-                        ImageForUser = module?.ImageUrl,
-                        TotalLesson = group.Count(),
-                        CompletedLesson = group.Count(g => g.Status == ProgressStatus.Completed),
+                        ModuleId = module.Id,
+                        Name = module.Title ?? "Модуль",
+                        ModuleNumber = module.OrderIndex,
+                        ImageForUser = module.ImageUrl,
+                        // Якщо прогресу немає, буде 0, але модуль залишиться у списку
+                        TotalLesson = module.Lessons?.Count ?? 0,
+                        CompletedLesson = moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed),
                         Status = currentModuleStatus switch
                         {
                             ProgressStatus.Completed => "Completed",
@@ -102,15 +139,31 @@ namespace diplomaProject.Services
                             _ => "Close"
                         },
                     };
-
-                }).ToList();
+                }).OrderBy(m => m.ModuleNumber).ToList();
 
             var curLesson = await _progressService.GetActiveLessonAsync(userId, courseId);
+
+            //string currentTitle = curLesson?.Title ?? "Немає активних лекцій";
+            string nextTitle = "Курс завершено";
+            if (curLesson != null)
+            {
+
+                var nextProgress = await _context.Lessons
+                    .Where(up => up.LessonIndex > curLesson.LessonIndex) // Шукаємо ту, що після поточної
+            .OrderBy(up => up.LessonIndex)
+            .FirstOrDefaultAsync();
+
+                if (nextProgress != null )
+                {
+                    nextTitle = nextProgress.Title;
+                }
+            }
 
             return new DashboardProgressDTO
             {
                 CourseId = courseId,
                 CurrentLesson = curLesson,
+                NextLessonTitle = nextTitle,
                 TotalModule = moduleStats.Count,
                 CompletedModule = moduleStats.Count(m => m.Status == ProgressStatus.Completed.ToString()),
                 ModuleProgress = moduleStats
@@ -151,5 +204,7 @@ namespace diplomaProject.Services
                 };
             }).ToList();
         }
+
+      
     }
 }

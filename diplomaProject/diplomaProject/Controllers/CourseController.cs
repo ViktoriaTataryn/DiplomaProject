@@ -5,6 +5,8 @@ using diplomaProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using diplomaProject.Interfaces;
+using diplomaProject.DTOs;
+using System.Security.Claims;
 
 namespace diplomaProject.Controllers
 {
@@ -25,8 +27,57 @@ namespace diplomaProject.Controllers
         // 1. Список курсов
         public async Task<IActionResult> Index()
         {
-            var modules = await _context.Modules.Include(m => m.Lessons).ToListAsync();
-            return View(modules);
+            //var modules = await _context.Modules.Include(m => m.Lessons).ToListAsync();
+            //return View(modules);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+           
+            var modulesWithProgress = _context.Modules
+                .Include(m => m.Lessons)
+                .Select(m => new ModuleProgressDTO
+                {
+
+                    ModuleId = m.Id,
+                    ModuleNumber = m.OrderIndex,
+                    Name = m.Title,
+                    ImageForUser = m.ImageUrl,
+                    Description=m.Description,
+
+                    // Дістаємо дані з таблиці UserProgress для цього модуля і користувача
+                    // Якщо запису немає, ставимо статус "Close"
+                    Status = _context.UserProgresses
+    .Where(up => up.ModuleId == m.Id && up.UserId == userId && up.ModuleId!=0)
+    .Select(up => up.Status.ToString()) // Перетворюємо Enum у string ("Open", "Close", "Completed")
+    .FirstOrDefault() ?? "Close",
+
+                    Percent = 0,
+
+                    TotalLesson = m.Lessons.Count,
+                    CurrentLessonId = _context.UserProgresses
+    .Where(ulp => ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId!=0 &&ulp.Status==ProgressStatus.InProgress)
+    .OrderBy(ulp => ulp.Lesson.LessonIndex)
+    .OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
+    .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
+    .Select(ulp => ulp.LessonId)
+    .FirstOrDefault(),
+                    // Наповнюємо список лекцій для вертикального списку
+                    Lessons = m.Lessons.Select(l => new LessonShortDTO
+                    {
+                        Id = l.Id,
+                        Title = l.Title,
+                        Status = _context.UserProgresses
+                .Where(ulp => ulp.LessonId == l.Id && ulp.UserId == userId && ulp.LessonId!=0)
+                .Select(ulp => ulp.Status.ToString())
+                .FirstOrDefault() ?? "Close"
+                    }).ToList()
+                  
+                })
+                .OrderBy(m => m.ModuleNumber)
+                .ToList();
+          
+
+            return View(modulesWithProgress);
         }
 
         // 2. Страница урока
@@ -58,6 +109,11 @@ namespace diplomaProject.Controllers
                 .Include(q => q.Options)
                 .Where(q => q.LessonId == id)
                 .ToListAsync();
+
+            if (string.IsNullOrEmpty(lesson.Content))
+            {
+                lesson.Content = "{}"; // Порожній об'єкт, щоб JSON.parse не видав помилку
+            }
 
             return View(lesson);
         }

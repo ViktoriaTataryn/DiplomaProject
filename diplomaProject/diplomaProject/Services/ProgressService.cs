@@ -4,6 +4,7 @@ using diplomaProject.Interfaces;
 using diplomaProject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 
 namespace diplomaProject.Services
 {
@@ -16,7 +17,7 @@ namespace diplomaProject.Services
             _context = context;
         }
 
-        public async Task<string> GetActiveLessonAsync(string userId, int courseId)
+        public async Task<Lesson> GetActiveLessonAsync(string userId, int courseId)
         {
             var activeLesson = await _context.UserProgresses
                 .Include(l=>l.Lesson)
@@ -34,11 +35,11 @@ namespace diplomaProject.Services
             //    .FirstOrDefaultAsync(s => s.Status == ProgressStatus.Open);
             //    return openLesson.Lesson.Title;
             //}
-            if (activeLesson == null)
+            if (activeLesson == null || activeLesson.Lesson == null)
             {
-                throw new ArgumentNullException(nameof(activeLesson), "Урок не знайдено в системі.");
+                return null;
             }
-            return activeLesson.Lesson.Title;
+            return activeLesson.Lesson;
 
         }
 
@@ -160,8 +161,8 @@ namespace diplomaProject.Services
                 lessonProgress.IsCompleted = true;
 
             }
-            var nextLesson = await _context.Lessons.Where(l=>l.ModuleId== lessonProgress.ModuleId&&l.Id>currentLessonId)
-                .OrderBy(l=>l.Id)
+            var nextLesson = await _context.Lessons.Where(l => l.ModuleId == lessonProgress.ModuleId && l.Id > currentLessonId)
+                .OrderBy(l => l.LessonIndex)
                 .FirstOrDefaultAsync();
             if (nextLesson != null)
             {
@@ -181,39 +182,83 @@ namespace diplomaProject.Services
             await _context.SaveChangesAsync();  
         }
 
+
+
         public async Task UnlockNextModuleAsync(string userId, int currentModuleId)
         {
             var allLessonsOfModule = _context.UserProgresses
-                    .Where(p => p.UserId == userId && p.ModuleId == currentModuleId && p.LessonId != 0);
-            bool isAllCompleted = await allLessonsOfModule.AllAsync(p => p.Status == ProgressStatus.Completed);
+                        .Where(p => p.UserId == userId && p.ModuleId == currentModuleId && p.LessonId != 0);
+
+            bool isAllCompleted = await allLessonsOfModule.AnyAsync() &&
+                         await allLessonsOfModule.AllAsync(p => p.Status == ProgressStatus.Completed);
+
             if (isAllCompleted)
             {
-                var module = await _context.UserProgresses
-                    .Include(p => p.Module)
-                    .FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == currentModuleId && m.LessonId == 0);
-                if (module != null)
-                {
-                    module.Status = ProgressStatus.Completed;
-                    module.IsCompleted = true;
+                // 1. Позначаємо поточний модуль як завершений
+                var currentModuleProgress = await _context.UserProgresses
+                        .Include(p => p.Module)
+                        .FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == currentModuleId && m.LessonId == 0);
 
-                    var nextModule = await _context.Modules.Where(m => m.OrderIndex > module.Module.OrderIndex)
+                if (currentModuleProgress != null)
+                {
+                    currentModuleProgress.Status = ProgressStatus.Completed;
+                    currentModuleProgress.IsCompleted = true;
+
+                    // 2. Шукаємо наступний модуль за порядковим номером
+                    var nextModule = await _context.Modules
+                        .Where(m => m.OrderIndex > currentModuleProgress.Module.OrderIndex)
                         .OrderBy(m => m.OrderIndex)
                         .FirstOrDefaultAsync();
+
                     if (nextModule != null)
                     {
-                        var nextModuleProgress = await _context.UserProgresses.FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == currentModuleId && m.LessonId == 0);
-                        if (nextModuleProgress != null) {
+                        // 3. Відкриваємо прогрес для самого модуля
+                        var nextModuleProgress = await _context.UserProgresses
+                            .FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == nextModule.Id && m.LessonId == 0);
+
+                        if (nextModuleProgress != null)
+                        {
                             nextModuleProgress.Status = ProgressStatus.InProgress;
+                        }
+
+                        // 4. Знаходимо ПЕРШУ лекцію наступного модуля і робимо її InProgress
+                        var firstLessonOfNextModule = await _context.UserProgresses
+                            .Where(p => p.UserId == userId && p.ModuleId == nextModule.Id && p.LessonId != 0)
+                            .OrderBy(p => p.LessonId) 
+                            .FirstOrDefaultAsync();
+
+                        if (firstLessonOfNextModule != null)
+                        {
+                            firstLessonOfNextModule.Status = ProgressStatus.InProgress;
                         }
                     }
 
                     await _context.SaveChangesAsync();
                 }
-
             }
-
         }
 
-       
+        public async Task<bool> IsFirstModuleCompletedAsync(string userId, int courseId)
+        {
+            var firstModuleId = await _context.Modules
+        .Where(m => m.CourseId == courseId)
+        .OrderBy(m => m.OrderIndex) 
+        .Select(m => m.Id)
+        .FirstOrDefaultAsync();
+
+            if (firstModuleId == 0) return false;
+
+            var moduleLessons = await _context.Lessons
+                .Where(l => l.ModuleId == firstModuleId)
+                .Select(l => l.Id)
+                .ToListAsync();
+
+            var progressQuery = _context.UserProgresses
+         .Where(p => p.UserId == userId && p.ModuleId == firstModuleId && p.LessonId != 0);
+
+            return await progressQuery.AnyAsync() &&
+                   await progressQuery.AllAsync(p => p.Status == ProgressStatus.Completed);
+        }
+    
     }
 }

@@ -1,0 +1,691 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #F3F3FB;
+}
+
+.title {
+    color: #2B31B4;
+    font-family: "Accia Piano", serif;
+    line-height: 100%;
+    font-size: 32px;
+    letter-spacing: 1px;
+    font-weight: 400;
+}
+
+#modulesList {
+    background-color: #FFFFFF;
+    overflow: hidden;
+   
+    
+
+    box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+}
+
+.text {
+    color: #2B31B4;
+    font-size: 16px;
+    font-family: "Gilroy-Regular",serif
+}
+
+.status {
+    color: #BDBFE8;
+    font-size: 13px;
+}
+
+.art-frame-wrapper {
+    position: relative;
+    min-width: 280px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0;
+    margin-bottom: 8px;
+}
+
+/* Файл-рамка, який лежить ПОВЕРХ усього */
+.frame-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none; 
+    object-fit: contain;
+    bottom: 0;
+    filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.3));
+}
+
+/* Контейнер для фото модуля всередині рамки */
+.module-image-inner {
+    width: 85%;
+    height: 75%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.module-item-container {
+    margin-bottom: 30px;
+}
+
+
+.module-card {
+    margin: 5px;
+    padding: 0px;
+    min-width: 280px;
+    height: 280px;
+    overflow: hidden;
+}
+
+.module-close {
+    min-width: 280px;
+    height: 280px;
+}
+
+.progress-container {
+    border-radius: 0px;
+    background-color: #9799C4;
+}
+
+.progress-success {
+    background-color: #2B31B4;
+}
+
+
+
+.slider-arrow-top {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.slider-arrow-img:hover {
+    transform: translateY(-2px);
+}
+
+
+
+.slider-wrapper {
+    /*  display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;  */
+    /*     overflow-x: hidden;  */
+    /*    overflow-x: auto;
+        scroll-behavior: smooth; */
+    /* display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        gap: 20px;
+   
+        padding-bottom: 20px; 
+        margin-bottom: -20px; 
+        
+        scrollbar-width: none;
+        -ms-overflow-style: none; */
+}
+
+
+/* Сама картка модуля */
+.slider-item {
+    flex: 0 0 auto;
+    width: 280px;
+    height: 290px;
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    clip-path: inset(0 0 0 0);
+    overflow: hidden;
+}
+
+.slider-arrow-img {
+    width: 40px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    user-select: none; /* Щоб стрілки не виділялися як текст при частому кліканні */
+}
+
+
+
+
+div#modulesSlider {
+    display: flex !important;
+    flex-wrap: nowrap !important; 
+    overflow-x: auto !important;
+    scroll-behavior: smooth;
+    gap: 20px;
+
+    padding-bottom: 40px !important;
+    margin-bottom: -40px !important;
+
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+    div#modulesSlider::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: transparent !important;
+    }
+
+#grades {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+    width: 40% !important;
+}
+
+#hometask {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+    width: 58% !important;
+    
+}
+
+.hometask-box {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.hometask-text {
+    font-size: 18px;
+    
+    color: #494C90;
+    font-family: "Gilroy";
+    font-weight: 300;
+
+    letter-spacing: 1px;
+   
+}
+
+.hometask-num {
+    font-family: "AcciaPiano", serif;
+    font-size: 27px;
+    color: #494C90;
+    text-align: center;
+    font-weight: 350;
+}
+
+.subtitle {
+    color: #494C90;
+    font-family: "Gilroy", serif;
+    line-height: 17px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    /*  font-weight: 300; */
+}
+
+.welcome-picture img {
+    width: 490px;
+    height: 230px;
+    object-fit: contain;
+    top: -70px;
+    right: -80px;
+    position: relative;
+}
+
+
+.welcome-section {
+    position: relative;
+    min-height: 150px;
+    z-index: 1;
+}
+
+#progressContainer {
+    position: relative;
+    z-index: 5; 
+    margin-top: -145px; 
+
+    background-image: url('https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075801/Course_Progress_BG_r0glm0.webp');
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    background-position: center;
+    /* display: flex;
+        flex-direction: column;
+        justify-content: center; */
+    /*     height:405px; */
+    /*    width:100%; */
+    width: 100% !important;
+    max-width: 100% !important;
+    /* display: block !important; */ 
+    /*  box-sizing: border-box; */
+    margin-left: -10px !important;
+    margin-right: -85px !important;
+    
+    box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+    /*       padding-left: 0 !important;
+        padding-right: 0 !important; */
+    /* background-color: #FFFFFF; */
+
+    background-origin: border-box; 
+    background-clip: border-box;
+    padding: -50px !important;
+}
+
+.progress-inner-content {
+    padding: 30px 20px;
+    width: 100%;
+  
+}
+
+.small-text {
+    font-family: "Gilroy-Medium";
+  
+    font-size: 16px;
+    color: #9799C4;
+}
+
+.progress-img img {
+    width: 350px;
+}
+
+.buy-button {
+    background-color: #2B31B4;
+    width: 450px;
+    height: 43px;
+    align-content: center;
+}
+
+.btn-text {
+    color: #FFFFFF;
+    text-align: center;
+    font-family: "Accia Piano", serif;
+    text-decoration: none;
+    letter-spacing: 1px;
+    /* font-weight:300; */
+    font-size: 14px;
+}
+.btn-text:hover {
+    color: #FFFFFF;
+    
+}
+
+
+/* Контейнер для лінії та фігурки */
+.progress-timeline-container {
+    position: relative;
+    padding-top: 40px; /* Місце для статуї */
+    padding-bottom: 30px; 
+}
+
+/* Рядок із сегментами (сама тонка сіра лінія) */
+.progress-segments {
+    width: 100%;
+}
+
+/* Базовий стиль смужки модуля ( NotStarted ) */
+.progress-line {
+    height: 6px; 
+    background-color: #9799C4;
+    max-width: 150px;
+    transition: all 0.3s ease;
+}
+
+    /* Стиль для ЗАВЕРШЕНОГО модуля  */
+    .progress-line.is-completed {
+        height: 18px; 
+        background-color: #8588D1; 
+    }
+
+/* --- Контейнер для СТАТУЇ --- */
+.statue-avatar-container {
+    position: absolute;
+    top: -45px; 
+    left: 45%;
+    transform: translateX(-50%); 
+    z-index: 10;
+}
+
+/* Стилі для самої картинки */
+.statue-img {
+    height: 75px; 
+    object-fit: contain;
+}
+
+/* Клас для приховання (якщо фігурки немає в сегменті) */
+.statue-avatar-container.is-hidden {
+    display: none;
+}
+
+/* Коректне позиціонування сегмента */
+.pos-relative {
+    position: relative;
+}
+
+
+
+
+
+@media (max-width: 767px) {
+    .welcome-section {
+        
+        overflow: hidden;
+        min-height: 150px; 
+        margin-bottom:15px;
+      
+    }
+
+    .welcome-text {
+        z-index: 2; 
+        width: 80% !important; 
+        margin-right: -25%;
+        margin-top: 10px;
+      
+    }
+    
+
+        .welcome-text .title {
+            font-size: 22px !important;
+            font-weight: 500;
+            line-height: 28px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text .subtitle {
+            font-size: 13px !important; 
+            margin-top: 5px !important;
+            white-space: nowrap;
+            line-height:14px;
+          
+        }
+
+    .welcome-picture {
+        width: 65% !important; 
+        display: flex;
+        justify-content: flex-end;
+        padding-top:-10px !important;
+    }
+
+        .welcome-picture img {
+            max-width: 280px !important; 
+            height: auto;
+            opacity: 0.9; 
+            object-fit: contain;
+            top: -70px ;
+            right: -40px !important;
+            padding-top:0px ;
+
+        }
+    .title {
+        
+        font-size: 24px;
+        letter-spacing: 0px;
+        font-weight: 350;
+    }
+
+    #progressContainer {
+        margin-top: 0 ; 
+        padding-top: 10px !important; 
+        position: relative !important;
+        top: -60px;
+       
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
+        padding-left: 0px;
+        padding-right: 0px;
+        background-image: none;
+        background-color:#FFFFFF;
+    }
+
+ 
+    .m-3 {
+        margin: 10px !important; /* Трохи зменшуємо зовнішні відступи на мобільних */
+    }
+   
+    .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    
+    body, html {
+        overflow-x: hidden !important; /* Забороняє прокрутку вправо */
+        width: 100% ;
+    }
+
+    
+    .buy-button, .buy-button a {
+        display: block !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        text-align: center;
+       
+    }
+    .buy-button{
+        margin-top:35px;
+    }
+   
+    .btn-text {
+        display: block !important;
+        width: 100% !important;
+        color: white !important;
+        padding: 12px 0 !important;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+  
+    .progress-inner-content {
+        padding: 7px 8px !important;
+    }
+
+ 
+    .small-text, .hometask-text {
+        width: 100% !important;
+        display: block ;
+        letter-spacing:0px;
+        font-size:15px;
+        line-height:14px;
+        margin-bottom:15px;
+    }
+    .progress-segments {
+        display: flex !important;
+        flex-wrap: nowrap !important; 
+     
+        width: 100% !important;
+        overflow: visible !important;
+      
+        height: 30px; 
+    }
+
+    .progress-segment-wrapper {
+        flex: 1 1 auto !important; 
+        min-width: 0 !important;
+     
+        overflow: visible !important;
+    }
+    /* Контейнер для лінії та фігурки */
+    .progress-timeline-container {
+        padding-top: 20px;
+        padding-bottom: 10px;
+       margin-top:8px;
+    }
+    /* --- Контейнер для СТАТУЇ --- */
+    .statue-avatar-container {
+   
+        top: -28px; 
+        left: 45%;
+        
+    }
+    .progress-segment-wrapper.mx-3 {
+       
+        margin-left: 6px !important;
+        margin-right: 6px !important;
+    }
+    .statue-img {
+        height: 44px; 
+        object-fit: contain;
+    }
+    .progress-line {
+        height:8px;
+    }
+    #conteiner2 {
+        margin-top: -65px !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0px ;
+        padding-right: 0px ;
+        margin-bottom:10px;
+    }
+
+
+    #hometask {
+        flex: 0 0 100% !important;
+        max-width: 100%;
+        padding: 10px 10px;
+        padding-bottom: 0px;
+    }
+
+    .hometask-box {
+        padding: 3px !important;
+        text-align: center;
+        flex-direction: column;
+        flex: 1 1 0;
+        border-right: 2px solid #8588D1;
+    }
+    #hometask .title{
+        padding-bottom:30px;
+    }
+
+
+    .hometask-box:last-child {
+        border-right: none !important;
+    }
+
+    #conteiner2 .hometask-text {
+        font-size: 14px !important;
+        line-height: 1.1;
+        display: block;
+        margin-bottom: 5px;
+        min-height: 20px;
+        text-align: center;
+    }
+
+    .hometask-num {
+        font-size: 18px !important;
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+    #grades {
+        flex: 0 0 100% !important;
+        max-width: 100%;
+        margin-top: 15px;
+        padding: 10px 10px;
+        padding-top: 21px;
+    }
+        #grades .d-flex {
+            display: flex !important;
+            flex-direction: row !important; 
+            align-items: flex-start !important;
+            width: 100% !important;
+           
+        }
+
+       
+        #grades .px-1.flex-grow-1 {
+            flex: 2 !important; 
+            min-width: 0 !important; 
+            border-right: 2px solid #8588D1 ;
+            padding-right: 10px !important;
+        }
+
+        
+        #grades .hometask-box {
+            flex: 1 !important; 
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center;
+            padding-left: 5px !important;
+            padding-right: 0 !important;
+        }
+
+    /* Налаштування самих квадратиків оцінок,  */
+    .grade-square {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 14px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f0f0; 
+      
+    }
+
+    .grade-item-container span {
+        font-size: 12px ;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        text-transform: capitalize; /* Місяці з великої літери */
+    }
+
+    .slider-arrow-img,
+    #modulesList .justify-content-between.mb-1.mt-4 {
+        display: none !important;
+    }
+
+    
+    #modulesSlider.slider-wrapper {
+        display: flex !important;
+        flex-direction: column !important; 
+    
+        overflow-x: visible !important; 
+        width: 100% !important;
+       
+    }
+
+    .slider-item {
+        width: 100% !important; 
+        flex: 0 0 auto !important;
+        margin-bottom: 5px !important;
+    }
+   
+    .module-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block !important;
+    }
+
+   
+    .art-frame-wrapper {
+        height: auto !important;
+        aspect-ratio: 16 / 9; 
+        width: 100% !important;
+    }
+
+    /* 5. Налаштування тексту під картинкою */
+    .py-0.px-3.lh-sm {
+        padding-top: 5px !important;
+        padding-bottom: 20px !important;
+    }
+    #modulesList .d-flex.justify-content-between.mb-2 .title:last-child {
+        display: none !important;
+    }
+    #modulesList .d-flex.justify-content-between.mb-2 {
+        padding-bottom:20px;
+    }
+    
+    }
+

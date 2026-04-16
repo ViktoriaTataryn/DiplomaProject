@@ -6,5 +6,6 @@
         public string Title { get; set; }
         public int ModuleIndex { get; set; }
         public int UserCompletedNum { get; set; }
+
     }
 }
