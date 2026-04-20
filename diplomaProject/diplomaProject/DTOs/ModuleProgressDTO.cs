@@ -9,6 +9,8 @@ namespace diplomaProject.DTOs
         public string Name { get; set; }
        // public IFormFile? ImageUrl { get; set; }
         public string? ImageForUser { get; set; }
+        public int CompletedModule { get; set; }
+        public int TotalModule { get; set; }
         public int CompletedLesson {  get; set; }
         public int TotalLesson { get; set; }
         public string Status { get; set; }

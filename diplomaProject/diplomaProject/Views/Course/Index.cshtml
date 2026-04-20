@@ -151,6 +151,7 @@
                 </div>
             }
         </div>
+            @*  d-flex flex-column justify-content-between *@
 
             <div class="col-lg-4 sticky-top ">
 
@@ -193,7 +194,7 @@
                         </div>
                     </div>
                     <p class="small-text ">
-                        Пройдено:  модулів
+                        Пройдено: @Model.FirstOrDefault()?.CompletedModule з @Model.FirstOrDefault()?.TotalModule  модулів
                     </p>
 
                     <hr class="mt-4 mb-3 custom-line">
@@ -206,11 +207,14 @@
                            asp-controller="Course"
                            asp-route-id="@activeModule.CurrentLessonId"
                                class="d-block btn-last-text w-100">
-                             ПЕРЕЙТИ ДО ОСТАННЬОЇ ЛЕКЦІЇ
+                             ПЕРЕЙТИ ДО АКТИВНОЇ ЛЕКЦІЇ
                         </a>
                     </div>
                     }
             </div>
+         @*    <div>
+                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075801/Course_Progress_BG_r0glm0.webp" alt="background" style="width:350px; height:170px" />
+            </div> *@
         </div>
 
 

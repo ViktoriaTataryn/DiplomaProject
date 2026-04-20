@@ -33,7 +33,13 @@ namespace diplomaProject.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-           
+            var totalModules=_context.Modules.Count();
+            var completedModules = _context.UserProgresses
+    .Where(up => up.UserId == userId && up.Status == ProgressStatus.Completed && up.ModuleId != 0)
+    .Select(up => up.ModuleId)
+    .Distinct() //без дублікатів
+    .Count();
+
             var modulesWithProgress = _context.Modules
                 .Include(m => m.Lessons)
                 .Select(m => new ModuleProgressDTO
@@ -44,6 +50,8 @@ namespace diplomaProject.Controllers
                     Name = m.Title,
                     ImageForUser = m.ImageUrl,
                     Description=m.Description,
+                    TotalModule=totalModules,
+                    CompletedModule=completedModules,
 
                     // Дістаємо дані з таблиці UserProgress для цього модуля і користувача
                     // Якщо запису немає, ставимо статус "Close"
@@ -56,12 +64,12 @@ namespace diplomaProject.Controllers
 
                     TotalLesson = m.Lessons.Count,
                     CurrentLessonId = _context.UserProgresses
-    .Where(ulp => ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId!=0 &&ulp.Status==ProgressStatus.InProgress)
-    .OrderBy(ulp => ulp.Lesson.LessonIndex)
-    .OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
-    .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
-    .Select(ulp => ulp.LessonId)
-    .FirstOrDefault(),
+            .Where(ulp => ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId != 0)
+            .OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
+            .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
+            .ThenBy(ulp => ulp.Lesson.LessonIndex)
+            .Select(ulp => ulp.LessonId)
+            .FirstOrDefault(),
                     // Наповнюємо список лекцій для вертикального списку
                     Lessons = m.Lessons.Select(l => new LessonShortDTO
                     {
