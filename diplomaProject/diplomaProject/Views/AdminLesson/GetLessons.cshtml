@@ -43,6 +43,12 @@
                                     <a asp-action="UpdateLesson" asp-controller="AdminLesson" asp-route-id="@lesson.Id" class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-edit"></i> Редагувати
                                     </a>
+                                    <a asp-controller="Course"
+                                       asp-action="AddQuestion"
+                                       asp-route-lectureId="@lesson.Id"
+                                       class="btn btn-sm btn-primary">
+                                        + Додати тест
+                                    </a>
                                     <form asp-action="DeleteLesson" asp-route-id="@lesson.Id" method="post"
                                           onsubmit="return confirm('Ви впевнені, що хочете видалити лекцію?');"
                                           style="display:inline;">

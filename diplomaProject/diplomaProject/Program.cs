@@ -12,7 +12,7 @@ namespace diplomaProject
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -73,24 +73,46 @@ namespace diplomaProject
 
             var app = builder.Build();
 
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+            //    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+            //    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+            //    await DbInitializer.SeedAdminUser(userManager, roleManager);
+
+            //    // Список ролей, які потрібні вашому проекту
+            //    string[] roles = { "Admin", "Student" };
+
+            //    foreach (var role in roles)
+            //    {
+            //        if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
+            //        {
+            //            roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
+            //        }
+            //    }
+            //}
+
+          
+
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-                // Список ролей, які потрібні вашому проекту
-                string[] roles = { "Admin", "Student" };
-
-                foreach (var role in roles)
+                try
                 {
-                    if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
-                    {
-                        roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
-                    }
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+                    // Тепер await спрацює без помилок
+                    await DbInitializer.SeedAdminUser(userManager, roleManager);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Помилка під час створення початкових даних.");
                 }
             }
 
-
+           
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -102,7 +124,7 @@ namespace diplomaProject
 
 
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

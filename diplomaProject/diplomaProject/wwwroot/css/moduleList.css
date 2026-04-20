@@ -222,23 +222,24 @@
 
 
 #progressContainer {
-    margin-top: 0 ; 
-    padding-top: 10px ; 
-    position: relative ;
-    
-    width: 100% ;
-    margin-left: 0 ;
-    margin-right: 0 ;
-    box-sizing: border-box ;
+    margin-top: 0;
+    padding-top: 10px;
+    position: relative;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
     padding-left: 0px;
     padding-right: 0px;
     background-image: none;
     background-color: #FFFFFF;
+   
 }
 .progress-inner-content {
-    padding: 7px 8px ;
-    background-color:#FFFFFF;
-    height:auto;
+    padding: 7px 8px;
+    background-color: #FFFFFF;
+    height: auto;
+    box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
 }
 .progress-segments {
     display: flex;
@@ -339,4 +340,55 @@ hr.custom-line {
     opacity: 1;
     background-color: #2B31B4 !important;
     margin: 25px 0px;
+}
+
+@media (max-width: 768px) {
+    #moduleList {
+        max-width: 351px;
+        padding: 20px 12px;
+        top: 336px;
+    }
+    #block-progress {
+        max-width: 351px;
+        padding-bottom:12px;
+        padding-left:0px;
+        padding-right:0px;
+     /*   padding: 12px;*/
+    }
+    .text-desc {
+     
+        font-size: 16px;
+ 
+      /*  line-height: 18px;*/
+        width: 100%;
+     
+    }
+    .module-item {
+        flex-direction:column;
+    }
+    .text{
+        font-size:20px;
+    }
+    .module-summary.is-open {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding-bottom: 5px;
+       
+    }
+        .module-summary.is-open .art-frame-wrapper-mini {
+            width: 316px;
+            height: 176px;
+            margin-bottom: 5px;
+        }
+    .module-image-inner-mini img{
+        width:95%;
+        height:95%;
+    }
+       
+        /* Опціонально: робимо стрілочку в кутку, коли розгорнуто */
+        /*.module-summary.is-open .bi-chevron-down {
+            align-self: flex-end;
+            margin-top: -20px;*/ /* піднімаємо трохи вгору, якщо назва довга */
+        /*}*/
+  
 }

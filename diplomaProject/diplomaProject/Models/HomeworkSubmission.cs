@@ -23,7 +23,7 @@ namespace diplomaProject.Models
 
         [Required]
         [Display(Name = "File Path")]
-        public string FilePath { get; set; } // Путь к загруженному файлу с выполненной работой
+        public string? FilePath { get; set; } // Путь к загруженному файлу с выполненной работой
 
         [Display(Name = "Submission Date")]
         public DateTime SubmissionDate { get; set; } = DateTime.Now; // Дата и время сдачи

@@ -162,6 +162,13 @@ namespace diplomaProject.Controllers
 
                 if (result.Succeeded)
                 {
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    // Якщо адмін — відправляємо в Area "Admin"
+                    if (roles.Contains("Admin"))
+                    {
+                        return RedirectToAction("GetLessons", "AdminLesson");
+                    }
                     // Направляємо користувача на список курсів після входу
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
@@ -301,5 +308,8 @@ namespace diplomaProject.Controllers
         {
             return View();
         }
+
+       
+        
     }
 }

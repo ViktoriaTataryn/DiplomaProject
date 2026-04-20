@@ -16,7 +16,9 @@ namespace diplomaProject.Models
         public bool IsMultipleChoice { get; set; }
 
         // Ссылка на урок, к которому относится этот вопрос
-        public int LessonId { get; set; }
+        //public int LessonId { get; set; }
+        public int HomeworkId { get; set; }
+        public Homework Homework { get; set; }
 
         // Свойство навигации Entity Framework для связи параметров
         public List<AnswerOption> Options { get; set; } = new List<AnswerOption>();

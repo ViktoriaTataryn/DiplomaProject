@@ -14,10 +14,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace diplomaProject.Controllers
 {
+    [Authorize(Roles ="Admin")]
     public class AdminController : Controller
     {
         private readonly AppDbContext _context;

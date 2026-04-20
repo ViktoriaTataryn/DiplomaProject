@@ -126,6 +126,21 @@ namespace diplomaProject.Controllers
 
             if (lesson == null) return NotFound();
 
+            var userProgresses = _context.UserProgresses.Where(p => p.LessonId == Id);
+            _context.UserProgresses.RemoveRange(userProgresses);
+
+            var homework = await _context.Homeworks
+        .Include(h => h.Questions)
+            .ThenInclude(q => q.Options)
+        .Include(h => h.Submissions) // Також видаляємо спроби студентів
+        .FirstOrDefaultAsync(h => h.LessonId == Id);
+
+            if (homework != null)
+            {
+                // Якщо є сабмішн з файлами, їх теж бажано видалити з Cloudinary тут (аналогічно ресурсам)
+                _context.Homeworks.Remove(homework);
+            }
+
             // 1. ВИДАЛЕННЯ З CLOUDINARY ЧЕРЕЗ REGEX (З контенту)
             if (!string.IsNullOrEmpty(lesson.Content))
             {
