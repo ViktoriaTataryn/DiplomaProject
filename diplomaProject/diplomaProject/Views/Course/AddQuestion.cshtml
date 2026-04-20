@@ -1,0 +1,36 @@
+﻿@model Question
+@{
+    ViewData["Title"] = "Add Test Question";
+}
+
+<div class="container mt-5">
+    <h2>Add Question to Lecture</h2>
+
+    <form asp-action="AddQuestion" method="post">
+        <input type="hidden" asp-for="LessonId" value="@ViewBag.LectureId" />
+
+        <div class="mb-3">
+            <label class="form-label">Question Text</label>
+            <input asp-for="Text" class="form-control" placeholder="Enter question..." required />
+        </div>
+
+        <div id="options-container">
+            <label class="form-label">Answer Options (Select the correct one)</label>
+            <div class="input-group mb-2">
+                <div class="input-group-text">
+                    <input type="radio" name="correctOptionIndex" value="0" checked>
+                </div>
+                <input type="text" name="options" class="form-control" placeholder="Option 1" required>
+            </div>
+            <div class="input-group mb-2">
+                <div class="input-group-text">
+                    <input type="radio" name="correctOptionIndex" value="1">
+                </div>
+                <input type="text" name="options" class="form-control" placeholder="Option 2" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Question</button>
+        <a asp-action="Lesson" asp-route-id="@ViewBag.LectureId" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
