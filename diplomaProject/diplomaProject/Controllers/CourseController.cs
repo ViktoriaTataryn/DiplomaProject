@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using diplomaProject.Data;
+﻿using diplomaProject.Data;
+using diplomaProject.DTOs;
+using diplomaProject.Interfaces;
 using diplomaProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using diplomaProject.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IO.Compression;
-using diplomaProject.DTOs;
 using System.Security.Claims;
 
 namespace diplomaProject.Controllers
@@ -25,58 +25,89 @@ namespace diplomaProject.Controllers
             _progressService = progressService;
         }
 
+
+        // GET: Course/AddQuestion?lectureId=5
+        [HttpGet]
+        public IActionResult AddQuestion(int lectureId)
+        {
+            // Передаємо ID лекції у View, щоб прив'язати питання
+            ViewBag.LectureId = lectureId;
+            return View();
+        }
+
+        // POST: Course/AddQuestion
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddQuestion(Question question, List<string> options, int correctOptionIndex)
+        {
+            if (ModelState.IsValid)
+            {
+                // 1. Додаємо питання в БД
+                _context.Questions.Add(question);
+                await _context.SaveChangesAsync();
+
+                // 2. Додаємо варіанти відповідей
+                for (int i = 0; i < options.Count; i++)
+                {
+                    var option = new AnswerOption
+                    {
+                        Text = options[i],
+                        IsCorrect = (i == correctOptionIndex),
+                        QuestionId = question.Id
+                    };
+                    _context.AnswerOptions.Add(option);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Lesson", new { id = question.LessonId });
+            }
+
+            ViewBag.LectureId = question.LessonId;
+            return View(question);
+        }
+
+        // --- ІСНУЮЧА ЛОГІКА (БЕЗ ЗМІН) ---
+
         // 1. Список всех доступных модулей и уроков
         public async Task<IActionResult> Index()
         {
-            //var modules = await _context.Modules.Include(m => m.Lessons).ToListAsync();
-            //return View(modules);
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-           
             var modulesWithProgress = _context.Modules
                 .Include(m => m.Lessons)
                 .Select(m => new ModuleProgressDTO
                 {
-
                     ModuleId = m.Id,
                     ModuleNumber = m.OrderIndex,
                     Name = m.Title,
                     ImageForUser = m.ImageUrl,
-                    Description=m.Description,
-
-                    // Дістаємо дані з таблиці UserProgress для цього модуля і користувача
-                    // Якщо запису немає, ставимо статус "Close"
+                    Description = m.Description,
                     Status = _context.UserProgresses
-    .Where(up => up.ModuleId == m.Id && up.UserId == userId && up.ModuleId!=0)
-    .Select(up => up.Status.ToString()) // Перетворюємо Enum у string ("Open", "Close", "Completed")
-    .FirstOrDefault() ?? "Close",
-
+                        .Where(up => up.ModuleId == m.Id && up.UserId == userId && up.ModuleId != 0)
+                        .Select(up => up.Status.ToString())
+                        .FirstOrDefault() ?? "Close",
                     Percent = 0,
-
                     TotalLesson = m.Lessons.Count,
                     CurrentLessonId = _context.UserProgresses
-    .Where(ulp => ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId!=0 &&ulp.Status==ProgressStatus.InProgress)
-    .OrderBy(ulp => ulp.Lesson.LessonIndex)
-    .OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
-    .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
-    .Select(ulp => ulp.LessonId)
-    .FirstOrDefault(),
-                    // Наповнюємо список лекцій для вертикального списку
+                        .Where(ulp => ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId != 0 && ulp.Status == ProgressStatus.InProgress)
+                        .OrderBy(ulp => ulp.Lesson.LessonIndex)
+                        .OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
+                        .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
+                        .Select(ulp => ulp.LessonId)
+                        .FirstOrDefault(),
                     Lessons = m.Lessons.Select(l => new LessonShortDTO
                     {
                         Id = l.Id,
                         Title = l.Title,
                         Status = _context.UserProgresses
-                .Where(ulp => ulp.LessonId == l.Id && ulp.UserId == userId && ulp.LessonId!=0)
-                .Select(ulp => ulp.Status.ToString())
-                .FirstOrDefault() ?? "Close"
+                            .Where(ulp => ulp.LessonId == l.Id && ulp.UserId == userId && ulp.LessonId != 0)
+                            .Select(ulp => ulp.Status.ToString())
+                            .FirstOrDefault() ?? "Close"
                     }).ToList()
-                  
                 })
                 .OrderBy(m => m.ModuleNumber)
                 .ToList();
-          
 
             return View(modulesWithProgress);
         }
@@ -86,7 +117,6 @@ namespace diplomaProject.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
-            // Включаем модуль и соседние уроки для поддержки навигации боковой панели Figma
             var lesson = await _context.Lessons
                 .Include(l => l.Resources)
                 .Include(l => l.Module)
@@ -98,33 +128,29 @@ namespace diplomaProject.Controllers
             var progress = await _context.UserProgresses
                 .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
 
-            // Блокируем доступ, если запись о прогрессе отсутствует или урок закрыт
             if (progress == null || progress.Status == ProgressStatus.Close)
             {
                 TempData["Error"] = "Lecture is not available. Please complete previous materials.";
                 return RedirectToAction("Index");
             }
 
-            // Обновить статус на "В процессе", если ранее был просто "Открыто"
             if (progress.Status == ProgressStatus.Open)
             {
                 await _progressService.LessonInProgressAsync(userId, lesson.Id);
             }
 
-            // Получить вопросы для внутреннего теста
             ViewBag.Questions = await _context.Questions
                 .Include(q => q.Options)
                 .Where(q => q.LessonId == id)
                 .ToListAsync();
 
-            // Передать прогресс всех уроков в модуле для боковых панелей с флажками
             ViewBag.ModuleProgress = await _context.UserProgresses
                 .Where(p => p.UserId == userId && p.ModuleId == lesson.ModuleId)
                 .ToListAsync();
 
             if (string.IsNullOrEmpty(lesson.Content))
             {
-                lesson.Content = "{}"; // Порожній об'єкт, щоб JSON.parse не видав помилку
+                lesson.Content = "{}";
             }
 
             return View(lesson);
@@ -271,7 +297,6 @@ namespace diplomaProject.Controllers
                 {
                     foreach (var resource in resources)
                     {
-                        // Примечание: Данная логика предполагает, что файлы находятся локально. При использовании Cloudinary требуется логика загрузки через WebClient.
                         var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
                         if (System.IO.File.Exists(filePath))
                         {
