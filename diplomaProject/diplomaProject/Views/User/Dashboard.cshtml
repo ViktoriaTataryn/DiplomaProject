@@ -93,16 +93,16 @@
             @if (Model.IsPaid)
             {
                 @* Стан 3: Курс оплачено *@
-                <a href="@Url.Action("Index", "Course")" class="d-block btn-text">
+                    <a href="@Url.Action("Index", "Course")" class="d-block btn-text">
                     ПРОДОВЖИТИ НАВЧАННЯ
                 </a>
             }
             else if (Model.FirstModuleCompleted)
             {
                 @* Стан 2: Модуль 1 пройдено, потрібна оплата *@
-                <a href="@Url.Action("CreateCheckoutSession", "Payment", new { courseId= Model.CourseId })" class="d-block btn-text">
+                    <button href="@Url.Action("CreateCheckoutSession", "Payment", new { courseId= Model.CourseId })" class="d-block btn-text" id="buyButton">
                     ПЕРЕЙТИ ДО ОПЛАТИ
-                </a>
+                </button>
             }
             else if (!Model.HasStarted)
             {

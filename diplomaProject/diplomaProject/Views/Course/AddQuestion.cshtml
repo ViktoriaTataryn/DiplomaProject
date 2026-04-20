@@ -1,4 +1,4 @@
-﻿@model Question
+﻿@* @model Question
 @{
     ViewData["Title"] = "Add Test Question";
 }
@@ -33,4 +33,109 @@
         <button type="submit" class="btn btn-primary">Save Question</button>
         <a asp-action="Lesson" asp-route-id="@ViewBag.LectureId" class="btn btn-secondary">Cancel</a>
     </form>
+</div> *@
+
+@{
+    ViewData["Title"] = "Додавання тестів по черзі";
+    int lectureId = ViewBag.LectureId;
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Створення тесту для лекції</h2>
+        <span class="badge bg-primary" id="question-counter">Додано питань: 0 / 12</span>
+    </div>
+
+    @* Контейнер, куди JS буде "вклеювати" нові питання *@
+    <div id="questions-list"></div>
+
+    @* Кнопка для додавання нового блоку питання *@
+    <div class="text-center my-4" id="add-btn-container">
+        <button type="button" class="btn btn-outline-primary" onclick="addQuestion()">
+            <i class="bi bi-plus-circle"></i> + Додати наступне питання
+        </button>
+    </div>
+
+    @* Фінальна форма, яка відправить все на сервер *@
+    <form asp-action="AddQuestion" method="post" id="final-form">
+        <input type="hidden" name="LessonId" value="@lectureId" />
+
+        @* Сюди JS перенесе всі створені питання перед відправкою *@
+        <div id="hidden-inputs-container"></div>
+
+        <div class="border-top pt-3 d-flex justify-content-end gap-2" id="submit-container" style="display: none !important;">
+            <a asp-controller="AdminLesson" asp-action="GetLessons" class="btn btn-secondary">Скасувати</a>
+            <button type="submit" class="btn btn-success px-5">Зберегти всі додані питання</button>
+        </div>
+    </form>
 </div>
+
+<script>
+    let questionCount = 0;
+    const maxQuestions = 12;
+
+    function addQuestion() {
+        if (questionCount >= maxQuestions) {
+            alert("Ви вже додали максимальну кількість питань (12).");
+            return;
+        }
+
+        const container = document.getElementById('questions-list');
+        const questionHtml = `
+            <div class="card mb-4 shadow-sm border-info animated fadeIn" id="q-block-${questionCount}">
+                <div class="card-header bg-info text-white d-flex justify-content-between">
+                    <strong>Питання №${questionCount + 1}</strong>
+                    <button type="button" class="btn-close btn-close-white" onclick="removeQuestion(${questionCount})"></button>
+                </div>
+                <div class="card-body">
+                    <input type="text" name="Questions[${questionCount}].Text" class="form-control mb-3" placeholder="Текст питання..." required />
+                    <div class="row g-2">
+                        ${[0, 1, 2, 3].map(j => `
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-text">
+                                        <input type="radio" name="Questions[${questionCount}].CorrectAnswerIndex" value="${j}" ${j === 0 ? 'checked' : ''}>
+                                    </div>
+                                    <input type="text" name="Questions[${questionCount}].Answers[${j}].Text" class="form-control" placeholder="Варіант ${j + 1}" required />
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', questionHtml);
+        questionCount++;
+        updateUI();
+    }
+
+    function removeQuestion(id) {
+        document.getElementById(`q-block-${id}`).remove();
+        questionCount--;
+        updateUI();
+    }
+
+    function updateUI() {
+        document.getElementById('question-counter').innerText = `Додано питань: ${questionCount} / 12`;
+
+        const submitBtn = document.getElementById('submit-container');
+        if (questionCount > 0) {
+            submitBtn.style.setProperty('display', 'flex', 'important');
+        } else {
+            submitBtn.style.setProperty('display', 'none', 'important');
+        }
+
+        if (questionCount >= maxQuestions) {
+            document.getElementById('add-btn-container').style.display = 'none';
+        } else {
+            document.getElementById('add-btn-container').style.display = 'block';
+        }
+    }
+
+    // Перед відправкою перевіряємо, щоб усі інпути були всередині форми
+    document.getElementById('final-form').onsubmit = function() {
+        const questionsList = document.getElementById('questions-list');
+        this.appendChild(questionsList); // Переміщуємо всі картки всередину форми перед відправкою
+    };
+</script>

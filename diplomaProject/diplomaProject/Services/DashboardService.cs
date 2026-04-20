@@ -122,6 +122,8 @@ namespace diplomaProject.Services
                                                          mp.ModuleId == module.Id && (mp.LessonId == null || mp.LessonId == 0));
 
                     var currentModuleStatus = moduleRecord?.Status ?? ProgressStatus.Close;
+
+                 
                     return new ModuleProgressDTO
                     {
                         ModuleId = module.Id,
@@ -131,6 +133,9 @@ namespace diplomaProject.Services
                         // Якщо прогресу немає, буде 0, але модуль залишиться у списку
                         TotalLesson = module.Lessons?.Count ?? 0,
                         CompletedLesson = moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed),
+                        Percent = (module.Lessons != null && module.Lessons.Count > 0)
+        ? (int)((double)moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed) / module.Lessons.Count * 100)
+        : 0,
                         Status = currentModuleStatus switch
                         {
                             ProgressStatus.Completed => "Completed",
@@ -144,7 +149,7 @@ namespace diplomaProject.Services
             var curLesson = await _progressService.GetActiveLessonAsync(userId, courseId);
 
             //string currentTitle = curLesson?.Title ?? "Немає активних лекцій";
-            string nextTitle = "Курс завершено";
+            string nextTitle = "Немає активних лекцій";
             if (curLesson != null)
             {
 
