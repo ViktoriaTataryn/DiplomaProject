@@ -1,0 +1,109 @@
+﻿@model IEnumerable<diplomaProject.Models.Module>
+
+@{
+    ViewData["Title"] = "Додаткові матеріали";
+}
+
+<link rel="stylesheet" href="~/css/resources.css" asp-append-version="true" />
+
+<div class="container-fluid py-4" style="background-color: var(--brand-light); min-height: 100vh;">
+
+    <div class="archive-header p-4 p-md-5 mb-4">
+        <div class="archive-bg-flowers"></div>
+
+        <div class="position-relative" style="z-index: 1; max-width: 600px;">
+            <h1 class="text-brand mb-3" style="text-transform: uppercase; font-weight: 300; font-size: 2rem;">Архів курсу</h1>
+            <p class="text-muted mb-4" style="font-size: 1.1rem; font-weight: 300; line-height: 1.5;">
+                Завантажте всі лекції, матеріали та додаткові файли одним архівом.<br />
+                Всі файли стануть доступно після оплати курсу.
+            </p>
+
+            <div class="d-flex align-items-center mb-4 text-muted" style="font-size: 0.9rem;">
+                <span class="me-4"><i class="bi bi-file-earmark me-2"></i>@Model.Sum(m => m.Lessons.Sum(l => l.Resources.Count)) файли</span>
+                <span><i class="bi bi-hdd me-2"></i>Архів ZIP</span>
+            </div>
+
+            @* Button linked to DownloadFullArchive action *@
+            <a asp-action="DownloadFullArchive" class="btn btn-brand px-5 py-3 w-100 w-md-auto font-weight-bold" style="letter-spacing: 1px; text-decoration: none;">
+                ЗАВАНТАЖИТИ ВЕСЬ КУРС
+            </a>
+        </div>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <h2 class="text-brand m-0 mb-3 mb-md-0" style="text-transform: uppercase; font-weight: 300; font-size: 1.8rem;">
+            Матеріали за лекціями
+        </h2>
+
+        <div class="d-flex flex-column flex-sm-row gap-3">
+            <div class="input-group" style="max-width: 300px; border: 1px solid #ced4da; border-radius: 2px;">
+                <span class="input-group-text bg-white border-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" class="form-control border-0 ps-0" placeholder="Шукати..." style="box-shadow: none;">
+            </div>
+            <select class="form-select text-brand" style="max-width: 150px; border-color: #ced4da; border-radius: 2px;">
+                <option selected>Модуль <i class="bi bi-chevron-down"></i></option>
+                @foreach (var m in Model)
+                {
+                    <option value="@m.Id">Модуль @m.OrderIndex</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 p-md-5 mb-5" style="border-radius: 4px; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.02);">
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info text-center">Матеріали поки що відсутні.</div>
+        }
+        else
+        {
+            @foreach (var module in Model)
+            {
+                foreach (var lesson in module.Lessons.OrderBy(l => l.LessonIndex))
+                {
+                    <div class="lesson-material-card flex-column flex-md-row text-center text-md-start">
+
+                        <div class="flex-shrink-0 mb-3 mb-md-0">
+                            <div class="lesson-thumbnail-frame">
+                                @* Here could be a thumbnail if needed *@
+                            </div>
+                        </div>
+
+                        <div class="flex-grow-1">
+                            <div class="lesson-meta text-uppercase">
+                                Модуль @module.OrderIndex. &bull; Тема @lesson.LessonIndex. &bull; Доступно
+                            </div>
+                            <h3 class="lesson-title">@lesson.Title</h3>
+                        </div>
+
+                        <div class="flex-shrink-0 d-flex gap-3 align-items-center mt-3 mt-md-0 justify-content-center">
+                            @* Link to the actual lesson page *@
+                            <a asp-action="Lesson" asp-route-id="@lesson.Id" class="btn btn-outline-brand px-4 py-2" style="text-transform: uppercase; font-size: 0.85rem; text-decoration: none;">
+                                Переглянути
+                            </a>
+
+                            @* Download button for the first resource of the lesson *@
+                            @if (lesson.Resources.Any())
+                            {
+                                <a asp-action="DownloadResource" asp-route-resourceId="@lesson.Resources.First().Id"
+                                   class="btn btn-outline-brand px-3 py-2 d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-download" style="font-size: 1.2rem;"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-secondary px-3 py-2 disabled" title="No files available">
+                                    <i class="bi bi-download" style="font-size: 1.2rem;"></i>
+                                </button>
+                            }
+                        </div>
+
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>
+
+@section Scripts {
+}
