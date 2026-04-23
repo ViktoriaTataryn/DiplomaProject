@@ -21,7 +21,10 @@ body {
     margin-bottom: 30px;
 }
 
+#header img{
+    max-width:200px;
 
+}
 /*Layout styles*/
 
 #layout-body {
@@ -32,8 +35,12 @@ body {
     width: 100%;
 }
 .sidebar-img img {
-    width: 180px;
-    height: auto;
+   /* width: 180px;*/
+   max-width:186px;
+   /* height: auto;*/
+
+   /* left:40px;
+    top:19px;*/
 }
 .sidebar-img {
     margin-top: auto;
@@ -41,15 +48,16 @@ body {
     text-align: center;
 }
 #sidebar {
-    min-width: 284px;
+    /* min-width: 284px;*/
+    max-width: 284px;
     background: #FFFFFF;
     top: 88px;
     flex-shrink: 0;
     height: auto;
-    display:flex;
+    display: flex;
     justify-content: space-between;
     flex-direction: column;
-  /*  margin-bottom:30px;*/
+    /*  margin-bottom:30px;*/
     /*     position: sticky; */
     /*   z-index: 100; */
     /*    border-right: 1px solid ; */
@@ -64,7 +72,8 @@ body {
 }
 
 #header {
-    height: 88px;
+    height: 68px;
+
     background: #fff;
     border-bottom: 2px solid #2B31B4;
     display: flex;
@@ -101,9 +110,12 @@ body {
     /*     margin-left: 6px; */
     position: relative;
     display: flex;
-    padding: 10px 20px 10px 30px;
+    padding: 10px 25px 10px 30px;
     align-items: center;
     text-decoration: none;
+   top:10px;
+ 
+  
 }
 
     .nav-link.active {
@@ -134,7 +146,12 @@ body {
     font-weight: normal;
     font-style: normal;
 }
-
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/fonts/Gilroy-Light.woff2') format('woff2'), url('/fonts/Gilroy-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
 /* 2. Import Gilroy font (Regular & Medium) */
 @font-face {
     font-family: 'Gilroy';

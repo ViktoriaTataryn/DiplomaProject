@@ -10,16 +10,16 @@
 
 
 
-<div class="container mt-2">
+<div class="container-fluid mt-2 ">
     @if (Model == null || !Model.Any())
     {
         <div class="alert alert-info">No modules available yet.</div>
     }
     else
     {
-        <div class="row align-items-start">
-            <div class="col-lg-8 p-4 order-2 order-lg-1" id="modulesList">
-            <div class="title mb-4 mt-1 py-1">СПИСОК ЛЕКЦІЙ</div>
+        <div class="row align-items-start justify-content-evenly">
+            <div class="col-lg-8 p-2 order-2 order-lg-1" id="modulesList">
+            <div class="title mb-1 mt-2 py-3">СПИСОК ЛЕКЦІЙ</div>
 
             @foreach (var module in Model)
             {
@@ -112,15 +112,17 @@
                                             <div class="timeline-connector"></div>
                                         </div>
 
-                                        <div class="timeline-content pb-4 ms-3 flex-grow-1">
+                                            <div class="timeline-content pb-4 ms-2 ms-lg-3 flex-grow-1">
                                             <div class="d-flex flex-column">
 
-                                                <div class="d-flex flex-row justify-content-between">
+                                                    <div class="d-flex flex-row justify-content-between ">
+                                                        <div style="max-width: 70%;">
+
                                                         @if (isCompleted )
                                                         {
                                                             @* Назва як посилання для доступних лекцій *@
                                                             <a asp-action="Lesson" asp-controller="Course" asp-route-id="@lesson.Id"
-                                                               class="lesson-title fw-medium text-decoration-none text-dark">
+                                                               class="lesson-title fw-medium text-decoration-none ">
                                                                 @lesson.Title
                                                             </a>
                                                         }
@@ -128,6 +130,7 @@
                                                         {
                                                             <span class="lesson-title @(isLocked ? "text-muted" : "fw-medium")">@lesson.Title</span>
                                                         }
+                                                        </div>
                                                
 
                                                 <div class="mt-1">

@@ -20,7 +20,7 @@
 <body >
    
         <header id="header">
-        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646612/Logo_jhzjc9.svg"style="width:225px" alt="logo" />
+        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646612/Logo_jhzjc9.svg" alt="logo" />
              <button class="btn d-md-none me-3" id="sidebarToggle" style="border: none; background: transparent;">
                  <i class="bi bi-list fs-2"></i>
              </button>
@@ -60,7 +60,7 @@
                 <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "GetResources" ? "active" : "")" href="#">
                 Додаткові матеріали
             </a>
-                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "UpdateData" ? "active" : "")" href="#">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "UpdateData" ? "active" : "")" asp-controller="User" asp-action="UpdateData">
                    Акаунт
                 </a>
         </nav>

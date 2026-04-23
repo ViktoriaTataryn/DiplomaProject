@@ -2,10 +2,12 @@
 {
     public class UserProfileDTO
     {
-        public string UserName { get; set; }
-        public string UserLastName { get; set; }
-        public string UserEmail { get; set; }
-        public string UserPhone { get; set; }
-      
+        public DateTime RegistrationDate { get; set; }
+        public EditUserDTO EditModel { get; set; }
+        public bool isPaid { get; set; }
+        public DateTime LastActivity { get; set; }
+        public bool isActive { get; set; }
+        public DateTime? PaymentDate { get; set; }
+
     }
 }

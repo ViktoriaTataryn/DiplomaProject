@@ -299,16 +299,21 @@ namespace diplomaProject.Controllers
                     }
 
                     registration.IsPaid = true;
+                    registration.PaymentDate = DateTime.Now;
 
+                   
                     var courseId = registration.CourseId;
                     var userId = registration.UserId;
 
-                    await _progressService.UnlockNextModuleAsync(
-        registration.UserId,
-        _context.Modules
-            .Where(m => m.CourseId == registration.CourseId)
-            .OrderBy(m => m.OrderIndex)
-            .First().Id);
+                    await _context.SaveChangesAsync();
+                    await _progressService.SyncProgressAfterPayment(userId, courseId);
+
+        //            await _progressService.UnlockNextModuleAsync(
+        //registration.UserId,
+        //_context.Modules
+        //    .Where(m => m.CourseId == registration.CourseId)
+        //    .OrderBy(m => m.OrderIndex)
+        //    .First().Id);
           //          var secondModule = await _context.Modules
           //.Where(m => m.CourseId == courseId)
           //.OrderBy(m => m.OrderIndex)
@@ -340,8 +345,8 @@ namespace diplomaProject.Controllers
                     //              }
                     //          }
 
-                    await _context.SaveChangesAsync();
 
+                    //await _context.SaveChangesAsync();
                     Console.WriteLine(" DB UPDATED SUCCESSFULLY");
 
                     // Перевіряємо, чи є метадані

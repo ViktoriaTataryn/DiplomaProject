@@ -115,36 +115,81 @@ namespace diplomaProject.Services
                 .ToListAsync();
 
             var moduleStats = allModules
-                .Select(module =>
-                {
-                    var moduleLessonsProgress = lessonsProgress.Where(lp => lp.Lesson?.ModuleId == module.Id).ToList();
-                    var moduleRecord = moduleProgress.FirstOrDefault(mp =>
-                                                         mp.ModuleId == module.Id && (mp.LessonId == null || mp.LessonId == 0));
+    .Select(module =>
+    {
+        var moduleLessonsProgress = lessonsProgress.Where(lp => lp.Lesson?.ModuleId == module.Id).ToList();
 
-                    var currentModuleStatus = moduleRecord?.Status ?? ProgressStatus.Close;
+        // --- НОВА ЛОГІКА ВИЗНАЧЕННЯ СТАТУСУ ---
+        ProgressStatus currentModuleStatus;
 
-                 
-                    return new ModuleProgressDTO
-                    {
-                        ModuleId = module.Id,
-                        Name = module.Title ?? "Модуль",
-                        ModuleNumber = module.OrderIndex,
-                        ImageForUser = module.ImageUrl,
-                        // Якщо прогресу немає, буде 0, але модуль залишиться у списку
-                        TotalLesson = module.Lessons?.Count ?? 0,
-                        CompletedLesson = moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed),
-                        Percent = (module.Lessons != null && module.Lessons.Count > 0)
-        ? (int)((double)moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed) / module.Lessons.Count * 100)
-        : 0,
-                        Status = currentModuleStatus switch
-                        {
-                            ProgressStatus.Completed => "Completed",
-                            ProgressStatus.InProgress => "InProgress",
-                            ProgressStatus.Open => "Open",
-                            _ => "Close"
-                        },
-                    };
-                }).OrderBy(m => m.ModuleNumber).ToList();
+        if (moduleLessonsProgress.Any() && moduleLessonsProgress.All(lp => lp.Status == ProgressStatus.Completed))
+        {
+            // Всі лекції пройдені
+            currentModuleStatus = ProgressStatus.Completed;
+        }
+        else if (moduleLessonsProgress.Any(lp => lp.Status == ProgressStatus.InProgress || lp.Status == ProgressStatus.Completed))
+        {
+            // Хоча б одна лекція в процесі або вже завершена (але не всі)
+            currentModuleStatus = ProgressStatus.InProgress;
+        }
+        else if (moduleLessonsProgress.Any(lp => lp.Status == ProgressStatus.Open))
+        {
+            // Модуль щойно відкрили (перша лекція доступна)
+            currentModuleStatus = ProgressStatus.Open;
+        }
+        else
+        {
+            // Жодна лекція не доступна
+            currentModuleStatus = ProgressStatus.Close;
+        }
+        // ---------------------------------------
+
+        return new ModuleProgressDTO
+        {
+            ModuleId = module.Id,
+            Name = module.Title ?? "Модуль",
+            ModuleNumber = module.OrderIndex,
+            ImageForUser = module.ImageUrl,
+            TotalLesson = module.Lessons?.Count ?? 0,
+            CompletedLesson = moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed),
+            Percent = (module.Lessons != null && module.Lessons.Count > 0)
+                ? (int)((double)moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed) / module.Lessons.Count * 100)
+                : 0,
+            Status = currentModuleStatus.ToString() // Використовуємо наш обчислений статус
+        };
+    }).OrderBy(m => m.ModuleNumber).ToList();
+
+            //    var moduleStats = allModules
+            //        .Select(module =>
+            //        {
+            //            var moduleLessonsProgress = lessonsProgress.Where(lp => lp.Lesson?.ModuleId == module.Id).ToList();
+            //            var moduleRecord = moduleProgress.FirstOrDefault(mp =>
+            //                                                 mp.ModuleId == module.Id && (mp.LessonId == null || mp.LessonId == 0));
+
+            //            var currentModuleStatus = moduleRecord?.Status ?? ProgressStatus.Close;
+
+
+            //            return new ModuleProgressDTO
+            //            {
+            //                ModuleId = module.Id,
+            //                Name = module.Title ?? "Модуль",
+            //                ModuleNumber = module.OrderIndex,
+            //                ImageForUser = module.ImageUrl,
+            //                // Якщо прогресу немає, буде 0, але модуль залишиться у списку
+            //                TotalLesson = module.Lessons?.Count ?? 0,
+            //                CompletedLesson = moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed),
+            //                Percent = (module.Lessons != null && module.Lessons.Count > 0)
+            //? (int)((double)moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed) / module.Lessons.Count * 100)
+            //: 0,
+            //                Status = currentModuleStatus switch
+            //                {
+            //                    ProgressStatus.Completed => "Completed",
+            //                    ProgressStatus.InProgress => "InProgress",
+            //                    ProgressStatus.Open => "Open",
+            //                    _ => "Close"
+            //                },
+            //            };
+            //        }).OrderBy(m => m.ModuleNumber).ToList();
 
             var curLesson = await _progressService.GetActiveLessonAsync(userId, courseId);
 
