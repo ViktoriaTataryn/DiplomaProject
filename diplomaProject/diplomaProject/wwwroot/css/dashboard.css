@@ -1,5 +1,9 @@
 ﻿* {
     box-sizing: border-box;
+  
+}
+html {
+    font-size: 16px;
 }
 
 body {
@@ -10,7 +14,7 @@ body {
     color: #2B31B4;
     font-family: "Accia Piano", serif;
     line-height: 100%;
-    font-size: 32px;
+    font-size: 2.5rem;
     letter-spacing: 1px;
     font-weight: 400;
 }
@@ -26,24 +30,28 @@ body {
 
 .text {
     color: #2B31B4;
-    font-size: 16px;
-    font-family: "Gilroy-Regular",serif
+    font-size: 1.2rem;
+    font-family: "Gilroy Regular",serif;
+    font-weight: 500;
+   /* line-height:1;*/
 }
 
 .status {
     color: #BDBFE8;
-    font-size: 13px;
+    font-size: 1rem;
 }
 
 .art-frame-wrapper {
     position: relative;
-    min-width: 280px;
-    height: 180px;
+   /* min-width: 280px;*/
+   max-width:376px;
+   height:200px;
+   /* height: 180px;*/
     display: flex;
     align-items: center;
     justify-content: center;
     padding-top: 0;
-    margin-bottom: 8px;
+    margin-bottom: 0;
 }
 
 /* Файл-рамка, який лежить ПОВЕРХ усього */
@@ -54,16 +62,17 @@ body {
     width: 100%;
     height: 100%;
     z-index: 2;
-    pointer-events: none; 
+    pointer-events: none;
     object-fit: contain;
     bottom: 0;
-    filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.3));
+    /* filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.3));*/
+    filter: drop-shadow(0px 5px 12px rgba(120, 90, 200, 0.25));
 }
 
 /* Контейнер для фото модуля всередині рамки */
 .module-image-inner {
-    width: 85%;
-    height: 75%;
+    width: 87%;
+    height: 67%;
     overflow: hidden;
     z-index: 1;
 }
@@ -86,10 +95,10 @@ body {
     height: 280px;
 }
 
-.progress-container {
-    border-radius: 0px;
+/*.progress-container {
+  
     background-color: #9799C4;
-}
+}*/
 
 .progress-success {
     background-color: #2B31B4;
@@ -184,12 +193,16 @@ div#modulesSlider {
     background-color: #FFFFFF;
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
     width: 40% !important;
+    max-width: 618px;
+    
 }
 
 #hometask {
     background-color: #FFFFFF;
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
     width: 58% !important;
+    max-width:942px;
+    
     
 }
 
@@ -200,30 +213,38 @@ div#modulesSlider {
 }
 
 .hometask-text {
-    font-size: 18px;
-    
+    font-size: 1.7rem;
     color: #494C90;
-    font-family: "Gilroy";
+    font-family: "Gilroy Light", "Gilroy", sans-serif;
     font-weight: 300;
+    line-height: 1;
+    /*padding-top:5px;*/
+    /* letter-spacing: 1px;*/
+}
 
-    letter-spacing: 1px;
-   
+#hometask .hometask-text{
+    padding-top:8px;
+}
+#grades .hometask-text {
+    padding-top: 8px;
 }
 
 .hometask-num {
-    font-family: "AcciaPiano", serif;
-    font-size: 27px;
+    font-family: "Accia Piano", serif;
+    font-size: 1.8rem;
     color: #494C90;
     text-align: center;
     font-weight: 350;
+    padding-top: 8px;
 }
 
 .subtitle {
     color: #494C90;
     font-family: "Gilroy", serif;
-    line-height: 17px;
-    font-size: 14px;
-    letter-spacing: 0.5px;
+    line-height: 1;
+    font-size: 1.2rem;
+    font-weight:300;
+   /* letter-spacing: 0.5px;*/
     /*  font-weight: 300; */
 }
 
@@ -245,46 +266,54 @@ div#modulesSlider {
 
 #progressContainer {
     position: relative;
-    z-index: 5; 
-    margin-top: -145px; 
-
+    z-index: 5;
+    margin-top: -135px;
+    /*    background-color: #FFFFFF;*/
     background-image: url('https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075801/Course_Progress_BG_r0glm0.webp');
+    background-size: 107% 107%;
+    /* transform: scale(1.05);*/
     background-repeat: no-repeat;
-    background-size: cover;
+   /* background-size: cover;*/
     overflow: hidden;
     background-position: center;
+    max-width: 1580px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    /* height:511px;*/
     /* display: flex;
         flex-direction: column;
         justify-content: center; */
     /*     height:405px; */
     /*    width:100%; */
-    width: 100% !important;
-    max-width: 100% !important;
-    /* display: block !important; */ 
+    /*  width: 100% !important;
+    max-width: 100% !important;*/
+    /* display: block !important; */
     /*  box-sizing: border-box; */
-    margin-left: -10px !important;
-    margin-right: -85px !important;
-    
+    /* margin-left: -10px !important;
+    margin-right: -85px !important;*/
+
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
     /*       padding-left: 0 !important;
         padding-right: 0 !important; */
     /* background-color: #FFFFFF; */
 
-    background-origin: border-box; 
+    background-origin: border-box;
     background-clip: border-box;
-    padding: -50px !important;
+    /* padding: -50px !important;*/
 }
 
 .progress-inner-content {
-    padding: 30px 20px;
+    /*padding: 30px 12px;*/
     width: 100%;
+    padding-bottom:10px !important;
   
 }
 
 .small-text {
     font-family: "Gilroy-Medium";
   
-    font-size: 16px;
+    font-size: 1.5rem;
     color: #9799C4;
 }
 
@@ -294,9 +323,16 @@ div#modulesSlider {
 
 .buy-button {
     background-color: #2B31B4;
-    width: 450px;
-    height: 43px;
+    max-width:755px;
+    width:46%;
+    height:55px;
+   /* width: 450px;*/
+    /*height: 43px;*/
     align-content: center;
+    margin-top:40px !important;
+}
+.progress-inner-content .hometask-text{
+    line-height:1.1;
 }
 
 .btn-text {
@@ -306,7 +342,8 @@ div#modulesSlider {
     text-decoration: none;
     letter-spacing: 1px;
     /* font-weight:300; */
-    font-size: 14px;
+    font-size: 1.4rem;
+    font-weight: 300;
 }
 .btn-text:hover {
     color: #FFFFFF;
@@ -317,33 +354,37 @@ div#modulesSlider {
 /* Контейнер для лінії та фігурки */
 .progress-timeline-container {
     position: relative;
-    padding-top: 40px; /* Місце для статуї */
+    padding-top: 50px; /* Місце для статуї */
     padding-bottom: 30px; 
+
 }
 
 /* Рядок із сегментами (сама тонка сіра лінія) */
 .progress-segments {
     width: 100%;
+    display: flex;
+    align-items: flex-end;
 }
+
 
 /* Базовий стиль смужки модуля ( NotStarted ) */
 .progress-line {
-    height: 6px; 
+    height: 8px; 
     background-color: #9799C4;
-    max-width: 150px;
+    max-width: 160px;
     transition: all 0.3s ease;
 }
 
     /* Стиль для ЗАВЕРШЕНОГО модуля  */
     .progress-line.is-completed {
-        height: 18px; 
+        height: 45px; 
         background-color: #8588D1; 
     }
 
 /* --- Контейнер для СТАТУЇ --- */
 .statue-avatar-container {
     position: absolute;
-    top: -45px; 
+    top: -50px; 
     left: 45%;
     transform: translateX(-50%); 
     z-index: 10;
@@ -351,7 +392,7 @@ div#modulesSlider {
 
 /* Стилі для самої картинки */
 .statue-img {
-    height: 75px; 
+    height: 87px; 
     object-fit: contain;
 }
 
@@ -366,7 +407,42 @@ div#modulesSlider {
 }
 
 
+.grade-item-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
+    /* Назва місяця */
+    .grade-item-container span {
+        font-size: 1.2rem;
+        color: #494C90;
+        font-family: "Gilroy", serif;
+        font-weight: 300;
+    }
+
+/* Сітка */
+.grades-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 45px); /* 5 в ряд */
+    gap: 12px;
+}
+
+/* Квадрат оцінки */
+.grade-square {
+    width: 45px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #494C90;
+    color: #494C90;
+    font-size: 1.3rem;
+    font-weight: 350;
+    background-color: transparent;
+    font-family: "Accia Piano", serif;
+}
 
 
 @media (max-width: 767px) {
@@ -541,21 +617,39 @@ div#modulesSlider {
         height:8px;
     }
     #conteiner2 {
-        margin-top: -65px !important;
-        width: 100% !important;
+          margin-top: -15px !important;
+        /*width: 100% !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
         padding-left: 0px ;
         padding-right: 0px ;
-        margin-bottom:10px;
+        margin-bottom:10px;*/
+        display: flex !important;
+        flex-direction: column !important; /* Примусово ставимо один під одного */
+        height: auto !important;
+        padding: 0 !important;
+
     }
 
 
     #hometask {
-        flex: 0 0 100% !important;
-        max-width: 100%;
-        padding: 10px 10px;
+        /*flex: 0 0 100% !important;*/
+        /* max-width: 100%;*/
+        /*padding: 10px 10px;
         padding-bottom: 0px;
+        max-width: 351px;
+        width: 100% !important;
+        flex-direction: row;*/
+        max-width: 351px;
+        width: 100% !important;
+        padding-top:10px !important;
+     /*   padding: 10px !important;*/
+       /* padding-top: 15px !important;
+        padding-left: 5px !important;
+        padding-right: 10px !important;*/
+        margin-bottom: 20px;
+        margin-top: 0px;
+        flex-direction: row;
     }
 
     .hometask-box {
@@ -590,13 +684,20 @@ div#modulesSlider {
         text-align: center;
     }
     #grades {
-        flex: 0 0 100% !important;
-        max-width: 100%;
-        margin-top: 15px;
+        max-width: 351px;
+        width: 100% !important;
+        margin-bottom: 20px;
+        flex-direction: row;
+        /*flex: 0 0 100% !important;*/
+        /*     max-width: 100%;*/
+        /*margin-top: 15px;
         padding: 10px 10px;
         padding-top: 21px;
+        max-width: 351px;
+        width: 100% !important;
+        flex-direction: row;*/
     }
-        #grades .d-flex {
+       /* #grades .d-flex {
             display: flex !important;
             flex-direction: row !important; 
             align-items: flex-start !important;
@@ -621,10 +722,10 @@ div#modulesSlider {
             text-align: center;
             padding-left: 5px !important;
             padding-right: 0 !important;
-        }
+        }*/
 
     /* Налаштування самих квадратиків оцінок,  */
-    .grade-square {
+    /*.grade-square {
         width: 30px !important;
         height: 30px !important;
         font-size: 14px !important;
@@ -640,12 +741,22 @@ div#modulesSlider {
         font-weight: bold;
         display: block;
         margin-bottom: 5px;
-        text-transform: capitalize; /* Місяці з великої літери */
+        text-transform: capitalize;*/ /* Місяці з великої літери */
+    /*}*/
+    .grades-grid {
+        /*display: grid;
+        grid-template-columns: repeat(5, 45px);*/ /* 5 в ряд */
+        gap: 3px;
     }
 
-    .slider-arrow-img,
-    #modulesList .justify-content-between.mb-1.mt-4 {
-        display: none !important;
+    /* Квадрат оцінки */
+    .grade-square {
+        width: 35px;
+        height: 35px;
+     
+        font-size: 1rem;
+      
+        
     }
 
     
@@ -690,4 +801,12 @@ div#modulesSlider {
     }
     
     }
+@media (max-width: 1600px) {
+    html {
+        /* Тепер 1rem = 14px. 
+           Ваш заголовок автоматично стане 28px (2 * 14), 
+           а статус — 12.25px (0.875 * 14) */
+        font-size: 14px;
+    }
+}
 

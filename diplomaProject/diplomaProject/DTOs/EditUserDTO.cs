@@ -10,6 +10,9 @@ namespace diplomaProject.DTOs
         public string LastName { get; set; }
 
         public string UserEmail { get; set; }
+
+        [Phone(ErrorMessage = "Некоректний формат номера")]
+        [RegularExpression(@"^\+?\d{10,13}$", ErrorMessage = "Номер має бути у форматі +380...")]
         public string UserPhone { get; set; }
 
         [DataType(DataType.Password)]

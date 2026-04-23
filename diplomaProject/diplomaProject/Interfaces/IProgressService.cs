@@ -28,6 +28,7 @@ namespace diplomaProject.Interfaces
 
         Task <HomeworkStatus>GetHomeworkStatusAsync(string userId, int homeworkId);
         Task<bool> IsFirstModuleCompletedAsync(string userId, int courseId);
+        Task SyncProgressAfterPayment(string userId, int courseId);
 
 
 

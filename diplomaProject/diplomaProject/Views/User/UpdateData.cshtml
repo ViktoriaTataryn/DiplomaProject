@@ -1,7 +1,202 @@
 ﻿@using diplomaProject.DTOs
-@model EditUserDTO
+@model UserProfileDTO
 
-<div class="container mt-4">
+
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/userProfile.css" asp-append-version="true" />
+
+<div class="m-3">
+    <div class=" d-flex " id="profileData">
+
+        <div class=" progress-inner-content px-3 py-4" >
+            <div id="personal-view">
+            <span class="title mb-3 mt-4 ">ВАШІ ДАНІ </span>
+
+            <div class="user-text mt-3 py-1" >
+                <span class="userName d-block">@Model.EditModel.LastName @Model.EditModel.FirstName</span>
+
+                <span class="userData d-block py-2">
+                    @if (!string.IsNullOrEmpty(Model.EditModel.UserPhone))
+                    {
+                        @Model.EditModel.UserPhone
+                    }
+                    else
+                    {
+                        <span class="userData d-block" style="cursor: pointer;" onclick="toggleSection('personal') ">
+                            + Додати номер телефону
+                        </span>
+                    }
+                </span>
+                <span class="userData d-block mb-4">@Model.EditModel.UserEmail</span>
+                <button type="button" class="update-btn" onclick="toggleSection('personal')">
+                    <span class="update-btn-text">РЕДАГУВАТИ ДАНІ</span>
+            </button>
+            </div>
+            </div>
+            <div id="personal-edit" style="display: none;">
+                <span class="title mb-3 mt-4">РЕДАГУВАННЯ</span>
+                
+                <form asp-action="UpdateData" method="post">
+                    <div class="input-line-group">
+                        <input asp-for="EditModel.FirstName" class="custom-line-input" placeholder="Ім'я">
+                    </div>
+                    <div class="input-line-group">
+                        <input asp-for="EditModel.LastName" class="custom-line-input" placeholder="Прізвище">
+                    </div>
+                       <div class="input-line-group">
+                        <input asp-for="EditModel.UserPhone" class="custom-line-input" placeholder="Телефон">
+                    </div>
+                    <div class="input-line-group">
+                        <input asp-for="EditModel.UserEmail" class="custom-line-input" placeholder=" Email">
+                    </div>
+
+                    <div id="save-button-container" style="display: none;">
+                        <button type="submit" class="btn-replace-pass">ЗАМІНИТИ</button>
+                        <button type="button" class="btn btn-link" onclick="toggleSection('personal')">Скасувати</button>
+                    </div>
+                </form>
+            </div>
+                </div>
+                <div class="bg-image">
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776887195/Profile_Page_wkrkao.webp" alt="backgroung-image" />
+                </div>
+            </div>
+
+
+    <div class=" d-flex flex-wrap justify-content-between mb-1 mt-1 py-4 " id="conteiner2">
+
+        <div class="   py-4 px-3 " id="userStatus">
+            <span class="title">ОБЛІКОВИЙ ЗАПИС</span>
+
+           @*  <div class=" d-flex  justify-content-sm-evenly align-content-center gap-3 p-3 mt-4"> *@
+            <div class="d-flex justify-content-evenly align-content-center gap-2 gap-sm-3 p-3 p-sm-3 mt-2 mt-sm-4">
+                <div class="d-flex flex-column px-4 hometask-box" style="border-right: 2px solid #8588D1; ">
+                    <span class="hometask-text">Статус у курсі:</span>
+                    <span class="hometask-num">Активний</span>
+                </div>
+
+                <div class="d-flex flex-column  px-4 hometask-box " style="border-right: 2px solid #8588D1">
+                    <span class="hometask-text">Дата реєстрації:</span>
+                    <span class="hometask-num">@Model.RegistrationDate.ToString("dd.MM.yyyy")</span>
+                </div>
+
+                <div class="d-flex flex-column  px-4 hometask-box ">
+                    <span class="hometask-text">Останній вхід:</span>
+                    <span class="hometask-num">@Model.LastActivity.ToString("dd.MM.yyyy")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="  py-4 px-3 " id="payment">
+            <span class="title">ОПЛАТА</span>
+
+            <div class=" d-flex  justify-content-evenly align-content-center gap-3 p-3 mt-4">
+
+                <div class="d-flex flex-column px-4 py-2 hometask-box" style="border-right: 2px solid #8588D1 !important; ">
+
+
+                    <div>
+                        <span class="hometask-text "> Статус оплати:</span><br />
+                        <span class="hometask-num" > @(Model.isPaid ? "Оплачено" : "Не оплачено")</span>
+                    </div>
+                    
+                </div>
+                <div class="d-flex flex-column px-4  py-2">
+                    <span class="hometask-text">Дата платежу </span>
+                    @if (Model.isPaid && Model.PaymentDate != DateTime.MinValue)
+                    {
+                       
+                        <span class="hometask-num">@Model.PaymentDate.Value.ToString("dd.MM.yyyy")</span>
+                    }
+                    else
+                    {
+                        <span class="hometask-num"></span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class=" mb-3 mt-1 py-3 px-3" id="modulesList">
+        <div class="password-change-container px-2 py-2">
+            <span class="title ">ЗМІНИТИ ПАРОЛЬ</span>
+
+          @*   <div class="mb-3">
+                <label asp-for="EditModel.CurrentPassword" class="form-label" placeholder="Старий пароль"></label>
+                <input asp-for="EditModel.CurrentPassword" class="form-control" />
+                <span asp-validation-for="EditModel.CurrentPassword" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EditModel.NewPassword" class="form-label" placeholder="Новий пароль"></label>
+                <input asp-for="EditModel.NewPassword" class="form-control" />
+                
+                <span asp-validation-for="EditModel.NewPassword" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EditModel.ConfirmPassword" class="form-label" placeholder="Повторити пароль"></label>
+                <input asp-for="EditModel.ConfirmPassword" class="form-control" />
+                <span asp-validation-for="EditModel.ConfirmPassword" class="text-danger"></span>
+            </div> *@
+            <form asp-action="UpdateData" method="post" class="mt-2">
+                @* Поле: Старий пароль *@
+                <div class="input-line-group">
+                    <input asp-for="EditModel.CurrentPassword" type="password" placeholder="Старий пароль" class="custom-line-input" id="oldPass">
+                    <i class="bi bi-eye eye-icon" id="toggleOldPass" onclick="togglePassword('oldPass', 'toggleOldPass')"></i>
+                    <span asp-validation-for="EditModel.CurrentPassword" class="text-danger"></span>
+                </div>
+
+                @* Поле: Новий пароль *@
+                <div class="input-line-group">
+                    <input asp-for="EditModel.NewPassword" type="password" placeholder="Новий пароль" class="custom-line-input" id="newPass">
+                    <i class="bi bi-eye eye-icon" id="iconNew" onclick="togglePassword('newPass', 'iconNew')"></i>
+                    <span asp-validation-for="EditModel.NewPassword" class="text-danger"></span>
+                </div>
+
+                @* Поле: Повторити пароль *@
+                <div class="input-line-group">
+                    <input asp-for="EditModel.ConfirmPassword" type="password" placeholder="Повторити пароль" class="custom-line-input" id="confirmPass">
+                    <i class="bi bi-eye eye-icon" id="iconConfirm" onclick="togglePassword('confirmPass', 'iconConfirm')"></i>
+                    <span asp-validation-for="EditModel.ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn-replace-pass">ЗАМІНИТИ</button>
+            </form>
+
+        </div>
+
+
+
+    </div>
+
+    <div class=" mb-2 mt-1 d-flex flex-column  final-block">
+        <div class="end-info">
+            <span class="title d-block py-2 mb-2">ВИХІД</span>
+            <span class="subtitle-end d-block py-2" >До нових зустрічей у світі мистецтва</span>
+              <form asp-controller="Auth" asp-action="LogOut" method="post">
+                <button class="btn-replace-pass" style="background-color:#2B31B4;color:#FFFFFF;">ВИЙТИ НА ЦЬОМУ ПРИСТРОЇ</button>
+            </form>
+            <form asp-controller="Auth" asp-action="LogOut" method="post">
+            <button  class="btn-replace-pass">ВИЙТИ НА ВСІХ ПРИСТРОЯХ</button>
+              </form>
+        </div>
+        <div class="end-img align-content-end">
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776887206/BG_Profile_Page_qby864.webp" alt="end-img"/>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+@* <div class="container mt-4">
     <form asp-action="UpdateData" method="post">
 
         <div class="card shadow-sm mb-4">
@@ -69,7 +264,7 @@
     </form>
     <form asp-controller="Auth" asp-action="LogOut" method="post">
                         <button type="submit" class="dropdown-item text-danger">Вийти</button></form>
-</div>
+</div> *@
 
 @section Scripts {
     <script>
@@ -99,6 +294,19 @@
 
             if (personalEdit === 'none' && passwordEdit === 'none') {
                 saveBtn.style.display = 'none';
+            }
+        }
+
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("bi-eye", "bi-eye-slash"); // змінюємо іконку на перекреслену
+            } else {
+                input.type = "password";
+                icon.classList.replace("bi-eye-slash", "bi-eye"); // повертаємо звичайне око
             }
         }
     </script>

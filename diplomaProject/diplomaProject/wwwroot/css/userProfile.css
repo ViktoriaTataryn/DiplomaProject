@@ -1,0 +1,283 @@
+﻿html {
+    font-size: 16px;
+}
+
+#profileData {
+    background-color: #FFFFFF;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1580px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+}
+
+.bg-image {
+    width: 390px;
+    height: 230px;
+    flex-shrink: 0;
+}
+
+    .bg-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Фото заповнює блок, не втрачаючи пропорцій */
+        display: block;
+    }
+
+.userName {
+    font-size: 2rem;
+    color: #494C90;
+    font-family: "Gilroy", serif;
+    font-weight: 500;
+}
+
+.userData {
+    font-size: 1.5rem;
+    color: #494C90;
+    font-family: "Gilroy Light", "Gilroy", sans-serif;
+    font-weight: 300;
+}
+
+.update-btn {
+    max-width: 480px;
+    width: 47%;
+    height: 55px;
+    background-color: #2B31B4;
+    border: 1px solid #2B31B4;
+}
+
+.update-btn-text {
+    color: #FFFFFF;
+    font-size: 1.4rem;
+    font-family: "Accia Piano", serif;
+    font-weight: 300;
+    /*  letter-spacing:1px; */
+
+    letter-spacing: 1px;
+}
+
+#payment {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+    width: 40% !important;
+    max-width: 642px;
+}
+
+#userStatus {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+    width: 58% !important;
+    max-width: 918px;
+}
+
+hometask-text {
+    padding-top: 8px;
+}
+
+.input-line-group {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 1532px;
+}
+
+.custom-line-input {
+    width: 100%;
+    max-width: 1532px;
+    border: none;
+    border-bottom: 1px solid #2B31B4; /* тонка лінія знизу */
+    padding: 15px 10px 5px 3px;
+    background: transparent;
+    outline: none;
+    font-size: 1.25rem;
+    color: #9799C4; /* колір плейсхолдера */
+}
+
+
+
+.btn-replace-pass {
+    background: transparent;
+    border: 1.5px solid #2B31B4;
+    color: #3b42a8;
+    /*  padding: 15px 60px; */
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s;
+    max-width: 435px;
+    height: 60px;
+    width: 40%;
+    font-family: "Accia Piano", serif;
+}
+
+    .btn-replace-pass:hover {
+        background: #3b42a8;
+        color: white;
+    }
+
+.custom-line-input::placeholder {
+    color: #9799C4;
+    font-weight: 300;
+    font-size: 1.2rem;
+    font-family: "Accia Piano", serif;
+}
+
+.eye-icon {
+    position: absolute;
+    right: 5px;
+    bottom: 10px; /* вирівнюємо точно над синьою лінією */
+    cursor: pointer;
+    color: #2B31B4; /* колір як у вашого тексту */
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+    .eye-icon:hover {
+        color: #5a62d1; /* легкий ефект при наведенні */
+    }
+
+.end-img {
+    max-width: 1580px;
+    height: 352px;
+    position: relative;
+    z-index: 1;
+    top: -160px;
+}
+
+    .end-img img {
+        width: 100%;
+    }
+
+.end-info {
+    position: relative;
+    z-index: 5;
+    margin-top: 40px;
+    justify-content: center;
+    align-content: center;
+    /*  left:304px; */
+    text-align: center;
+}
+
+.final-block {
+    /* position: relative; */
+    height: 375px;
+    
+    /*  z-index: 1; */
+}
+.subtitle-end {
+    font-size: 1.8rem;
+    font-weight: 300;
+    font-family: "Gilroy Light", "Gilroy", sans-serif;
+    color: #494C90;
+}
+
+
+
+@media (max-width: 767px) {
+    #profileData {
+        max-width: 351px;
+       
+    }
+
+    .bg-image {
+        width: 100px;
+        height: 50px;
+        
+    }
+
+
+    .update-btn {
+        max-width: 326px;
+      /*  width: 47%;*/
+        height: 48px;
+
+    }
+
+    .update-btn-text {
+        font-size: 1rem;
+    }
+
+    #conteiner2 {
+        display: flex !important;
+        flex-direction: column !important; /* Примусово ставимо один під одного */
+        height: auto !important;
+        padding: 0 !important;
+    }
+
+    .userName {
+        font-size: 1.25rem;
+    }
+    .userData {
+        font-size: 1rem;
+    }
+
+    .update-btn {
+        width: 326px;
+        height: 50px;
+    }
+
+    #userStatus {
+        /*   max-width: 351px;
+            width:100%; */
+        max-width: 351px;
+        width: 100% !important;
+        padding: 10px !important;
+        padding-top: 15px !important;
+        padding-left: 5px !important;
+        padding-right: 10px !important;
+        margin-bottom: 20px;
+        margin-top: 50px;
+        flex-direction: row;
+    }
+    .hometask-box{
+        padding:2px !important;
+    }
+    hometask-text {
+        padding-top: 4px;
+        font-size: 0.9rem;
+    }
+    .hometask-num {
+        font-size: 1rem;
+        padding:3px;
+        padding-top:0px !important;
+    }
+    #payment {
+        max-width: 351px;
+        width: 100% !important;
+        margin-bottom: 20px;
+        flex-direction: row;
+    }
+    .subtitle-end {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    .btn-replace-pass {
+        max-width: 351px;
+        width:100%;
+        font-size: 1rem;
+        height:48px;
+    }
+    .title {
+        font-size: 1.8rem;
+        margin-bottom:8px;
+    }
+    .end-img {
+        top: -20px;
+    }
+    .custom-line-input::placeholder {
+     
+        font-size: 1rem;
+    
+    }
+}
+
+@media (max-width: 1600px) {
+    html {
+        /* Тепер 1rem = 14px. 
+           Ваш заголовок автоматично стане 28px (2 * 14), 
+           а статус — 12.25px (0.875 * 14) */
+        font-size: 14px;
+    }
+}
