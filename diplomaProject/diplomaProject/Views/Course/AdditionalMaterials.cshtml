@@ -1,36 +1,68 @@
-﻿@model Question
+﻿@using diplomaProject.Models
+@model IEnumerable<diplomaProject.Models.Module>
+
 @{
-    ViewData["Title"] = "Add Test Question";
+    ViewData["Title"] = "Additional Materials";
 }
 
-<div class="container mt-5">
-    <h2>Add Question to Lecture</h2>
+<div class="container mt-4">
+    <h1 class="mb-4 text-center">Archive: Additional Materials</h1>
 
-    <form asp-action="AddQuestion" method="post">
-        <input type="hidden" asp-for="LessonId" value="@ViewBag.LectureId" />
-
-        <div class="mb-3">
-            <label class="form-label">Question Text</label>
-            <input asp-for="Text" class="form-control" placeholder="Enter question..." required />
-        </div>
-
-        <div id="options-container">
-            <label class="form-label">Answer Options (Select the correct one)</label>
-            <div class="input-group mb-2">
-                <div class="input-group-text">
-                    <input type="radio" name="correctOptionIndex" value="0" checked>
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info text-center">No materials available at the moment.</div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var module in Model)
+            {
+                <div class="col-12 mb-4">
+                    <div class="card shadow-sm border-0">
+                        @* Header styles from Figma profile style *@
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" style="border-radius: 12px 12px 0 0;">
+                            <h3 class="card-title mb-0 h5">Module @module.OrderIndex: @module.Title</h3>
+                        </div>
+                        <div class="card-body">
+                            @if (module.Lessons == null || !module.Lessons.Any())
+                            {
+                                <p class="text-muted small">No lessons available in this module.</p>
+                            }
+                            else
+                            {
+                                @foreach (var lesson in module.Lessons.OrderBy(l => l.LessonIndex))
+                                {
+                                    <div class="lesson-section mb-3 p-2 border-bottom">
+                                        <h5 class="h6 fw-bold">Lesson @lesson.LessonIndex: @lesson.Title</h5>
+                                        <ul class="list-group list-group-flush">
+                                            @foreach (var resource in lesson.Resources)
+                                            {
+                                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0">
+                                                    <span class="text-truncate me-2">
+                                                        <i class="bi bi-file-earmark-arrow-down me-2"></i>
+                                                        @resource.FileName
+                                                    </span>
+                                                    <a asp-action="DownloadResource" asp-controller="Course" asp-route-resourceId="@resource.Id" 
+                                                       class="btn btn-sm btn-outline-success flex-shrink-0">
+                                                        Download
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
                 </div>
-                <input type="text" name="options" class="form-control" placeholder="Option 1" required>
-            </div>
-            <div class="input-group mb-2">
-                <div class="input-group-text">
-                    <input type="radio" name="correctOptionIndex" value="1">
-                </div>
-                <input type="text" name="options" class="form-control" placeholder="Option 2" required>
-            </div>
+            }
         </div>
-
-        <button type="submit" class="btn btn-primary">Save Question</button>
-        <a asp-action="Lesson" asp-route-id="@ViewBag.LectureId" class="btn btn-secondary">Cancel</a>
-    </form>
+    }
 </div>
+
+@* Styling for smooth UI experience *@
+<style>
+    .card { border-radius: 12px; transition: all 0.3s ease; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    .list-group-item { border: none; }
+</style>

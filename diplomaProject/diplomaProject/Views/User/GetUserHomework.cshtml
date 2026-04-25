@@ -1,1 +1,59 @@
-﻿<h1>Homework Submissions</h1>
+﻿@using diplomaProject.Models
+@model IEnumerable<diplomaProject.Models.HomeworkSubmission>
+
+@{
+    ViewData["Title"] = "My Homeworks";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">My Homework Submissions</h1>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-light border text-center">
+            <p class="mb-0 text-muted">You haven't submitted any homework yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm" style="border-radius: 12px;">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="ps-3">Lesson</th>
+                        <th>Date Submitted</th>
+                        <th>Status</th>
+                        <th class="text-center">Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-3 fw-bold">@(item.Homework?.Lesson?.Title ?? "N/A")</td>
+                            <td class="small">@item.SubmissionDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                @* Dynamic badge color based on status *@
+                                @if (item.Status == HomeworkStatus.Approved)
+                                {
+                                    <span class="badge bg-success">Approved</span>
+                                }
+                                else if (item.Status == HomeworkStatus.Pending)
+                                {
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Rejected</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <strong class="text-primary">@(item.Grade?.ToString() ?? "—")</strong>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

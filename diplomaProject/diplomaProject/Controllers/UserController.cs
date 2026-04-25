@@ -83,6 +83,28 @@ namespace diplomaProject.Controllers
         //    return View(homeworks);
         //}
 
+        // GET: User/GetUserHomework
+        [HttpGet]
+        public async Task<IActionResult> GetUserHomework()
+        {
+            // Get current user ID
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Fetch homework submissions with related data
+            var homeworks = await _context.HomeworkSubmissions
+                .Include(u => u.Homework)
+                    .ThenInclude(u => u.Lesson)
+                .Where(u => u.StudentId == userId)
+                // Only show homeworks for lessons that are not "Closed" in progress
+                .Where(s => _context.UserProgresses.Any(p =>
+                        p.UserId == userId &&
+                        p.LessonId == s.Homework.LessonId &&
+                        p.Status != ProgressStatus.Close))
+                .OrderByDescending(u => u.SubmissionDate)
+                .ToListAsync();
+
+            return View(homeworks);
+        }
 
         [HttpGet]
         public async Task<IActionResult> UpdateData()
