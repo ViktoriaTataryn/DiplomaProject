@@ -19,5 +19,6 @@ namespace diplomaProject.Models
 
         // Список ответов, которые пришлют студенты
         public ICollection<HomeworkSubmission> Submissions { get; set; } = new List<HomeworkSubmission>();
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
     }
 }

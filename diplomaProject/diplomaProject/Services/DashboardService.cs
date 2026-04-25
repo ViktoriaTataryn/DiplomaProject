@@ -130,7 +130,7 @@ namespace diplomaProject.Services
                         ImageForUser = module.ImageUrl,
                         // Якщо прогресу немає, буде 0, але модуль залишиться у списку
                         TotalLesson = module.Lessons?.Count ?? 0,
-                        CompletedLesson = moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed),
+                        CompletedModule = moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed),
                         Status = currentModuleStatus switch
                         {
                             ProgressStatus.Completed => "Completed",
