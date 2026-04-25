@@ -18,9 +18,6 @@ body {
 #modulesList {
     background-color: #FFFFFF;
     overflow: hidden;
-   
-    
-
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
 }
 
@@ -54,7 +51,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 2;
-    pointer-events: none; 
+    pointer-events: none;
     object-fit: contain;
     bottom: 0;
     filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.3));
@@ -159,14 +156,12 @@ body {
 
 div#modulesSlider {
     display: flex !important;
-    flex-wrap: nowrap !important; 
+    flex-wrap: nowrap !important;
     overflow-x: auto !important;
     scroll-behavior: smooth;
     gap: 20px;
-
     padding-bottom: 40px !important;
     margin-bottom: -40px !important;
-
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
 }
@@ -188,7 +183,6 @@ div#modulesSlider {
     background-color: #FFFFFF;
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
     width: 58% !important;
-    
 }
 
 .hometask-box {
@@ -199,13 +193,10 @@ div#modulesSlider {
 
 .hometask-text {
     font-size: 18px;
-    
     color: #494C90;
     font-family: "Gilroy";
     font-weight: 300;
-
     letter-spacing: 1px;
-   
 }
 
 .hometask-num {
@@ -243,9 +234,8 @@ div#modulesSlider {
 
 #progressContainer {
     position: relative;
-    z-index: 5; 
-    margin-top: -145px; 
-
+    z-index: 5;
+    margin-top: -145px;
     background-image: url('https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075801/Course_Progress_BG_r0glm0.webp');
     background-repeat: no-repeat;
     background-size: cover;
@@ -258,17 +248,16 @@ div#modulesSlider {
     /*    width:100%; */
     width: 100% !important;
     max-width: 100% !important;
-    /* display: block !important; */ 
+    /* display: block !important; */
     /*  box-sizing: border-box; */
     margin-left: -10px !important;
     margin-right: -85px !important;
-    
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
     /*       padding-left: 0 !important;
         padding-right: 0 !important; */
     /* background-color: #FFFFFF; */
 
-    background-origin: border-box; 
+    background-origin: border-box;
     background-clip: border-box;
     padding: -50px !important;
 }
@@ -276,12 +265,10 @@ div#modulesSlider {
 .progress-inner-content {
     padding: 30px 20px;
     width: 100%;
-  
 }
 
 .small-text {
     font-family: "Gilroy-Medium";
-  
     font-size: 16px;
     color: #9799C4;
 }
@@ -306,17 +293,17 @@ div#modulesSlider {
     /* font-weight:300; */
     font-size: 14px;
 }
-.btn-text:hover {
-    color: #FFFFFF;
-    
-}
+
+    .btn-text:hover {
+        color: #FFFFFF;
+    }
 
 
 /* Контейнер для лінії та фігурки */
 .progress-timeline-container {
     position: relative;
     padding-top: 40px; /* Місце для статуї */
-    padding-bottom: 30px; 
+    padding-bottom: 30px;
 }
 
 /* Рядок із сегментами (сама тонка сіра лінія) */
@@ -326,7 +313,7 @@ div#modulesSlider {
 
 /* Базовий стиль смужки модуля ( NotStarted ) */
 .progress-line {
-    height: 6px; 
+    height: 6px;
     background-color: #9799C4;
     max-width: 150px;
     transition: all 0.3s ease;
@@ -334,22 +321,22 @@ div#modulesSlider {
 
     /* Стиль для ЗАВЕРШЕНОГО модуля  */
     .progress-line.is-completed {
-        height: 18px; 
-        background-color: #8588D1; 
+        height: 18px;
+        background-color: #8588D1;
     }
 
 /* --- Контейнер для СТАТУЇ --- */
 .statue-avatar-container {
     position: absolute;
-    top: -45px; 
+    top: -45px;
     left: 45%;
-    transform: translateX(-50%); 
+    transform: translateX(-50%);
     z-index: 10;
 }
 
 /* Стилі для самої картинки */
 .statue-img {
-    height: 75px; 
+    height: 75px;
     object-fit: contain;
 }
 
@@ -369,21 +356,18 @@ div#modulesSlider {
 
 @media (max-width: 767px) {
     .welcome-section {
-        
         overflow: hidden;
-        min-height: 150px; 
-        margin-bottom:15px;
-      
+        min-height: 150px;
+        margin-bottom: 15px;
     }
 
     .welcome-text {
-        z-index: 2; 
-        width: 80% !important; 
+        z-index: 2;
+        width: 80% !important;
         margin-right: -25%;
         margin-top: 10px;
-      
     }
-    
+
 
         .welcome-text .title {
             font-size: 22px !important;
@@ -393,43 +377,40 @@ div#modulesSlider {
         }
 
         .welcome-text .subtitle {
-            font-size: 13px !important; 
+            font-size: 13px !important;
             margin-top: 5px !important;
             white-space: nowrap;
-            line-height:14px;
-          
+            line-height: 14px;
         }
 
     .welcome-picture {
-        width: 65% !important; 
+        width: 65% !important;
         display: flex;
         justify-content: flex-end;
-        padding-top:-10px !important;
+        padding-top: -10px !important;
     }
 
         .welcome-picture img {
-            max-width: 280px !important; 
+            max-width: 280px !important;
             height: auto;
-            opacity: 0.9; 
+            opacity: 0.9;
             object-fit: contain;
-            top: -70px ;
+            top: -70px;
             right: -40px !important;
-            padding-top:0px ;
-
+            padding-top: 0px;
         }
+
     .title {
-        
         font-size: 24px;
         letter-spacing: 0px;
         font-weight: 350;
     }
 
     #progressContainer {
-        margin-top: 0 ; 
-        padding-top: 10px !important; 
+        margin-top: 0;
+        padding-top: 10px !important;
         position: relative !important;
         top: -60px;
-       
         width: 100% !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
@@ -437,14 +418,14 @@ div#modulesSlider {
         padding-left: 0px;
         padding-right: 0px;
         background-image: none;
-        background-color:#FFFFFF;
+        background-color: #FFFFFF;
     }
 
- 
+
     .m-3 {
         margin: 10px !important; /* Трохи зменшуємо зовнішні відступи на мобільних */
     }
-   
+
     .row {
         margin-left: 0 !important;
         margin-right: 0 !important;
@@ -453,13 +434,13 @@ div#modulesSlider {
         padding-right: 0 !important;
     }
 
-    
+
     body, html {
         overflow-x: hidden !important; /* Забороняє прокрутку вправо */
-        width: 100% ;
+        width: 100%;
     }
 
-    
+
     .buy-button, .buy-button a {
         display: block !important;
         width: 100% !important;
@@ -468,12 +449,12 @@ div#modulesSlider {
         padding-left: 0 !important;
         padding-right: 0 !important;
         text-align: center;
-       
     }
-    .buy-button{
-        margin-top:35px;
+
+    .buy-button {
+        margin-top: 35px;
     }
-   
+
     .btn-text {
         display: block !important;
         width: 100% !important;
@@ -483,69 +464,68 @@ div#modulesSlider {
         text-decoration: none;
     }
 
-  
+
     .progress-inner-content {
         padding: 7px 8px !important;
     }
 
- 
+
     .small-text, .hometask-text {
         width: 100% !important;
-        display: block ;
-        letter-spacing:0px;
-        font-size:15px;
-        line-height:14px;
-        margin-bottom:15px;
+        display: block;
+        letter-spacing: 0px;
+        font-size: 15px;
+        line-height: 14px;
+        margin-bottom: 15px;
     }
+
     .progress-segments {
         display: flex !important;
-        flex-wrap: nowrap !important; 
-     
+        flex-wrap: nowrap !important;
         width: 100% !important;
         overflow: visible !important;
-      
-        height: 30px; 
+        height: 30px;
     }
 
     .progress-segment-wrapper {
-        flex: 1 1 auto !important; 
+        flex: 1 1 auto !important;
         min-width: 0 !important;
-     
         overflow: visible !important;
     }
     /* Контейнер для лінії та фігурки */
     .progress-timeline-container {
         padding-top: 20px;
         padding-bottom: 10px;
-       margin-top:8px;
+        margin-top: 8px;
     }
     /* --- Контейнер для СТАТУЇ --- */
     .statue-avatar-container {
-   
-        top: -28px; 
+        top: -28px;
         left: 45%;
-        
     }
+
     .progress-segment-wrapper.mx-3 {
-       
         margin-left: 6px !important;
         margin-right: 6px !important;
     }
+
     .statue-img {
-        height: 44px; 
+        height: 44px;
         object-fit: contain;
     }
+
     .progress-line {
-        height:8px;
+        height: 8px;
     }
+
     #conteiner2 {
         margin-top: -65px !important;
         width: 100% !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
-        padding-left: 0px ;
-        padding-right: 0px ;
-        margin-bottom:10px;
+        padding-left: 0px;
+        padding-right: 0px;
+        margin-bottom: 10px;
     }
 
 
@@ -563,8 +543,9 @@ div#modulesSlider {
         flex: 1 1 0;
         border-right: 2px solid #8588D1;
     }
-    #hometask .title{
-        padding-bottom:30px;
+
+    #hometask .title {
+        padding-bottom: 30px;
     }
 
 
@@ -587,6 +568,7 @@ div#modulesSlider {
         width: 100%;
         text-align: center;
     }
+
     #grades {
         flex: 0 0 100% !important;
         max-width: 100%;
@@ -594,25 +576,25 @@ div#modulesSlider {
         padding: 10px 10px;
         padding-top: 21px;
     }
+
         #grades .d-flex {
             display: flex !important;
-            flex-direction: row !important; 
+            flex-direction: row !important;
             align-items: flex-start !important;
             width: 100% !important;
-           
         }
 
-       
+
         #grades .px-1.flex-grow-1 {
-            flex: 2 !important; 
-            min-width: 0 !important; 
-            border-right: 2px solid #8588D1 ;
+            flex: 2 !important;
+            min-width: 0 !important;
+            border-right: 2px solid #8588D1;
             padding-right: 10px !important;
         }
 
-        
+
         #grades .hometask-box {
-            flex: 1 !important; 
+            flex: 1 !important;
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
@@ -629,12 +611,11 @@ div#modulesSlider {
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #f0f0f0; 
-      
+        background-color: #f0f0f0;
     }
 
     .grade-item-container span {
-        font-size: 12px ;
+        font-size: 12px;
         font-weight: bold;
         display: block;
         margin-bottom: 5px;
@@ -646,32 +627,30 @@ div#modulesSlider {
         display: none !important;
     }
 
-    
+
     #modulesSlider.slider-wrapper {
         display: flex !important;
-        flex-direction: column !important; 
-    
-        overflow-x: visible !important; 
+        flex-direction: column !important;
+        overflow-x: visible !important;
         width: 100% !important;
-       
     }
 
     .slider-item {
-        width: 100% !important; 
+        width: 100% !important;
         flex: 0 0 auto !important;
         margin-bottom: 5px !important;
     }
-   
+
     .module-card {
         width: 100% !important;
         max-width: 100% !important;
         display: block !important;
     }
 
-   
+
     .art-frame-wrapper {
         height: auto !important;
-        aspect-ratio: 16 / 9; 
+        aspect-ratio: 16 / 9;
         width: 100% !important;
     }
 
@@ -680,12 +659,12 @@ div#modulesSlider {
         padding-top: 5px !important;
         padding-bottom: 20px !important;
     }
+
     #modulesList .d-flex.justify-content-between.mb-2 .title:last-child {
         display: none !important;
     }
-    #modulesList .d-flex.justify-content-between.mb-2 {
-        padding-bottom:20px;
-    }
-    
-    }
 
+    #modulesList .d-flex.justify-content-between.mb-2 {
+        padding-bottom: 20px;
+    }
+}

@@ -22,7 +22,7 @@ namespace diplomaProject.Controllers
 
         public UserController(IDashboardService dashboardService, AppDbContext context, IProgressService progressService, UserManager<ApplicationUser> userManager)
         {
-            _dashboardService =dashboardService;
+            _dashboardService = dashboardService;
             _context = context;
             _progressService = progressService;
             _userManager = userManager;
@@ -32,7 +32,7 @@ namespace diplomaProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
-           var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); //тільки id користувача
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); //тільки id користувача
             var course = await _context.CourseRegistrations
                 .Where(c => c.UserId == userId)
                 .Select(c => c.CourseId)
@@ -41,15 +41,15 @@ namespace diplomaProject.Controllers
             //{
             //    return RedirectToAction("Index", "Home");
             //}
-            bool progress = await _context.UserProgresses.AnyAsync(c => c.UserId == userId&&c.CourseId==course);
+            bool progress = await _context.UserProgresses.AnyAsync(c => c.UserId == userId && c.CourseId == course);
             if (!progress)
             {
                 await _progressService.StartCourse(userId, course);
             }
-           // var course = 1;
-            var data =await _dashboardService.GetDashboardView(userId,course);
+            // var course = 1;
+            var data = await _dashboardService.GetDashboardView(userId, course);
 
-            var lessons = await _context.Lessons.Include(l=>l.Module)
+            var lessons = await _context.Lessons.Include(l => l.Module)
         .Where(l => l.Module.CourseId == course)
         .OrderBy(l => l.LessonIndex)
         .ToListAsync();
@@ -83,7 +83,7 @@ namespace diplomaProject.Controllers
         //    return View(homeworks);
         //}
 
-       
+
         [HttpGet]
         public async Task<IActionResult> UpdateData()
         {
@@ -102,7 +102,7 @@ namespace diplomaProject.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateData(EditUserDTO editUser)
         {
-            if(!ModelState.IsValid) return View(editUser);
+            if (!ModelState.IsValid) return View(editUser);
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
 
@@ -111,13 +111,14 @@ namespace diplomaProject.Controllers
             user.PhoneNumber = editUser.UserPhone;
 
             var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded) {
+            if (!result.Succeeded)
+            {
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
                 return View(editUser);
-                
+
             }
 
             if (!string.IsNullOrEmpty(editUser.CurrentPassword) && !string.IsNullOrEmpty(editUser.NewPassword))
@@ -130,13 +131,13 @@ namespace diplomaProject.Controllers
                     return View(editUser);
                 }
             }
-            
+
             TempData["SuccessMessage"] = "Профіль успішно оновлено!";
             return RedirectToAction("UpdateData");
         }
 
 
-  
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(AddReviewDTO review)
@@ -156,14 +157,14 @@ namespace diplomaProject.Controllers
             }
             var userReview = new Review
             {
-                Content=review.Content,
-                Rating=review.Rating,
+                Content = review.Content,
+                Rating = review.Rating,
                 UserId = userId,
             };
-             _context.Reviews.Add(userReview);
-           await _context.SaveChangesAsync();
-           // return Ok(new { message = "Відгук додано успішно!", id = userReview.Id });//для постман
-           return RedirectToAction("Index","Home");
+            _context.Reviews.Add(userReview);
+            await _context.SaveChangesAsync();
+            // return Ok(new { message = "Відгук додано успішно!", id = userReview.Id });//для постман
+            return RedirectToAction("Index", "Home");
         }
     }
 }
