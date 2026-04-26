@@ -1,6 +1,7 @@
 ﻿using diplomaProject.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace diplomaProject.Data
 {
@@ -26,6 +27,7 @@ namespace diplomaProject.Data
         public DbSet<HomeworkSubmission> HomeworkSubmissions { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<AnswerOption> AnswerOptions { get; set; }
+        public DbSet<StudentAnswer> StudentAnswers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -58,6 +60,27 @@ namespace diplomaProject.Data
                 .WithOne(o => o.Question)
                 .HasForeignKey(o => o.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade); // Если вопрос удаляется, его варианты ответов также автоматически удаляютсч
+
+            builder.Entity<StudentAnswer>(entity =>
+            {
+                // Зв'язок із HomeworkSubmission
+                entity.HasOne(sa => sa.HomeworkSubmission)
+                      .WithMany(hs => hs.StudentAnswers) 
+                      .HasForeignKey(sa => sa.HomeworkSubmissionId)
+                      .OnDelete(DeleteBehavior.Cascade); // Якщо видаляємо здачу — видаляються і відповіді
+
+                // Зв'язок із Question
+                entity.HasOne(sa => sa.Question)
+                      .WithMany()
+                      .HasForeignKey(sa => sa.QuestionId)
+                      .OnDelete(DeleteBehavior.NoAction); // Уникаємо циклічного видалення
+
+                // Зв'язок із SelectedOption
+                entity.HasOne(sa => sa.SelectedOption)
+                      .WithMany()
+                      .HasForeignKey(sa => sa.SelectedOptionId)
+                      .OnDelete(DeleteBehavior.NoAction);
+            });
 
         }
     }

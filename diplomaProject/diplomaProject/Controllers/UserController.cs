@@ -19,13 +19,15 @@ namespace diplomaProject.Controllers
         private readonly AppDbContext _context;
         private readonly IProgressService _progressService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public UserController(IDashboardService dashboardService, AppDbContext context, IProgressService progressService, UserManager<ApplicationUser> userManager)
+        public UserController(IDashboardService dashboardService, AppDbContext context, IProgressService progressService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _dashboardService =dashboardService;
             _context = context;
             _progressService = progressService;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: UserController
@@ -141,47 +143,134 @@ namespace diplomaProject.Controllers
         //    TempData["SuccessMessage"] = "Профіль успішно оновлено!";
         //    return RedirectToAction("UpdateData");
         //}
+        //[HttpPost]
+        //public async Task<IActionResult> UpdateData([Bind(Prefix = "EditModel")] EditUserDTO editUser)
+        //{
+
+        //    // 1. Отримуємо користувача з бази
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if (user == null) return NotFound();
+
+        //    // 2. Якщо дані у формі невалідні (наприклад, пусте прізвище)
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View("UpdateData", new UserProfileDTO { EditModel = editUser });
+        //    }
+
+        //    // 3. Оновлюємо поля
+        //    user.FirstName = editUser.FirstName;
+        //    user.LastName = editUser.LastName;
+        //    user.PhoneNumber = editUser.UserPhone;
+
+
+        //    var updateResult = await _userManager.UpdateAsync(user);
+        //    if (!updateResult.Succeeded)
+        //    {
+        //        TempData["ErrorMessage"] = "Помилка при оновленні профілю.";
+        //        return RedirectToAction("UpdateData");
+        //    }
+
+
+        //    // 3. ЛОГІКА ПАРОЛЯ
+        //    if (!string.IsNullOrEmpty(editUser.CurrentPassword) && !string.IsNullOrEmpty(editUser.NewPassword))
+        //    {
+        //        var passwordResult = await _userManager.ChangePasswordAsync(user, editUser.CurrentPassword, editUser.NewPassword);
+
+        //        if (passwordResult.Succeeded)
+        //        {
+        //            // ОСЬ ТУТ: Пароль успішно змінено, оновлюємо сесію
+        //            await _signInManager.RefreshSignInAsync(user);
+
+        //            TempData["SuccessMessage"] = "Дані та пароль успішно оновлено!";
+        //        }
+        //        else
+        //        {
+        //            // Якщо пароль не підійшов — виводимо помилки і повертаємо View
+        //            foreach (var error in passwordResult.Errors)
+        //            {
+        //                System.Diagnostics.Debug.WriteLine($"IDENTITY ERROR: {error.Code} - {error.Description}");
+        //                ModelState.AddModelError("", error.Description);
+        //            }
+        //            var viewModel = new UserProfileDTO // замініть на назву вашої головної моделі
+        //            {
+        //                EditModel = editUser, // залишаємо те, що користувач ввів у форму
+
+        //                // ЗАПОВНЮЄМО ІНШІ ДАНІ (щоб вони не зникли зі сторінки)
+
+        //                // Додайте тут всі інші поля, які відображаються на сторінці
+        //            };
+        //            return View("UpdateData", new UserProfileDTO { EditModel = editUser });
+        //        }
+        //    }
+
+        //    TempData["SuccessMessage"] = "Дані успішно оновлено!";
+
+
+        //    // 6. ФІНАЛЬНИЙ КРОК: завжди редірект на GET
+        //    return RedirectToAction("UpdateData");
+        //}
+
+
         [HttpPost]
         public async Task<IActionResult> UpdateData([Bind(Prefix = "EditModel")] EditUserDTO editUser)
         {
-
-            // 1. Отримуємо користувача з бази
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
 
-            // 2. Якщо дані у формі невалідні (наприклад, пусте прізвище)
-            if (!ModelState.IsValid)
+            // 1. Спроба змінити пароль
+            IdentityResult passwordResult = null;
+            bool isPasswordChangeRequested = !string.IsNullOrEmpty(editUser.CurrentPassword) && !string.IsNullOrEmpty(editUser.NewPassword);
+
+            if (isPasswordChangeRequested)
             {
-                TempData["ErrorMessage"] = "Будь ласка, перевірте правильність заповнення полів.";
-                return RedirectToAction("UpdateData"); // Повертаємо на GET метод, він завантажить все правильно
+                passwordResult = await _userManager.ChangePasswordAsync(user, editUser.CurrentPassword, editUser.NewPassword);
             }
 
-            // 3. Оновлюємо поля
+            // 2. ПЕРЕВІРКА НА ПОМИЛКИ
+            if (!ModelState.IsValid || (isPasswordChangeRequested && !passwordResult.Succeeded))
+            {
+                if (passwordResult != null && !passwordResult.Succeeded)
+                {
+                    foreach (var error in passwordResult.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                // --- ВАЖЛИВО: ПОВТОРЮЄМО ЛОГІКУ З GET-МЕТОДУ ---
+                var registerData = await _context.CourseRegistrations.FirstOrDefaultAsync(u => u.UserId == user.Id);
+                var lastActivity = await _context.UserProgresses
+                    .Where(u => u.UserId == user.Id)
+                    .OrderByDescending(l => l.LastActivity)
+                    .FirstOrDefaultAsync();
+
+                var profileData = new UserProfileDTO
+                {
+                    RegistrationDate = user.RegistrationDate,
+                    isPaid = registerData?.IsPaid ?? false,
+                    LastActivity = lastActivity?.LastActivity ?? DateTime.MinValue,
+                    PaymentDate = registerData?.PaymentDate ?? DateTime.MinValue,
+                    EditModel = editUser // Повертаємо те, що юзер щойно ввів у форму
+                };
+
+                return View("UpdateData", profileData); // Повертаємо заповнену модель
+            }
+
+            // 3. ЯКЩО ВСЕ ДОБРЕ — ОНОВЛЮЄМО ДАНІ
             user.FirstName = editUser.FirstName;
             user.LastName = editUser.LastName;
             user.PhoneNumber = editUser.UserPhone;
 
+            await _userManager.UpdateAsync(user);
 
-            // 4. Зберігаємо в базу
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-
-
-            // 5. Тільки якщо ім'я змінилось, пробуємо міняти пароль (якщо заповнено)
-            if (!string.IsNullOrEmpty(editUser.CurrentPassword) && !string.IsNullOrEmpty(editUser.NewPassword))
+            if (isPasswordChangeRequested && passwordResult.Succeeded)
             {
-                var passwordResult = await _userManager.ChangePasswordAsync(user, editUser.CurrentPassword, editUser.NewPassword);
-                if (!passwordResult.Succeeded)
-                {
-                    TempData["ErrorMessage"] = "Пароль не змінено: старий пароль невірний.";
-                    return RedirectToAction("UpdateData");
-                }
+                await _signInManager.RefreshSignInAsync(user);
+                TempData["SuccessMessage"] = "Пароль та дані успішно оновлено!";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "Дані профілю успішно змінено!";
             }
 
-            TempData["SuccessMessage"] = "Дані успішно оновлено!";
-
-
-            // 6. ФІНАЛЬНИЙ КРОК: завжди редірект на GET
             return RedirectToAction("UpdateData");
         }
 

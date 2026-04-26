@@ -142,6 +142,11 @@
                 <span asp-validation-for="EditModel.ConfirmPassword" class="text-danger"></span>
             </div> *@
             <form asp-action="UpdateData" method="post" class="mt-2">
+                <input type="hidden" asp-for="EditModel.FirstName" />
+                <input type="hidden" asp-for="EditModel.LastName" />
+                <input type="hidden" asp-for="EditModel.UserEmail" />
+                <input type="hidden" asp-for="EditModel.UserPhone" />
+                <div asp-validation-summary="All" class="text-danger"></div>
                 @* Поле: Старий пароль *@
                 <div class="input-line-group">
                     <input asp-for="EditModel.CurrentPassword" type="password" placeholder="Старий пароль" class="custom-line-input" id="oldPass">

@@ -51,7 +51,7 @@ namespace diplomaProject.Controllers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = 50000, // 500.00 грн (в копійках)
+                        UnitAmount = 450000, // 500.00 грн (в копійках)
                         Currency = "uah",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {

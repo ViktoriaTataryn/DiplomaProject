@@ -2,6 +2,7 @@
 using diplomaProject.DTOs;
 using diplomaProject.Interfaces;
 using diplomaProject.Models;
+using diplomaProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +19,15 @@ namespace diplomaProject.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProgressService _progressService;
-        
+        public readonly IDashboardService _dashboardService;
 
-        public CourseController(AppDbContext context, UserManager<ApplicationUser> userManager, IProgressService progressService)
+
+        public CourseController(AppDbContext context, UserManager<ApplicationUser> userManager, IProgressService progressService, IDashboardService dashboardService)
         {
             _context = context;
             _userManager = userManager;
             _progressService = progressService;
+            _dashboardService = dashboardService;
         }
 
 
@@ -144,7 +147,7 @@ namespace diplomaProject.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var totalModules=_context.Modules.Count();
+            var totalModules = _context.Modules.Count();
             var completedModules = _context.UserProgresses
     .Where(up => up.UserId == userId && up.Status == ProgressStatus.Completed && up.ModuleId != 0)
     .Select(up => up.ModuleId)
@@ -159,9 +162,9 @@ namespace diplomaProject.Controllers
                     ModuleNumber = m.OrderIndex,
                     Name = m.Title,
                     ImageForUser = m.ImageUrl,
-                    Description=m.Description,
-                    TotalModule=totalModules,
-                    CompletedModule=completedModules,
+                    Description = m.Description,
+                    TotalModule = totalModules,
+                    CompletedModule = completedModules,
 
                     // Дістаємо дані з таблиці UserProgress для цього модуля і користувача
                     // Якщо запису немає, ставимо статус "Close"
@@ -171,13 +174,19 @@ namespace diplomaProject.Controllers
                         .FirstOrDefault() ?? "Close",
                     Percent = 0,
                     TotalLesson = m.Lessons.Count,
+                    //        CurrentLessonId = _context.UserProgresses
+                    //.Where(ulp => ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId != 0)
+                    //.OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
+                    //.ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
+                    //.ThenBy(ulp => ulp.Lesson.LessonIndex)
+                    //.Select(ulp => ulp.LessonId)
+                    //.FirstOrDefault(),
                     CurrentLessonId = _context.UserProgresses
-            .Where(ulp => ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId != 0)
-            .OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
-            .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
-            .ThenBy(ulp => ulp.Lesson.LessonIndex)
-            .Select(ulp => ulp.LessonId)
-            .FirstOrDefault(),
+    .Where(ulp => ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId != 0 && ulp.LessonId != null)
+    .OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
+    .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
+    .Select(ulp => (int?)ulp.LessonId) // Примусово кастимо до nullable
+    .FirstOrDefault(),
                     // Наповнюємо список лекцій для вертикального списку
                     Lessons = m.Lessons.Select(l => new LessonShortDTO
                     {
@@ -194,6 +203,17 @@ namespace diplomaProject.Controllers
 
             return View(modulesWithProgress);
         }
+        //public async Task<IActionResult> Index()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    int courseId = 3; // Або отримайте актуальний ID курсу
+
+        //    // Викликаємо ваш сервіс, де ми вже налагодили логіку
+        //    var dashboardData = await _dashboardService.GetUserStatistic(userId, courseId);
+
+        //    // Передаємо у View саме список модулів
+        //    return View(dashboardData.ModuleProgress);
+        //}
 
         // 2. Главная страница урока с боковой панелью и отслеживанием прогресса
         public async Task<IActionResult> Lesson(int id)
@@ -389,27 +409,60 @@ namespace diplomaProject.Controllers
             {
                 return BadRequest("Ви вже здали цей тест.");
             }
+            // 1. Створюємо об'єкт здачі
             var submission = new HomeworkSubmission
             {
                 HomeworkId = homeworkId,
                 StudentId = userId,
                 SubmissionDate = DateTime.Now,
-                FilePath="test quiz",
+                FilePath = "Quiz Result",
                 Status = HomeworkStatus.Approved,
-               
                 Grade = score
             };
 
+            // 2. Додаємо відповіді студента до об'єкта submission
+            if (answers != null)
+            {
+                foreach (var answer in answers)
+                {
+                    var questionId = answer.Key;
+                    foreach (var optionId in answer.Value)
+                    {
+                        submission.StudentAnswers.Add(new StudentAnswer
+                        {
+                            QuestionId = questionId,
+                            SelectedOptionId = optionId
+                            // HomeworkSubmissionId заповниться автоматично завдяки EF Core!
+                        });
+                    }
+                }
+            }
+
             _context.HomeworkSubmissions.Add(submission);
             await _context.SaveChangesAsync();
+            //var submission = new HomeworkSubmission
+            //{
+            //    HomeworkId = homeworkId,
+            //    StudentId = userId,
+            //    SubmissionDate = DateTime.Now,
+            //    FilePath="test quiz",
+            //    Status = HomeworkStatus.Approved,
+
+            //    Grade = score
+            //};
+
+            //_context.HomeworkSubmissions.Add(submission);
+            //await _context.SaveChangesAsync();
 
             await _progressService.UnlockNextLessonAsync(userId, lessonId);
-         
 
 
-    TempData["HomeworkResult"] = $"Your score: {score} out of {maxScore}";
+
+            TempData["HomeworkResult"] = $"Your score: {score} out of {maxScore}";
             return RedirectToAction("Lesson", new { id = lessonId });
         }
+
+
 
         // 6. Метод администратора для добавления нового домашнего задания
         [HttpPost]
@@ -473,6 +526,81 @@ namespace diplomaProject.Controllers
                 }
                 return File(memoryStream.ToArray(), "application/zip", $"Module_{moduleId}_Materials.zip");
             }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ViewSubmission(int id) // id — це Id з таблиці HomeworkSubmissions
+        {
+            var submission = await _context.HomeworkSubmissions
+                .Include(s => s.Homework)
+                    .ThenInclude(h => h.Questions)
+                        .ThenInclude(q => q.Options)
+                .Include(s => s.StudentAnswers) // Завантажуємо відповіді, які зберіг студент
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (submission == null)
+            {
+                return NotFound();
+            }
+
+           
+            ViewBag.LessonTitle = submission.Homework?.Lesson?.Title;
+
+            return View(submission);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetHomeworks()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            // 1. Отримуємо статистику
+            var stats = await _dashboardService.GetHomeworkStats(userId);
+
+            // 2. Отримуємо список виконаних робіт (Виправлено Include)
+            var executedHomeworks = await _context.HomeworkSubmissions
+                .Include(s => s.Homework)
+                    .ThenInclude(h => h.Lesson)
+                        .ThenInclude(l => l.Module)
+                .Where(s => s.StudentId == userId)
+                .OrderByDescending(s => s.SubmissionDate)
+                .ToListAsync();
+
+            // 3. Отримуємо поточне завдання
+            
+            int courseId = 3; 
+
+            // 1. Отримуємо активну лекцію (тут уже працює наша виправлена логіка з HasValue)
+            var activeLesson = await _progressService.GetActiveLessonAsync(userId, courseId);
+
+            // Для дебагу на сторінці
+            ViewBag.DebugLessonId = activeLesson?.Id.ToString() ?? "null";
+
+            Homework currentHomework = null;
+            if (activeLesson != null)
+            {
+                // 2. Шукаємо домашку саме для цієї лекції
+                currentHomework = await _context.Homeworks
+                    .Include(h => h.Questions)
+                    .Include(h => h.Lesson)
+                    .FirstOrDefaultAsync(h => h.LessonId == activeLesson.Id);
+            }
+
+            ViewBag.HomeworkFound = currentHomework != null ? "Yes" : "No";
+
+            var viewModel = new HomeworkDashboardDTO
+            {
+                Stats = stats ?? new HomeworkStatsDTO(),
+                CurrentHomework = currentHomework,
+                ExecutedHomeworks = executedHomeworks,
+                // Виправлено Average
+                AverageScore = executedHomeworks.Any()
+                    ? executedHomeworks.Average(s => (double)s.Grade)
+                    : 0.0
+            };
+
+            return View(viewModel);
         }
     }
 }

@@ -1,0 +1,80 @@
+﻿html{
+    font-size:16px;
+}
+.hw-image {
+    width: 520px;
+    height: 340px;
+    flex-shrink: 0;
+    margin-right:20px;
+    margin-top:1px;
+ 
+    
+}
+.hw-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Фото заповнює блок, не втрачаючи пропорцій */
+        display: block;
+ }
+
+.cur-homework {
+    color: #9799C4;
+    font-size: 1.6rem;
+    font-family: "Gilroy Light", "Gilroy", sans-serif;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom:10px;
+}
+.mini-container{
+
+}
+.comp-icon img{
+    width:29px;
+    height:27px;
+}
+.current-hw .hometask-text {
+    font-family: Gilroy;
+    font-weight: 300;
+    font-style: Light;
+  font-size:1.7rem;
+ 
+    line-height: 100%;
+    letter-spacing: 0%;
+}
+.task-btn {
+    max-width: 755px;
+    width: 85%;
+    height: 55px;
+    background-color: #2B31B4;
+    border: 1px solid #2B31B4;
+    text-align: center;
+}
+.task-btn-text {
+    font-family: "Accia Piano";
+    font-weight: 300;
+    color: #FFFFFF;
+    font-size: 1.3rem;
+}
+
+#hometaskStats {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+    width: 100%;
+    max-width: 1580px;
+}
+    #hometaskStats .hometask-box{
+        padding-right:40px !important;
+    }
+
+.module-part::after {
+    content: "•";
+    margin-left:20px; /* Відступи від крапки */
+    margin-right:10px;
+    color: #9799C4; /* Колір вашої основної теми */
+    font-weight: bold;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+ 
+    opacity: 1;
+}
