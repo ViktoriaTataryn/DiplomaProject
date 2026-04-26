@@ -57,7 +57,7 @@
                 <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "GetHomeworks" ? "active" : "")" asp-controller="Course" asp-action="GetHomeworks">
                Домашні завдання
             </a>
-                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "GetResources" ? "active" : "")" href="#">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "GetResources" ? "active" : "")" asp-controller="Course" asp-action="AdditionalMaterials">
                 Додаткові матеріали
             </a>
                 <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "UpdateData" ? "active" : "")" asp-controller="User" asp-action="UpdateData">
