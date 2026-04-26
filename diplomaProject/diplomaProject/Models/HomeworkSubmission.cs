@@ -33,5 +33,7 @@ namespace diplomaProject.Models
         public string? Feedback { get; set; }
 
         public HomeworkStatus Status { get; set; }
+
+        public List<StudentAnswer> StudentAnswers { get; set; } = new List<StudentAnswer>();
     }
 }

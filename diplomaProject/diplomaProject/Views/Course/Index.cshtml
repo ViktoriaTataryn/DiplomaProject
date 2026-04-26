@@ -138,10 +138,15 @@
                                                     {
                                                             <span class= "status">Пройдено</span>
                                                     }
+
                                                     else if (isActive)
                                                     {
                                                             <span class="status">В процесі</span>
                                                     }
+                                                            else if (isOpen)
+                                                            {
+                                                                <span class="status">Відкрито</span>
+                                                            }
                                                     else
                                                     {
                                                             <span class=" status">Заблоковано</span>
@@ -177,8 +182,11 @@
                     <span class="title mb-2 mt-2 py-1 d-block">ПРОГРЕС КУРСУ </span>
                     @{
                        
-                        var activeModule = Model.FirstOrDefault(m => m.Status == "InProgress")
-                        ?? Model.FirstOrDefault(m => m.Status == "Open");
+                        // var activeModule = Model.FirstOrDefault(m => m.Status == "InProgress")
+                        // ?? Model.FirstOrDefault(m => m.Status == "Open");
+                        var activeModule = Model.FirstOrDefault(m => m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
+                        ?? Model.FirstOrDefault(m => m.Status == "InProgress");
+                        // var activeModule = Model.FirstOrDefault(m => m.CurrentLessonId != null);
                     }
                 <div class="progress-timeline-container mt-1">
                     <div class="statue-avatar-container is-hidden">
@@ -212,13 +220,17 @@
                         </div>
                     </div>
                     <p class="small-text ">
-                        Пройдено: @Model.FirstOrDefault()?.CompletedModule з @Model.FirstOrDefault()?.TotalModule  модулів
+                       @*  Пройдено: @Model.FirstOrDefault()?.CompletedModule з @Model.FirstOrDefault()?.TotalModule  модулів *@
+                        Пройдено: @Model.Count(m => m.Status == "Completed") з @Model.Count() модулів
                     </p>
 
                     <hr class="mt-4 mb-3 custom-line">
 
-                 
-                    @if (activeModule != null && activeModule.CurrentLessonId != 0)
+                    <p>Debug: LessonId = @(activeModule?.CurrentLessonId?.ToString() ?? "it is null")</p>
+                   
+                    <p>Debug: Is activeModule null? = @(activeModule == null)</p>
+                    @if (activeModule != null && activeModule.CurrentLessonId.HasValue)
+                    @* @if (activeModule != null && activeModule.CurrentLessonId != null) *@
                     {
                         <div class="mt-2 py-2 mb-2 text-center btn-last-lesson" >
                         <a asp-action="Lesson"

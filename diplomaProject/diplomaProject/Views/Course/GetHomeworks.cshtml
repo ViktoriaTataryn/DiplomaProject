@@ -1,0 +1,86 @@
+﻿@using diplomaProject.DTOs
+@model HomeworkDashboardDTO
+
+<link rel="stylesheet" href="~/css/userProfile.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/getHomeworks.css" asp-append-version="true" />
+
+<div class="m-3">
+
+    <div class=" d-flex " id="profileData">
+
+        <div class=" progress-inner-content px-3 py-4">
+            <div id="personal-view">
+                <span class="title mb-3 mt-4 ">ПОТОЧНЕ ЗАВДАННЯ </span>
+
+                 @if (Model.CurrentHomework != null)
+                {
+                <div class="current-hw mt-3 py-1">
+                        <span class="cur-homework d-block py-2">
+                            <span class="module-part">Модуль @(Model.CurrentHomework.Lesson?.Module?.OrderIndex ?? 1)</span>
+                            <span>Тема @(Model.CurrentHomework.Lesson?.LessonIndex ?? 1)</span>
+                        </span>
+                        <span class="hometask-text">@Model.CurrentHomework?.Lesson?.Title</span>
+                    <div>
+                            <div class="mini-container d-flex align-items-center gap-2">
+                    <div class="comp-icon"> 
+                       <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1777141224/task_bi4ky8.svg" />
+                    </div>
+                    <div class="py-3">
+                            <span class="hometask-text"> Запитань: @(Model.CurrentHomework?.Questions?.Count ?? 0)</span>
+                       </div>
+                    </div>
+                    </div>
+                        <a asp-action="Lesson" asp-controller="Course" asp-route-id="@Model.CurrentHomework.LessonId" class="task-btn text-decoration-none d-flex align-items-center justify-content-center mt-3">
+                            <span class="task-btn-text ">ВИКОНАТИ ЗАВДАННЯ</span>
+                        </a>
+                    
+                </div>
+                }
+                else
+                {
+                    <div class="user-text mt-3 py-1">
+                        <span class="d-block text-muted">Наразі немає активних завдань.</span>
+                        <p>Ви молодець! Відпочиньте або повторіть пройдене.</p>
+                    </div>
+                }
+            </div>
+               
+        </div>
+        <div class="hw-image" >
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1777141204/Materials_and_Homework_Page_z2f2el.webp"  alt="backgroung-image" />
+        </div>
+    </div>
+    <div class=" d-flex justify-content-between mb-1 mt-1 py-4 " id="conteiner2">
+
+        <div class="py-4 px-3 " id="hometaskStats">
+            <span class="title">ВАШ ПРОГРЕС</span>
+
+            <div class=" d-flex  justify-content-sm-evenly align-content-center gap-0 px-3 mt-4 py-4 gap-xxl-5">
+                <div class="d-flex flex-column py-2 px-4 hometask-box" style="border-right: 2px solid #8588D1; flex: 1;">
+                @* <div class="d-flex flex-column py-2 px-4 hometask-box" style="border-right: 2px solid #8588D1; "> *@
+                    <span class="hometask-text ">Доступних <br /> завдань:</span>
+                    <span class="hometask-num">@Model.Stats.AvailableWork</span>
+                </div>
+
+               @*  <div class="d-flex flex-column py-2  px-4 hometask-box " style="border-right: 2px solid #8588D1"> *@
+                        <div class="d-flex flex-column py-2 px-4 hometask-box " style="border-right: 2px solid #8588D1; flex: 1;">
+                    <span class="hometask-text ">Завдань <br /> виконано:</span>
+                    <span class="hometask-num">@Model.Stats.Completed</span>
+                </div>
+
+              @*   <div class="d-flex flex-column py-2 px-4 hometask-box " style="border-right: 2px solid #8588D1"> *@
+                            <div class="d-flex flex-column py-2 px-4 hometask-box " style="border-right: 2px solid #8588D1; flex: 1;">
+                    <span class="hometask-text ">Завдань <br /> залишилось:</span>
+                    <span class="hometask-num">@Model.Stats.Remaining</span>
+                </div>
+
+                @* <div class="d-flex flex-column py-2  px-4 hometask-box "> *@
+                                <div class="d-flex flex-column py-2 px-4 hometask-box " style=" flex: 1;">
+                    <span class="hometask-text mt-2">Середній бал:</span>
+                    <span class="hometask-num">@Model.AverageScore</span>
+                </div>
+            </div>
+        </div>
+</div>
+

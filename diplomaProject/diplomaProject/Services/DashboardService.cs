@@ -101,7 +101,7 @@ namespace diplomaProject.Services
 
             var moduleProgress = await _context.UserProgresses
                 .Include(m => m.Module)
-                .Where(m => m.UserId == userId && m.CourseId == courseId && (m.LessonId == null || m.LessonId == 0))
+                .Where(m => m.UserId == userId && m.CourseId == courseId && m.LessonId == null )
                 .ToListAsync();
 
             int total = moduleProgress.Count;
@@ -110,14 +110,21 @@ namespace diplomaProject.Services
             var lessonsProgress = await _context.UserProgresses
                 .Include(m => m.Lesson)
                 .ThenInclude(l => l.Module)
-                .Where(m => m.UserId == userId && m.CourseId == courseId && m.LessonId != 0 &&
-                    m.LessonId != null)
+                .Where(m => m.UserId == userId && m.CourseId == courseId &&  m.LessonId != null)
                 .ToListAsync();
 
             var moduleStats = allModules
     .Select(module =>
     {
+        //var moduleLessonsProgress = lessonsProgress.Where(lp => lp.Lesson?.ModuleId == module.Id).ToList();
         var moduleLessonsProgress = lessonsProgress.Where(lp => lp.Lesson?.ModuleId == module.Id).ToList();
+
+        // 1. Визначаємо активну лекцію для ЦЬОГО модуля
+        // Шукаємо спочатку ту, що InProgress, якщо немає - першу Open
+        var activeLessonInModule = moduleLessonsProgress
+            .OrderByDescending(lp => lp.Status == ProgressStatus.InProgress)
+            .ThenBy(lp => lp.Status == ProgressStatus.Open)
+            .FirstOrDefault();
 
         // --- НОВА ЛОГІКА ВИЗНАЧЕННЯ СТАТУСУ ---
         ProgressStatus currentModuleStatus;
@@ -155,7 +162,11 @@ namespace diplomaProject.Services
             Percent = (module.Lessons != null && module.Lessons.Count > 0)
                 ? (int)((double)moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed) / module.Lessons.Count * 100)
                 : 0,
-            Status = currentModuleStatus.ToString() // Використовуємо наш обчислений статус
+            Status = currentModuleStatus.ToString(), // Використовуємо наш обчислений статус
+            //CurrentLessonId = activeLessonInModule?.LessonId
+            CurrentLessonId = moduleLessonsProgress
+        .FirstOrDefault(lp => lp.Status == ProgressStatus.InProgress || lp.Status == ProgressStatus.Open)
+        ?.LessonId
         };
     }).OrderBy(m => m.ModuleNumber).ToList();
 
@@ -192,6 +203,18 @@ namespace diplomaProject.Services
             //        }).OrderBy(m => m.ModuleNumber).ToList();
 
             var curLesson = await _progressService.GetActiveLessonAsync(userId, courseId);
+            if (curLesson != null)
+            {
+                var activeModuleInList = moduleStats.FirstOrDefault(m => m.ModuleId == curLesson.ModuleId);
+                if (activeModuleInList != null)
+                {
+                    // Це той самий ID, який шукає ваша в'юшка
+                    activeModuleInList.CurrentLessonId = curLesson.Id;
+
+                    // Додатково переконаємося, що статус дозволяє знайти цей модуль через FirstOrDefault
+                    activeModuleInList.Status = "InProgress";
+                }
+            }
 
             //string currentTitle = curLesson?.Title ?? "Немає активних лекцій";
             string nextTitle = "Немає активних лекцій";
@@ -208,6 +231,7 @@ namespace diplomaProject.Services
                     nextTitle = nextProgress.Title;
                 }
             }
+
 
             return new DashboardProgressDTO
             {
