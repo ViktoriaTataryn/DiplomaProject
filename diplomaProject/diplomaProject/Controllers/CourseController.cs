@@ -299,6 +299,19 @@ namespace diplomaProject.Controllers
             return PartialView("_ResourcesPartial", resources);
         }
 
+        // NEW: Full page for Additional Materials (Archive)
+        [HttpGet]
+        public async Task<IActionResult> AdditionalMaterials()
+        {
+            // Fetching all modules with their lessons and resources to display the archive page
+            var modules = await _context.Modules
+                .Include(m => m.Lessons)
+                    .ThenInclude(l => l.Resources)
+                .OrderBy(m => m.OrderIndex)
+                .ToListAsync();
+
+            return View(modules);
+        }
         // 4. Отправка текста домашнего задания и сохранение в виде .txt файла
         [HttpPost]
         public async Task<IActionResult> SubmitHomework(int homeworkId, string homeworkText)
@@ -497,7 +510,19 @@ namespace diplomaProject.Controllers
         {
             var resource = await _context.Resources.FindAsync(resourceId);
             if (resource == null || string.IsNullOrEmpty(resource.FilePath)) return NotFound();
-            return Redirect(resource.FilePath);
+
+            // If it's a Cloudinary/External link
+            if (resource.FilePath.StartsWith("http")) return Redirect(resource.FilePath);
+
+            // If it's a local file
+            var localPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
+            if (System.IO.File.Exists(localPath))
+            {
+                var fileBytes = await System.IO.File.ReadAllBytesAsync(localPath);
+                return File(fileBytes, "application/octet-stream", resource.FileName);
+            }
+
+            return NotFound();
         }
 
         // 9. Сжатие всех материалов модуля для массовой загрузки
@@ -526,6 +551,103 @@ namespace diplomaProject.Controllers
                 }
                 return File(memoryStream.ToArray(), "application/zip", $"Module_{moduleId}_Materials.zip");
             }
+        }
+        // NEW: Download the entire course as one ZIP archive
+        [HttpGet]
+        public async Task<IActionResult> DownloadFullArchive()
+        {
+            var resources = await _context.Resources
+                .Include(r => r.Lesson)
+                    .ThenInclude(l => l.Module)
+                .ToListAsync();
+
+            if (!resources.Any()) return BadRequest("No materials found in the course.");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    foreach (var resource in resources)
+                    {
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            // Organizing by Module/Lesson/FileName inside ZIP
+                            var entryName = $"Module_{resource.Lesson.Module.OrderIndex}/Lesson_{resource.Lesson.LessonIndex}/{resource.FileName}{Path.GetExtension(filePath)}";
+                            archive.CreateEntryFromFile(filePath, entryName);
+                        }
+                    }
+                }
+                return File(memoryStream.ToArray(), "application/zip", "Full_Course_Archive.zip");
+            }
+        }
+        // 10. Обновление информации о домашнем задании, включая описание и срок выполнения (только для администратора)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditHomework(int homeworkId, string description, DateTime dueDate)
+        {
+            var homework = await _context.Homeworks.FindAsync(homeworkId);
+            if (homework == null)
+            {
+                return NotFound();
+            }
+
+            homework.Description = description;
+            homework.DueDate = dueDate;
+
+            _context.Update(homework);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Homework updated successfully.";
+            return RedirectToAction("Lesson", new { id = homework.LessonId });
+        }
+
+        // 11. Удаление конкретного вопроса из теста (только для администратора)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteQuestion(int questionId)
+        {
+            var question = await _context.Questions
+                .Include(q => q.Options)
+                .FirstOrDefaultAsync(q => q.Id == questionId);
+
+            if (question == null)
+            {
+                return NotFound();
+            }
+
+            var homework = await _context.Homeworks.FindAsync(question.HomeworkId);
+            int lessonId = homework?.LessonId ?? 0;
+
+            _context.AnswerOptions.RemoveRange(question.Options);
+            _context.Questions.Remove(question);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Question deleted successfully.";
+            return RedirectToAction("Lesson", new { id = lessonId });
+        }
+        // 12. Delete a specific submission to allow a student to retake the test (Admin only)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSubmission(int submissionId)
+        {
+            var submission = await _context.HomeworkSubmissions.FindAsync(submissionId);
+            if (submission == null)
+            {
+                return NotFound();
+            }
+
+            var homework = await _context.Homeworks.FindAsync(submission.HomeworkId);
+            int lessonId = homework?.LessonId ?? 0;
+
+            _context.HomeworkSubmissions.Remove(submission);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Submission removed. Retake is now possible.";
+            return RedirectToAction("Lesson", new { id = lessonId });
         }
 
 
