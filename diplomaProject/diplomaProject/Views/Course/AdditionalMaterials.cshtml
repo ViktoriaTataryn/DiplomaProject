@@ -4,11 +4,13 @@
     ViewData["Title"] = "Додаткові матеріали";
 }
 
-<link rel="stylesheet" href="~/css/resources.css" asp-append-version="true" />
+@* Removed link to resources.css as we merged it into site.css *@
+@* Structure updated to match Figma parameters: Course Progress Card (max-width: 1580px, height: 405px) Materials Section (max-width: 1580px, padding: 24px, gap: 32px) *@
 
-<div class="container-fluid py-4" style="background-color: var(--brand-light); min-height: 100vh;">
+<div class="container-fluid py-4 d-flex flex-column align-items-center" style="background-color: var(--brand-light); min-height: 100vh;">
     
-    <div class="archive-header p-4 p-md-5 mb-4">
+    @* Course Progress Card (Archive Header) *@
+    <div class="archive-header w-100 mb-4 d-flex align-items-center" style="max-width: 1580px; min-height: 405px; padding: 24px;">
         <div class="archive-bg-flowers"></div>
         
         <div class="position-relative" style="z-index: 1; max-width: 600px;">
@@ -23,70 +25,82 @@
                 <span><i class="bi bi-hdd me-2"></i>1,2 гб</span>
             </div>
             
-            <button class="btn btn-brand px-5 py-3 w-100 w-md-auto font-weight-bold" style="letter-spacing: 1px;">
+            @* Link connected to DownloadFullArchive action in CourseController *@
+            <a asp-controller="Course" asp-action="DownloadFullArchive" class="btn btn-brand px-5 py-3 w-100 w-md-auto font-weight-bold shadow-sm text-center" style="letter-spacing: 1px; text-decoration: none; display: inline-block;">
                 ЗАВАНТАЖИТИ ВЕСЬ КУРС
-            </button>
+            </a>
         </div>
     </div>
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
-        <h2 class="text-brand m-0 mb-3 mb-md-0" style="text-transform: uppercase; font-weight: 300; font-size: 1.8rem;">
-            Матеріали за лекціями
-        </h2>
-        
-        <div class="d-flex flex-column flex-sm-row gap-3">
-            <div class="input-group" style="max-width: 300px; border: 1px solid #ced4da; border-radius: 2px;">
-                <span class="input-group-text bg-white border-0"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" class="form-control border-0 ps-0" placeholder="Шукати..." style="box-shadow: none;">
+    @* Materials Section Container *@
+    <div class="materials-section w-100" style="max-width: 1580px;">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <h2 class="text-brand m-0 mb-3 mb-md-0" style="text-transform: uppercase; font-weight: 300; font-size: 1.8rem;">
+                Матеріали за лекціями
+            </h2>
+            
+            <div class="d-flex flex-column flex-sm-row gap-3">
+                <div class="input-group" style="max-width: 300px; border: 1px solid #ced4da; border-radius: 2px;">
+                    <span class="input-group-text bg-white border-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" class="form-control border-0 ps-0" placeholder="Шукати..." style="box-shadow: none;">
+                </div>
+                <select class="form-select text-brand shadow-sm" style="max-width: 150px; border-color: #ced4da; border-radius: 2px;">
+                    <option selected>Модуль</option>
+                    @if (Model != null)
+                    {
+                        @foreach (var m in Model)
+                        {
+                            <option value="@m.Id">Модуль @m.OrderIndex</option>
+                        }
+                    }
+                </select>
             </div>
-            <select class="form-select text-brand" style="max-width: 150px; border-color: #ced4da; border-radius: 2px;">
-                <option selected>Модуль <i class="bi bi-chevron-down"></i></option>
-                @foreach (var m in Model)
-                {
-                    <option value="@m.Id">Модуль @m.OrderIndex</option>
-                }
-            </select>
         </div>
-    </div>
 
-    <div class="bg-white p-4 p-md-5 mb-5" style="border-radius: 4px; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.02);">
-        @if (!Model.Any())
-        {
-            <div class="alert alert-info text-center">Матеріали поки що відсутні.</div>
-        }
-        else
-        {
-            @foreach (var module in Model)
+        @* Materials Section Body *@
+        <div class="bg-white" style="border-radius: 4px; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.02); padding: 24px; display: flex; flex-direction: column; gap: 32px;">
+            @if (Model == null || !Model.Any())
             {
-                foreach (var lesson in module.Lessons.OrderBy(l => l.LessonIndex))
+                <div class="alert alert-info text-center m-0">Матеріали поки що відсутні.</div>
+            }
+            else
+            {
+                @foreach (var module in Model)
                 {
-                    <div class="lesson-material-card flex-column flex-md-row text-center text-md-start">
-                        
-                        <div class="flex-shrink-0 mb-3 mb-md-0">
-                            <div class="lesson-thumbnail-frame">
+                    @foreach (var lesson in module.Lessons.OrderBy(l => l.LessonIndex))
+                    {
+                        <div class="lesson-material-card flex-column flex-md-row text-center text-md-start">
+                            
+                            <div class="flex-shrink-0 mb-3 mb-md-0">
+                                <div class="lesson-thumbnail-frame">
+                                    @* Space for future Yulia's frames *@
+                                    <span class="text-brand opacity-25">Lesson @lesson.LessonIndex</span>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="flex-grow-1">
-                            <div class="lesson-meta text-uppercase">
-                                Модуль @module.OrderIndex. &bull; Тема @lesson.LessonIndex. &bull; Виконано 12.03
+                            
+                            <div class="flex-grow-1">
+                                <div class="lesson-meta text-uppercase">
+                                    Модуль @module.OrderIndex &bull; Тема @lesson.LessonIndex
+                                </div>
+                                <h3 class="lesson-title fw-bold">@lesson.Title</h3>
                             </div>
-                            <h3 class="lesson-title">@lesson.Title</h3>
+                            
+                            <div class="flex-shrink-0 d-flex gap-3 align-items-center mt-3 mt-md-0 justify-content-center">
+                                @* Link to specific lesson page *@
+                                <a asp-controller="Course" asp-action="Lesson" asp-route-id="@lesson.Id" class="btn btn-outline-brand px-4 py-2" style="text-transform: uppercase; font-size: 0.85rem; text-decoration: none;">
+                                    Переглянути
+                                </a>
+                                @* Link to download module materials *@
+                                <a asp-controller="Course" asp-action="DownloadModuleMaterials" asp-route-moduleId="@module.Id" class="btn btn-outline-brand px-3 py-2 d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-download" style="font-size: 1.2rem;"></i>
+                                </a>
+                            </div>
+                            
                         </div>
-                        
-                        <div class="flex-shrink-0 d-flex gap-3 align-items-center mt-3 mt-md-0 justify-content-center">
-                            <a href="#" class="btn btn-outline-brand px-4 py-2" style="text-transform: uppercase; font-size: 0.85rem;">
-                                Переглянути
-                            </a>
-                            <a href="#" class="btn btn-outline-brand px-3 py-2 d-flex align-items-center justify-content-center">
-                                <i class="bi bi-download" style="font-size: 1.2rem;"></i>
-                            </a>
-                        </div>
-                        
-                    </div>
+                    }
                 }
             }
-        }
+        </div>
     </div>
 </div>
 
