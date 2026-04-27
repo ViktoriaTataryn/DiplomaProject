@@ -216,6 +216,78 @@ namespace diplomaProject.Controllers
         //}
 
         // 2. Главная страница урока с боковой панелью и отслеживанием прогресса
+        //    public async Task<IActionResult> Lesson(int id)
+        //    {
+        //        var userId = _userManager.GetUserId(User);
+
+        //        var lesson = await _context.Lessons
+        //            .Include(l => l.Resources)
+        //            .Include(l => l.Module)
+        //                .ThenInclude(m => m.Lessons)
+        //            .FirstOrDefaultAsync(l => l.Id == id);
+
+        //        if (lesson == null) return NotFound();
+
+
+
+        //        var progress = await _context.UserProgresses
+        //            .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
+
+        //        if (progress == null || progress.Status == ProgressStatus.Close)
+        //        {
+        //            TempData["Error"] = "Lecture is not available. Please complete previous materials.";
+        //            return RedirectToAction("Index");
+        //        }
+
+        //        if (progress.Status == ProgressStatus.Open)
+        //        {
+        //            await _progressService.LessonInProgressAsync(userId, lesson.Id);
+        //        }
+        //        var homework = await _context.Homeworks
+        //    .FirstOrDefaultAsync(h => h.LessonId == id);
+        //        if (homework != null)
+        //        {
+        //            // 2. Передаємо ID домашки, щоб спрацював CheckHomework
+        //            //  ViewBag.HomeworkId = homework.Id;
+        //            //  ViewBag.Questions = await _context.Questions
+        //            //.Include(q => q.Options)
+        //            //.Where(q => q.HomeworkId == homework.Id)
+        //            //.ToListAsync();
+        //            ViewBag.HomeworkId = homework.Id;
+        //            ViewBag.IsTestCompleted = await _context.HomeworkSubmissions
+        //                .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
+
+        //            ViewBag.Questions = await _context.Questions
+        //                .Include(q => q.Options)
+        //                .Where(q => q.HomeworkId == homework.Id)
+        //                .ToListAsync();
+
+
+
+        //        }
+        //        else
+        //        {
+        //            ViewBag.HomeworkId = 0;
+        //            ViewBag.IsTestCompleted = false;
+        //            ViewBag.Questions = new List<Question>();
+        //        }
+
+        //        ViewBag.ModuleProgress = await _context.UserProgresses
+        //         .Where(p => p.UserId == userId && p.ModuleId == lesson.ModuleId)
+        //         .ToListAsync();
+
+        //        var isTestCompleted = await _context.HomeworkSubmissions
+        //.AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
+
+        //        ViewBag.IsTestCompleted = isTestCompleted;
+
+        //        if (string.IsNullOrEmpty(lesson.Content))
+        //        {
+        //            lesson.Content = "{}";
+        //        }
+
+        //        return View(lesson);
+        //    }
         public async Task<IActionResult> Lesson(int id)
         {
             var userId = _userManager.GetUserId(User);
@@ -227,8 +299,6 @@ namespace diplomaProject.Controllers
                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (lesson == null) return NotFound();
-
-
 
             var progress = await _context.UserProgresses
                 .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
@@ -243,47 +313,51 @@ namespace diplomaProject.Controllers
             {
                 await _progressService.LessonInProgressAsync(userId, lesson.Id);
             }
+
+            // --- ПРАВИЛЬНА ЛОГІКА ТЕСТІВ ---
             var homework = await _context.Homeworks
-        .FirstOrDefaultAsync(h => h.LessonId == id);
+                .FirstOrDefaultAsync(h => h.LessonId == id);
+
             if (homework != null)
             {
-                // 2. Передаємо ID домашки, щоб спрацював CheckHomework
-                //  ViewBag.HomeworkId = homework.Id;
-                //  ViewBag.Questions = await _context.Questions
-                //.Include(q => q.Options)
-                //.Where(q => q.HomeworkId == homework.Id)
-                //.ToListAsync();
                 ViewBag.HomeworkId = homework.Id;
+
+                // Перевіряємо, чи студент вже здав цей тест
                 ViewBag.IsTestCompleted = await _context.HomeworkSubmissions
                     .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
 
+                // Отримуємо питання
                 ViewBag.Questions = await _context.Questions
                     .Include(q => q.Options)
                     .Where(q => q.HomeworkId == homework.Id)
                     .ToListAsync();
 
-
-
+                // Якщо тест пройдено, можна також отримати оцінку (опціонально)
+                if (ViewBag.IsTestCompleted)
+                {
+                    var submission = await _context.HomeworkSubmissions
+                        .FirstOrDefaultAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
+                    ViewBag.CurrentGrade = submission?.Grade ?? 0;
+                }
             }
             else
             {
+                // Якщо тесту немає — зануляємо все, щоб View не ламався
                 ViewBag.HomeworkId = 0;
                 ViewBag.IsTestCompleted = false;
                 ViewBag.Questions = new List<Question>();
+                ViewBag.CurrentGrade = 0;
             }
 
             ViewBag.ModuleProgress = await _context.UserProgresses
-             .Where(p => p.UserId == userId && p.ModuleId == lesson.ModuleId)
-             .ToListAsync();
+                .Where(p => p.UserId == userId && p.ModuleId == lesson.ModuleId)
+                .ToListAsync();
 
-            var isTestCompleted = await _context.HomeworkSubmissions
-    .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
-
-            ViewBag.IsTestCompleted = isTestCompleted;
+            // Видалено дублюючий код, який викликав помилку!
 
             if (string.IsNullOrEmpty(lesson.Content))
             {
-                lesson.Content = "{}";
+                lesson.Content = "{\"blocks\":[]}";
             }
 
             return View(lesson);
@@ -699,6 +773,8 @@ namespace diplomaProject.Controllers
             // Для дебагу на сторінці
             ViewBag.DebugLessonId = activeLesson?.Id.ToString() ?? "null";
 
+            var modules = await _context.Modules.OrderBy(m => m.OrderIndex).ToListAsync();
+
             Homework currentHomework = null;
             if (activeLesson != null)
             {
@@ -716,6 +792,7 @@ namespace diplomaProject.Controllers
                 Stats = stats ?? new HomeworkStatsDTO(),
                 CurrentHomework = currentHomework,
                 ExecutedHomeworks = executedHomeworks,
+                AllModules = modules,
                 // Виправлено Average
                 AverageScore = executedHomeworks.Any()
                     ? executedHomeworks.Average(s => (double)s.Grade)

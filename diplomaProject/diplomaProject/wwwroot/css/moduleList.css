@@ -110,7 +110,7 @@
     /*font-size: 17px;*/
     font-size: 1.5rem;
     font-weight: 500;
-    font-family: "Gilroy-Medium",serif
+    font-family: "Gilroy",serif
 }
 .timeline-container .text {
     /* font-size: 19px;*/
@@ -124,6 +124,7 @@
     font-size: 1rem;
     padding-bottom: 8px;
     padding-top: 0px;
+    font-weight:500;
 }
 .module-summary{
     padding-left:3px !important;
@@ -277,7 +278,7 @@
 
     height: auto;
     align-items: flex-end; 
-    padding-top: 40px;
+    padding-top: 30px;
 }
 
 .progress-segment-wrapper {
@@ -294,7 +295,7 @@
 /* --- Контейнер для СТАТУЇ --- */
 .statue-avatar-container {
     position: absolute;
-    top: -30px; 
+    top: -40px !important; 
     left: 50%;
     transform: translateX(-50%);
     width: auto;
@@ -302,7 +303,7 @@
 }
 
 .statue-img {
-    height: 44px;
+    height: 64px !important;
     display: block;
     margin: 0 auto;
 }
@@ -324,7 +325,7 @@
 }
 .progress-timeline-container {
     position: relative;
-    padding-top: 15px; 
+    padding-top: 10px !important; 
     padding-bottom: 20px; 
 }
 
@@ -342,6 +343,8 @@
 
 
 
+
+
 .btn-last-lesson {
     background-color: #FFFFFF;
     /*width: 320px;*/
@@ -350,7 +353,6 @@
     margin-left: 5px;
     margin-right: 5px;
     border: 1px solid #2B31B4;
- 
     /*box-shadow: 0 4px 12px rgba(133, 136, 209, 0.3);*/
 }
 
@@ -379,7 +381,13 @@ hr.custom-line {
     #moduleList {
         max-width: 351px;
         padding: 20px 12px;
-        top: 336px;
+        top: 386px !important;
+    }
+    .small-text{
+        margin-top:10px;
+    }
+    .moduleListText .text{
+        font-size:1.25rem;
     }
 
     #block-progress {
@@ -387,7 +395,7 @@ hr.custom-line {
         padding-bottom: 12px;
         padding-left: 0px;
         padding-right: 0px;
-        height:250px;
+        height: 250px;
         /*   padding: 12px;*/
     }
     .btn-last-text{
@@ -413,6 +421,9 @@ hr.custom-line {
         margin-bottom: 12px;
         font-size: 13px;
         padding-bottom:10px;
+    }
+    #moduleList .status{
+        margin-bottom:8px;
     }
 
     .text {
@@ -443,7 +454,9 @@ hr.custom-line {
         align-items: flex-start !important;
        
     }
-
+    .progress-timeline-container {
+        padding-top:25px !important;
+    }
         .module-summary.is-open .art-frame-wrapper-mini {
             width: 100%; /* Контейнер на всю ширину */
             max-width: 320px; /* Обмежуємо розмір самої рамки */

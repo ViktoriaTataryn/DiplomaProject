@@ -13,5 +13,6 @@ namespace diplomaProject.DTOs
 
         // 3. Список виконаних (Виконані завдання)
         public List<HomeworkSubmission> ExecutedHomeworks { get; set; }
+        public List<Module> AllModules { get; set; }
     }
 }
