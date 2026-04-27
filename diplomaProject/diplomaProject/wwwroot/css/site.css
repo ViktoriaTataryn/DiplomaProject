@@ -1,5 +1,18 @@
+/* =========================================
+   Global Root Variables
+   ========================================= */
+:root {
+    --brand-blue: #3A3B7B; /* Core Figma blue color from resources */
+    --brand-light: #F8F9FA; /* Background color from resources */
+}
+
+/* =========================================
+   Typography and Font Faces
+   ========================================= */
 html {
     font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -8,137 +21,6 @@ html {
     }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    margin-bottom: 30px;
-}
-
-#header img{
-    max-width:200px;
-
-}
-/*Layout styles*/
-
-#layout-body {
-    display: flex; 
-    /*flex: 1;*/
-    align-items: stretch;
-    min-height: 100vh; 
-    width: 100%;
-}
-.sidebar-img img {
-   /* width: 180px;*/
-   max-width:186px;
-   /* height: auto;*/
-
-   /* left:40px;
-    top:19px;*/
-}
-.sidebar-img {
-    margin-top: auto;
-    padding: 20px;
-    text-align: center;
-}
-#sidebar {
-    /* min-width: 284px;*/
-    max-width: 284px;
-    background: #FFFFFF;
-    top: 88px;
-    flex-shrink: 0;
-    height: auto;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    /*  margin-bottom:30px;*/
-    /*     position: sticky; */
-    /*   z-index: 100; */
-    /*    border-right: 1px solid ; */
-    /*       height: 1678px; */
-    /*   padding: 20px; */
-}
-
-#main-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-#header {
-    height: 68px;
-
-    background: #fff;
-    border-bottom: 2px solid #2B31B4;
-    display: flex;
-    align-items: center;
-    padding: 0 30px;
-    width: 100%;
-    /*   position: sticky;  */
-    top: 0;
-}
-
-#content {
-    /* margin-left:20px;
-    margin-right:15px;*/
-    padding: 20px;
-    padding-left: 17px;
-    flex: 1;
-    background-color: #F3F3FB;
-    overflow: hidden;
-    max-width: 1920px;
-    flex-grow: 1; 
-    min-width: 0;
-    /*   flex:1;
-           padding top: 10px;
-            left: 305px;
-            padding-top: 10px;
-            gap: 32px;
-            angle: 0 deg;
-            opacity: 1; */
-}
-
-.nav-link {
-    color: #2B31B4;
-    margin-bottom: 10px;
-    /*     margin-left: 6px; */
-    position: relative;
-    display: flex;
-    padding: 10px 25px 10px 30px;
-    align-items: center;
-    text-decoration: none;
-   top:10px;
- 
-  
-}
-
-    .nav-link.active {
-        background-color: #F3F3FB;
-        /*   border-left: 2px solid #2B31B4; */
-        /* color: #fff; */
-    }
-
-        .nav-link.active::before {
-            content: "";
-            position: absolute;
-            left: 20px; 
-            top: 27%; 
-            height: 50%; 
-            width: 1.5px; 
-            background-color: #2B31B4; 
-           
-        }
-
-/* =========================================
-   Figma Auth Styles (Login & Register)
-   ========================================= */
-
 /* 1. Import Accia Piano font */
 @font-face {
     font-family: 'Accia Piano';
@@ -146,12 +28,7 @@ body {
     font-weight: normal;
     font-style: normal;
 }
-@font-face {
-    font-family: 'Gilroy';
-    src: url('/fonts/Gilroy-Light.woff2') format('woff2'), url('/fonts/Gilroy-Light.woff') format('woff');
-    font-weight: 300;
-    font-style: normal;
-}
+
 /* 2. Import Gilroy font (Regular & Medium) */
 @font-face {
     font-family: 'Gilroy';
@@ -167,7 +44,7 @@ body {
     font-style: normal;
 }
 
-/* 3. Import ShellyAllegroC font (Cursive) - ДОБАВЛЕНО */
+/* 3. Import ShellyAllegroC font (Cursive) */
 @font-face {
     font-family: 'ShellyAllegroC';
     src: url('/fonts/ShellyAllegroC.woff2') format('woff2'), url('/fonts/ShellyAllegroC.woff') format('woff');
@@ -175,35 +52,128 @@ body {
     font-style: normal;
 }
 
-/* 4. Global typography settings */
+/* Global body typography settings */
 body {
     font-family: 'Gilroy', sans-serif;
-    background-color: #F2F2FA; /* Цвет фона из Figma (светло-серый) */
+    background-color: #F2F2FA;
     color: #000000;
+    margin-bottom: 30px;
 }
 
-/* Применение Accia Piano к заголовкам и кнопкам */
+/* =========================================
+   Global Elements
+   ========================================= */
 h1, h2, h3, .figma-bg-blue, .figma-btn-primary {
     font-family: 'Accia Piano', serif;
 }
 
-/* Специальный класс для рукописного текста (например, слова Course в логотипе) */
 .figma-cursive {
     font-family: 'ShellyAllegroC', cursive;
     text-transform: none !important;
 }
 
 .figma-text-blue {
-    color: #2B31B4; /* Точный цвет из Figma */
+    color: #2B31B4;
 }
 
-/* Стили для кнопки */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* =========================================
+   Layout & Navigation
+   ========================================= */
+#layout-body {
+    display: flex;
+    align-items: stretch;
+    min-height: 100vh;
+    width: 100%;
+}
+
+#main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#header {
+    height: 88px; /* Figma Top Nav Bar height */
+    background: #FFFFFF; /* Figma background */
+    border-bottom: 2px solid #2B31B4;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    width: 100%;
+    top: 0;
+}
+
+#sidebar {
+    min-width: 284px; /* Figma Sidebar width */
+    background: #FFFFFF;
+    top: 88px; /* Figma top spacing */
+    flex-shrink: 0;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar-img {
+    margin-top: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+    .sidebar-img img {
+        width: 180px;
+        height: auto;
+    }
+
+#content {
+    padding: 20px;
+    padding-left: 17px;
+    flex: 1;
+    background-color: #F3F3FB;
+    overflow: hidden;
+    max-width: 1920px;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.nav-link {
+    color: #2B31B4;
+    margin-bottom: 10px;
+    position: relative;
+    display: flex;
+    padding: 10px 20px 10px 30px;
+    align-items: center;
+    text-decoration: none;
+}
+
+    .nav-link.active {
+        background-color: #F3F3FB;
+    }
+
+        .nav-link.active::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 27%;
+            height: 50%;
+            width: 1.5px;
+            background-color: #2B31B4;
+        }
+
+/* =========================================
+   Figma Auth Styles (Login & Register)
+   ========================================= */
 .figma-bg-blue {
-    background-color: #2B31B4; /* Точный цвет из Figma */
+    background-color: #2B31B4;
     color: white;
     transition: all 0.3s ease;
-    border-radius: 0 !important; /* Убираем скругления */
-    font-size: 18px; /* Задаем размер шрифта */
+    border-radius: 0 !important;
+    font-size: 18px;
     text-transform: uppercase;
 }
 
@@ -212,26 +182,24 @@ h1, h2, h3, .figma-bg-blue, .figma-btn-primary {
         color: white;
     }
 
-/* Seamless input wrapper */
 .figma-input-wrapper {
-    border-bottom: 1.5px solid #2B31B4; /* Точный цвет из Figma */
+    border-bottom: 1.5px solid #2B31B4;
     display: flex;
     align-items: center;
     transition: border-bottom 0.3s ease;
 }
 
     .figma-input-wrapper:focus-within {
-        border-bottom: 2px solid #2B31B4; /* Точный цвет из Figma */
+        border-bottom: 2px solid #2B31B4;
     }
 
-/* Transparent input inside wrapper */
 .figma-input {
     border: none;
     box-shadow: none !important;
     background-color: transparent;
     padding: 12px 0;
     border-radius: 0;
-    color: #2B31B4; /* Точный цвет из Figma */
+    color: #2B31B4;
     font-weight: 500;
     width: 100%;
     outline: none;
@@ -243,114 +211,134 @@ h1, h2, h3, .figma-bg-blue, .figma-btn-primary {
         font-weight: 400;
     }
 
-/* Transparent eye button */
 .figma-eye-btn {
     background: transparent;
     border: none;
     padding: 0 10px;
     cursor: pointer;
-    color: #2B31B4; /* Точный цвет из Figma */
+    color: #2B31B4;
     display: flex;
     align-items: center;
     outline: none;
 }
 
-/* Apply Gilroy Medium to the main titles */
 h2.figma-title {
-    font-family: 'Gilroy', sans-serif; /* Поменяли на Gilroy */
-    color: #2B31B4; /* Точный цвет из Figma */
+    font-family: 'Gilroy', sans-serif;
+    color: #2B31B4;
     letter-spacing: 1px;
-    font-weight: 500; /* Medium вес шрифта */
+    font-weight: 500;
 }
 
 /* =========================================
-   Mobile Responsiveness (Sidebar) - ОСТАВЛЕНО БЕЗ ИЗМЕНЕНИЙ
+   Archive & Course Resources (MERGED)
    ========================================= */
-
-/* Sidebar default transition for smooth animation */
-#sidebar {
-    transition: all 0.3s ease-in-out;
+/* Header Archive Section (Course Progress Card) */
+.archive-header {
+    background-color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    /* Hide the sidebar completely off-screen to the left */
-    #sidebar {
-        /*position: fixed;*/
-        left: -284px;
-        height: 100vh;
-        z-index: 1050; /* Bring it above other content */
-        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
-        min-width: 230px;
-        position: absolute ; 
-        top: 60px ;
-    }
-  
+/* Background flowers image setup */
+.archive-bg-flowers {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    /* Ensure the exact name of your image file is used in wwwroot/images folder */
+    background-image: url('/images/квіточкі.png');
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    opacity: 0.9;
+    pointer-events: none;
+}
 
-        /* Class to show the sidebar when the button is clicked */
-        #sidebar.show {
-            left: 0;
-        }
+.text-brand {
+    color: var(--brand-blue);
+}
 
-    /* Adjust header padding for mobile */
-    #header {
-        /*padding: 0 15px;*/
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important; /* Розносить елементи по краях */
-        padding: 0px 15px !important;
-        position: relative !important;
-        max-height:55px;
-    }
-        #header img {
-            order: 2 !important; /* Робимо його другим елементом */
-            position: absolute !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important; /* Ідеальне центрування */
-            max-width: 140px !important; /* Налаштуй висоту під свій логотип */
-            width: auto !important;
-        }
-    #content {
-        padding-top: 10px;
-        padding-left: 10px;
-        padding-right: 5px;
-    }
-    #sidebarToggle {
-        order: -1 !important; /* Робимо її першим елементом */
-        margin-right: 0 !important;
-        padding: 0 !important;
-        z-index: 10;
-    }
-    .ms-auto.d-flex.align-items-center span.me-3 {
-        display: none !important;
-    }
-    .ms-auto {
-        order: 3 !important; /* Ставимо в кінець після логотипу */
-        margin-left: auto !important;
-        display: flex !important;
-        z-index: 10;
+.bg-brand {
+    background-color: var(--brand-blue);
+    color: white;
+}
+
+/* Buttons */
+.btn-brand {
+    background-color: var(--brand-blue);
+    color: white;
+    border: none;
+    border-radius: 2px;
+}
+
+    .btn-brand:hover {
+        background-color: #2a2b5e;
+        color: white;
     }
 
-        /* 3. Прибираємо зайві відступи в іконки, щоб вона не тиснула на край екрана */
-        .ms-auto i.bi-person-circle {
-            margin-right: 10px !important;
-            font-size: 1.5rem !important; /* Можна трохи підправити розмір */
-        }
-  /*  #header img{
-       align-content:center;
-    }*/
+.btn-outline-brand {
+    color: var(--brand-blue);
+    border: 1px solid var(--brand-blue);
+    background: transparent;
+    border-radius: 2px;
+}
+
+    .btn-outline-brand:hover {
+        background-color: var(--brand-light);
+        color: var(--brand-blue);
+    }
+
+/* Lesson Materials List */
+.lesson-material-card {
+    background: white;
+    border-bottom: 1px solid #EBEBEB;
+    padding-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+    .lesson-material-card:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+/* Figma style blue frame for lesson thumbnail */
+.lesson-thumbnail-frame {
+    width: 140px;
+    height: 80px;
+    border: 3px solid var(--brand-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+}
+
+.lesson-meta {
+    font-size: 0.75rem;
+    color: #9CA3AF;
+    margin-bottom: 8px;
+}
+
+.lesson-title {
+    font-size: 1.1rem;
+    color: var(--brand-blue);
+    margin: 0;
+    font-weight: 400;
 }
 
 /* =========================================
-   Figma Module List Styles (Новое добавление)
+   Figma Module List Styles
    ========================================= */
-
 .figma-modules-container {
     padding-bottom: 50px;
 }
 
 .figma-page-title {
-    font-family: 'Accia Piano', serif; /* Используем Accia для заголовка страницы */
+    font-family: 'Accia Piano', serif;
     color: #333;
     font-weight: 600;
     text-transform: uppercase;
@@ -359,14 +347,14 @@ h2.figma-title {
 .figma-accordion {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Отступы между модулями как в Figma */
+    gap: 20px;
 }
 
 .figma-module-item {
     background-color: #FFFFFF;
-    border-radius: 8px; /* Скругление углов белых плашек */
+    border-radius: 8px;
     padding: 25px 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02); /* Легкая тень */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
     transition: all 0.3s ease;
 }
 
@@ -378,7 +366,7 @@ h2.figma-title {
 }
 
 .figma-module-text h3 {
-    font-family: 'Accia Piano', serif; /* Заголовки модулей */
+    font-family: 'Accia Piano', serif;
     color: #000;
     margin: 8px 0;
     font-size: 1.4rem;
@@ -392,10 +380,9 @@ h2.figma-title {
     font-size: 1rem;
 }
 
-/* Статус "В процесі" */
 .figma-status-in-progress {
     display: inline-block;
-    background-color: #E6E8F6; /* Светло-синий фон */
+    background-color: #E6E8F6;
     color: #2B31B4;
     padding: 5px 15px;
     border-radius: 20px;
@@ -415,7 +402,7 @@ h2.figma-title {
     display: none;
     padding-top: 25px;
     margin-top: 25px;
-    border-top: 1px solid #EAEAEA; /* Линия разделения */
+    border-top: 1px solid #EAEAEA;
 }
 
 .figma-module-item.expanded .figma-module-body {
@@ -480,3 +467,80 @@ h2.figma-title {
         background-color: #1e2285;
         color: #FFFFFF;
     }
+
+/* =========================================
+   Mobile Responsiveness
+   ========================================= */
+@media (max-width: 768px) {
+    #sidebar {
+        left: -284px;
+        height: 100vh;
+        z-index: 1050;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        min-width: 230px;
+        position: absolute;
+        top: 60px;
+    }
+
+        #sidebar.show {
+            left: 0;
+        }
+
+    #header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0px 15px !important;
+        position: relative !important;
+        max-height: 55px;
+    }
+
+        #header img {
+            order: 2 !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            max-width: 140px !important;
+            width: auto !important;
+        }
+
+    #content {
+        padding-top: 10px;
+        padding-left: 10px;
+        padding-right: 5px;
+    }
+
+    #sidebarToggle {
+        order: -1 !important;
+        margin-right: 0 !important;
+        padding: 0 !important;
+        z-index: 10;
+    }
+
+    .ms-auto.d-flex.align-items-center span.me-3 {
+        display: none !important;
+    }
+
+    .ms-auto {
+        order: 3 !important;
+        margin-left: auto !important;
+        display: flex !important;
+        z-index: 10;
+    }
+
+        .ms-auto i.bi-person-circle {
+            margin-right: 10px !important;
+            font-size: 1.5rem !important;
+        }
+
+    /* Responsive adjustments for new Archive sections */
+    .archive-header {
+        min-height: auto !important;
+        padding: 24px 15px !important;
+    }
+
+    .archive-bg-flowers {
+        opacity: 0.3; /* Make background less intrusive on mobile */
+        background-size: 150% auto;
+    }
+}
