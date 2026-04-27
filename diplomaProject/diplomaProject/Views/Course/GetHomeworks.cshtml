@@ -4,12 +4,13 @@
 <link rel="stylesheet" href="~/css/userProfile.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/getHomeworks.css" asp-append-version="true" />
+@* <link rel="stylesheet" href="~/css/moduleList.css" asp-append-version="true" /> *@
 
 <div class="m-3">
 
     <div class=" d-flex " id="profileData">
 
-        <div class=" progress-inner-content px-3 py-4">
+        <div class=" progress-iner-content px-3 pt-4 pb-1">
             <div id="personal-view">
                 <span class="title mb-3 mt-4 ">ПОТОЧНЕ ЗАВДАННЯ </span>
 
@@ -18,7 +19,7 @@
                 <div class="current-hw mt-3 py-1">
                         <span class="cur-homework d-block py-2">
                             <span class="module-part">Модуль @(Model.CurrentHomework.Lesson?.Module?.OrderIndex ?? 1)</span>
-                            <span>Тема @(Model.CurrentHomework.Lesson?.LessonIndex ?? 1)</span>
+                            <span >Тема @(Model.CurrentHomework.Lesson?.LessonIndex ?? 1)</span>
                         </span>
                         <span class="hometask-text">@Model.CurrentHomework?.Lesson?.Title</span>
                     <div>
@@ -31,7 +32,7 @@
                        </div>
                     </div>
                     </div>
-                        <a asp-action="Lesson" asp-controller="Course" asp-route-id="@Model.CurrentHomework.LessonId" class="task-btn text-decoration-none d-flex align-items-center justify-content-center mt-3">
+                        <a asp-action="Lesson" asp-controller="Course" asp-route-id="@Model.CurrentHomework.LessonId" class="task-btn mt-4">
                             <span class="task-btn-text ">ВИКОНАТИ ЗАВДАННЯ</span>
                         </a>
                     
@@ -83,4 +84,224 @@
             </div>
         </div>
 </div>
+     
+    <div class="completed-block py-4 px-3">
+        <div class="d-flex align-items-center gap-4 mb-4">
+        <span class="title  d-block ">ВИКОНАНІ ЗАВДАННЯ </span>
+     
+
+            <div class="position-relative top-0">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="color:#9799C4;"></i>
+                <input type="text" id="homeworkSearch" class="form-control ps-5 custom-input"
+                       placeholder="Шукати..."
+                       style=" background-color: #FFFFFF; border: 1px solid #2B31B4; height: 37px; max-width: 351px; border-radius: 0;color:#9799C4; font-family:Gilroy;">
+            </div>
+
+            <div class="position-relative top-0">
+                <select id="moduleFilter" class="form-select ps-3 custom-select"
+                        style=" background-color: #FFFFFF; border: 1px solid #2B31B4; height: 37px; max-width: 141px; cursor: pointer; border-radius: 0; color: #9799C4;font-family:Gilroy;">
+                    <option value="">Модуль</option>
+                    @if (Model.AllModules != null)
+                    {
+                        @foreach (var mod in (Model.AllModules ))
+                        {
+                            <option value="@mod.OrderIndex">Модуль @mod.OrderIndex</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+   
+        <div class="homework-scroll-container">
+            @if(Model.ExecutedHomeworks !=null && Model.ExecutedHomeworks.Any()){
+            @foreach (var item in Model.ExecutedHomeworks)
+            {
+               @*  <div class="homework-card d-flex align-items-center py-3 border-bottom">
+                </div> *@
+               
+                <div class="homework-card d-flex align-items-center py-4  border-bottom border-2" style="border-color: #9799C4 !important;">
+
+                    <div class="art-frame-wrapper-mini me-3 "style="margin-right:0px !important;">
+                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655858/Frame_available_stjkiv.png" class="frame-overlay-mini" />
+                        @{
+                            // Отримуємо посилання на модуль для зручності
+                            var currentModule = item.Homework?.Lesson?.Module;
+                        }
+
+                        <div class="module-image-inner-mini">
+                            @if (!string.IsNullOrEmpty(currentModule?.ImageUrl))
+                            {
+                                <img src="@currentModule.ImageUrl" style="width: 100%; height: 100%; object-fit: cover; " />
+                            }
+                        </div>
+                    </div>
+                
+
+                   
+
+                    <div class="ms-4 flex-grow-1 ">
+
+                        <div class="d-flex align-items-center hw-text mb-1" >
+                            <span class="hw-small-text">Модуль @(item.Homework?.Lesson?.Module?.OrderIndex ?? 0)</span>
+                                <span class="mx-2 class=" hw-small-text"">&bull;</span>
+                                <span class="hw-small-text">Тема @(item.Homework?.Lesson?.LessonIndex ?? 0)</span>
+                                <span class="mx-2 class=" hw-small-text"">&bull;</span>
+                            @* Дата здачі роботи *@
+                                <span class="hw-small-text">Виконано @item.SubmissionDate.ToString("dd.MM")</span>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-1">
+                            @* Назва береться з Homework, який пов'язаний з Lesson *@
+                            <span class=" hw-title" >
+                                @(item.Homework?.Lesson?.Title ?? "Назва відсутня")
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex align-items-center ms-auto">
+                        <div class="text-end me-4">
+                            @* Оцінка Grade (якщо null, виводимо 0 або "—") *@
+                            <div class="hw-grade">
+                                @(item.Grade?.ToString() ?? "0")/12
+                            </div>
+                        </div>
+
+                        @* Перехід до деталей зданої роботи *@
+                        <a asp-action="ViewSubmission" asp-controller="Course" asp-route-id="@item.Id"
+                           class="btn-detail d-flex align-items-center justify-content-center text-decoration-none p-2">
+                            <span class="btn-detail-text ">ПЕРЕГЛЯНУТИ</span>
+                        </a>
+                    </div>
+                </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5 bg-light rounded-3 mt-4 border border-dashed">
+                    <i class="bi bi-journal-x text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-2">Виконаних завдань поки немає.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById('homeworkSearch');
+            const moduleFilter = document.getElementById('moduleFilter');
+            const homeworkContainer = document.querySelector('.homework-scroll-container');
+
+            function filterHomeworks() {
+                if (!searchInput || !moduleFilter || !homeworkContainer) return;
+
+                const searchText = searchInput.value.toLowerCase().trim();
+                const selectedModule = moduleFilter.value;
+                const cards = homeworkContainer.querySelectorAll('.homework-card');
+
+                cards.forEach(card => {
+                    // Шукаємо заголовок (він у вас має клас .hw-title)
+                    const titleElement = card.querySelector('.hw-title');
+                    const titleText = titleElement ? titleElement.innerText.toLowerCase() : "";
+                    const cardContent = card.innerText;
+
+                    const matchesSearch = titleText.includes(searchText);
+                    const matchesModule = selectedModule === "" || cardContent.includes("Модуль " + selectedModule);
+
+                    if (matchesSearch && matchesModule) {
+                        card.style.setProperty('display', 'flex', 'important');
+                    } else {
+                        card.style.setProperty('display', 'none', 'important');
+                    }
+                });
+
+                updateEmptyState(cards);
+            }
+
+            function updateEmptyState(cards) {
+                let visibleCards = Array.from(cards).filter(c => c.style.display !== 'none').length;
+                let noResultsMsg = document.getElementById('no-results-message');
+
+                if (visibleCards === 0) {
+                    if (!noResultsMsg) {
+                        noResultsMsg = document.createElement('div');
+                        noResultsMsg.id = 'no-results-message';
+                        noResultsMsg.className = 'text-center py-5 text-muted';
+                        noResultsMsg.innerHTML = '<i class="bi bi-search mb-2" style="font-size: 2rem;"></i><p>Завдань не знайдено</p>';
+                        homeworkContainer.appendChild(noResultsMsg);
+                    }
+                } else if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+            }
+
+            searchInput.addEventListener('input', filterHomeworks);
+            moduleFilter.addEventListener('change', filterHomeworks);
+        });
+    </script>
+}
+@* <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Отримуємо елементи управління та всі картки
+        const searchInput = document.getElementById('homeworkSearch');
+        const moduleFilter = document.getElementById('moduleFilter');
+        const homeworkContainer = document.querySelector('.homework-scroll-container');
+
+        // Функція фільтрації
+        function filterHomeworks() {
+            const searchText = searchInput.value.toLowerCase().trim();
+            const selectedModule = moduleFilter.value; // Це буде число (OrderIndex) або пуста строка
+            const cards = homeworkContainer.querySelectorAll('.homework-card');
+
+            cards.forEach(card => {
+                // Отримуємо назву завдання (Title)
+                const titleElement = card.querySelector('.fw-bold');
+                const titleText = titleElement ? titleElement.innerText.toLowerCase() : "";
+
+                // Отримуємо номер модуля з тексту картки (шукаємо "Модуль X")
+                const cardContent = card.innerText;
+
+                // Логіка перевірки пошуку
+                const matchesSearch = titleText.includes(searchText);
+
+                // Логіка перевірки модуля
+                // Якщо вибрано "Всі модулі" (selectedModule === ""), то matchesModule завжди true
+                const matchesModule = selectedModule === "" || cardContent.includes("Модуль " + selectedModule);
+
+                // Показуємо або ховаємо картку
+                if (matchesSearch && matchesModule) {
+                    card.style.setProperty('display', 'flex', 'important');
+                } else {
+                    card.style.setProperty('display', 'none', 'important');
+                }
+            });
+
+            // Опціонально: показ повідомлення "Нічого не знайдено"
+            updateEmptyState(cards);
+        }
+
+        // Функція для відображення повідомлення, якщо результатів 0
+        function updateEmptyState(cards) {
+            let visibleCards = Array.from(cards).filter(c => c.style.display !== 'none').length;
+            let noResultsMsg = document.getElementById('no-results-message');
+
+            if (visibleCards === 0) {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('div');
+                    noResultsMsg.id = 'no-results-message';
+                    noResultsMsg.className = 'text-center py-5 text-muted';
+                    noResultsMsg.innerHTML = '<i class="bi bi-search mb-2" style="font-size: 2rem;"></i><p>Завдань не знайдено</p>';
+                    homeworkContainer.appendChild(noResultsMsg);
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        }
+
+        // Слухаємо події введення та зміни
+        searchInput.addEventListener('input', filterHomeworks);
+        moduleFilter.addEventListener('change', filterHomeworks);
+    });
+</script> *@
 

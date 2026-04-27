@@ -257,14 +257,20 @@ h2.figma-title {
     pointer-events: none;
 }
 
-.text-brand {
-    color: var(--brand-blue);
-}
-
-.bg-brand {
-    background-color: var(--brand-blue);
-    color: white;
-}
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    /* Hide the sidebar completely off-screen to the left */
+    #sidebar {
+        /*position: fixed;*/
+        left: -284px;
+        height: 100vh;
+        z-index: 1050; /* Bring it above other content */
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        min-width: 230px;
+        position: absolute ; 
+        top: 55px ;
+    }
+  
 
 /* Buttons */
 .btn-brand {

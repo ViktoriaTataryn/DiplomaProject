@@ -5,8 +5,9 @@
     ViewData["Title"] = "Course Curriculum";
 }
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/moduleList.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+
 
 
 
@@ -226,9 +227,7 @@
 
                     <hr class="mt-4 mb-3 custom-line">
 
-                    <p>Debug: LessonId = @(activeModule?.CurrentLessonId?.ToString() ?? "it is null")</p>
                    
-                    <p>Debug: Is activeModule null? = @(activeModule == null)</p>
                     @if (activeModule != null && activeModule.CurrentLessonId.HasValue)
                     @* @if (activeModule != null && activeModule.CurrentLessonId != null) *@
                     {
