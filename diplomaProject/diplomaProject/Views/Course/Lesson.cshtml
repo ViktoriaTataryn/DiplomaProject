@@ -3,6 +3,8 @@
 @using System.Text.Json
 @using System.Linq
 
+
+
 @functions {
     public Microsoft.AspNetCore.Html.IHtmlContent RenderContent(string jsonContent)
     {
@@ -39,6 +41,9 @@
                             int level = data.GetProperty("level").GetInt32();
                             string text = data.GetProperty("text").GetString();
                             html.Append("<h" + level + " class='lesson-header-h2'>" + text + "</h" + level + ">");
+                          
+                           
+                            
                         }
                         else if (type == "image")
                         {
@@ -196,7 +201,7 @@
         color: #2B31B4;
         font-family: 'Acia Piano', sans-serif;
         font-weight: 300;
-        font-size: 3rem;
+        font-size: 2.6rem;
         letter-spacing: 1px;
     }
 
@@ -368,7 +373,7 @@
         font-family: 'Gilroy', sans-serif;
         font-weight: 300;
         color: #494C90;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         line-height: 130%;
         padding-right: 30px;
         padding-left: 30px;
@@ -852,7 +857,11 @@
             text-decoration: none;
         }
 
-  
+    .lesson-body-content h1,
+    .lesson-body-content h2,
+    .lesson-body-content h3 {
+        scroll-margin-top: 100px;
+    }
 
     @@media (max-width: 1600px) {
         html {
@@ -910,10 +919,15 @@
                         <ul class="list-unstyled">
                             @foreach (var item in Model.TableOfContents)
                             {
+                                   
                                 <li class="toc-item level-@item.Level mb-2">
-                                    <a href="#header-@item.Text.GetHashCode()" class="toc-link">
-                                        @item.Text
-                                    </a>
+
+                                        <a href="#header-@item.Text.GetHashCode()" class="toc-link">
+                                            @item.Text
+
+                                        </a>
+
+                                       
                                 </li>
                             }
                         </ul>
@@ -1099,15 +1113,19 @@
         }
    @*  </div> *@
 
+
+
 @if (TempData["IsTestJustFinished"] != null)
 {
+
     <script>
-        // Чекаємо малу частку секунди, щоб браузер встиг відрендерити все,
-        // і плавно повертаємо користувача на початок до навігації
+      
         setTimeout(function () {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 100);
     </script>
 }
+
+
      
     
