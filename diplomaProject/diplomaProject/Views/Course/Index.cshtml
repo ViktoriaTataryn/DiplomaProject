@@ -4,6 +4,27 @@
 @{
     ViewData["Title"] = "Course Curriculum";
 }
+
+@{
+    // Переносим вычислення activeModule в область видимості всього представлення,
+    // щоб він був доступний і в HTML, і в скриптах незалежно від гілкування.
+    // var activeModule = Model?.FirstOrDefault(m => m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
+    //                    ?? Model?.FirstOrDefault(m => m.Status == "InProgress");
+    var activeModule = Model?
+        .Where(m => m.Status == "InProgress" && m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
+        .OrderByDescending(m => m.ModuleNumber)
+        .FirstOrDefault();
+
+
+    if (activeModule == null)
+    {
+        activeModule = Model?
+            .Where(m => m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
+            .OrderByDescending(m => m.ModuleNumber)
+            .FirstOrDefault();
+    }
+}
+
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/moduleList.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
@@ -181,14 +202,7 @@
 
             <div class=" progress-inner-content px-3">
                     <span class="title mb-2 mt-2 py-1 d-block">ПРОГРЕС КУРСУ </span>
-                    @{
-                       
-                        // var activeModule = Model.FirstOrDefault(m => m.Status == "InProgress")
-                        // ?? Model.FirstOrDefault(m => m.Status == "Open");
-                        var activeModule = Model.FirstOrDefault(m => m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
-                        ?? Model.FirstOrDefault(m => m.Status == "InProgress");
-                        // var activeModule = Model.FirstOrDefault(m => m.CurrentLessonId != null);
-                    }
+                   
                 <div class="progress-timeline-container mt-1">
                     <div class="statue-avatar-container is-hidden">
                         <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075828/Progress_Avatar_fri9bd.png" class="statue-img" alt="Статус курсу" />
@@ -197,6 +211,7 @@
                     <div class="progress-segments">
                         @foreach (var module in Model)
                         {
+
                             var isCompleted = module.Status == "Completed";
                             var isInProgress = module.Status == "InProgress";
 
@@ -241,9 +256,7 @@
                     </div>
                     }
             </div>
-         @*    <div>
-                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075801/Course_Progress_BG_r0glm0.webp" alt="background" style="width:350px; height:170px" />
-            </div> *@
+       
         </div>
 
 
@@ -251,6 +264,7 @@
         </div>
     }
 </div>
+
 
 
 
@@ -286,5 +300,5 @@
                 }
         
             }
-        </script>
+ </script>
 
