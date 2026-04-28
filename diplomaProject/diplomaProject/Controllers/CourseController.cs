@@ -307,6 +307,11 @@ namespace diplomaProject.Controllers
                 .Where(p => p.UserId == userId && p.ModuleId == lesson.ModuleId)
                 .ToListAsync();
 
+            bool isCompleted = await _context.HomeworkSubmissions
+        .AnyAsync(s => s.StudentId == userId && s.Homework.LessonId == id);
+
+            ViewBag.IsTestCompleted = isCompleted || TempData["IsTestJustFinished"] != null;
+
             // Видалено дублюючий код, який викликав помилку!
 
             if (string.IsNullOrEmpty(lesson.Content))
@@ -442,10 +447,16 @@ namespace diplomaProject.Controllers
             _context.HomeworkSubmissions.Add(submission);
             await _context.SaveChangesAsync();
 
+            
+
             // Unlock next lesson after successful quiz
             await _progressService.UnlockNextLessonAsync(userId, lessonId);
 
             TempData["HomeworkResult"] = $"Your score: {score} out of {maxScore}";
+            TempData["IsTestJustFinished"] = true;
+
+            // Або якщо ви робите Redirect:
+            TempData["TestJustFinished"] = true;
             return RedirectToAction("Lesson", new { id = lessonId });
         }
 

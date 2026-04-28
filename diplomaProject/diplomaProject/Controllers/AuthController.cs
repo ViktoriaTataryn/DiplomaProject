@@ -209,7 +209,7 @@ namespace diplomaProject.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login", "Auth");
             }
         }
 

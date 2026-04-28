@@ -56,8 +56,8 @@
                     Лекції
                 </a>
                 
-                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "GetUserHomework" ? "active" : "")"
-                       asp-controller="User" asp-action="GetUserHomework">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "GetHomeworks" ? "active" : "")"
+                       asp-controller="Course" asp-action="GetHomeworks">
                     Домашні завдання
                 </a>
                 

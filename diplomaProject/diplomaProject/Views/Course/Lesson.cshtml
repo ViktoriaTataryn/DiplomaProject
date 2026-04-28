@@ -1,348 +1,1113 @@
-﻿@model Lesson
+﻿@model diplomaProject.Models.Lesson
 
-@* --- VIKA'S ORIGINAL HOMEWORK FORM (STAYING AS HISTORY) --- *@
-@* <div class="card shadow-sm mt-4">
-     <div class="card-body">
-         <h6>Submit Your Work</h6>
-         <form asp-action="SubmitHomework" method="post">
-             <input type="hidden" name="lessonId" value="@Model.Id" />
-             <div class="mb-2">
-                 <input type="url" name="homeworkUrl" class="form-control form-control-sm" placeholder="Link to GitHub/Drive" required>
-             </div>
-             <div class="mb-2">
-                 <textarea name="comment" class="form-control form-control-sm" placeholder="Comment..."></textarea>
-             </div>
-             <button type="submit" class="btn btn-success btn-sm w-100">Send Homework</button>
-         </form>
-     </div>
-</div>
+@using System.Text.Json
+@using System.Linq
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success mt-2 small">@TempData["Message"]</div>
+@functions {
+    public Microsoft.AspNetCore.Html.IHtmlContent RenderContent(string jsonContent)
+    {
+        if (string.IsNullOrEmpty(jsonContent)) return Microsoft.AspNetCore.Html.HtmlString.Empty;
+
+        var html = new System.Text.StringBuilder();
+        bool firstImageSkipped = false;
+
+        try
+        {
+            using (JsonDocument doc = JsonDocument.Parse(jsonContent))
+            {
+                if (doc.RootElement.TryGetProperty("blocks", out var blocks))
+                {
+                    foreach (var block in blocks.EnumerateArray())
+                    {
+                        string type = block.GetProperty("type").GetString();
+                        var data = block.GetProperty("data");
+
+                        // Пропускаємо першу картинку
+                        if (type == "image" && !firstImageSkipped)
+                        {
+                            firstImageSkipped = true;
+                            continue;
+                        }
+
+                        if (type == "paragraph")
+                        {
+                            string text = data.GetProperty("text").GetString();
+                            html.Append("<p class='lesson-text'>" + text + "</p>");
+                        }
+                        else if (type == "header")
+                        {
+                            int level = data.GetProperty("level").GetInt32();
+                            string text = data.GetProperty("text").GetString();
+                            html.Append("<h" + level + " class='lesson-header-h2'>" + text + "</h" + level + ">");
+                        }
+                        else if (type == "image")
+                        {
+                            string url = data.GetProperty("file").GetProperty("url").GetString();
+                            html.Append("<div class='lesson-image-container text-center mb-4'>");
+                            html.Append("<img src='" + url + "' class='img-fluid lesson-img' />");
+                            html.Append("</div>");
+                        }
+                        else if (type == "quote")
+                        {
+                            string text = data.GetProperty("text").GetString();
+                            string caption = "";
+                            if (data.TryGetProperty("caption", out var cap)) { caption = cap.GetString(); }
+
+                            html.Append("<blockquote class='lesson-quote'><p>«" + text + "»</p>");
+                            if (!string.IsNullOrEmpty(caption))
+                            {
+                                html.Append("<cite>— " + caption + "</cite>");
+                            }
+                            html.Append("</blockquote>");
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            return new Microsoft.AspNetCore.Html.HtmlString("<p class='text-danger'>Помилка рендерингу контенту</p>");
+        }
+
+        return new Microsoft.AspNetCore.Html.HtmlString(html.ToString());
+    }
 }
 
-@if (TempData["HomeworkResult"] != null)
-{
-    <div class="alert alert-info mt-4">
-        <strong>Test Result:</strong> @TempData["HomeworkResult"]
-    </div>
-} *@
-
-@* --- ACTIVE TEST SECTION --- *@
 
 
-@* --- VIKA'S ORIGINAL LESSON CONTENT & RESOURCES (STAYING AS HISTORY) --- *@
+@{
+    ViewData["Title"] = Model.Title;
+    // Використовуємо нашу нову властивість. Якщо вона null — беремо фон модуля
+   
+    var headerImage = Model.FirstImageUrl ?? Model.Module?.ImageUrl;
+}
+
+<style>
+    html {
+        font-size: 16px;
+    }
+
+    /* Контейнер з фоном */
+
+    .lesson-header-wrapper {
+/*         position: relative;
+        width: 100%;
+        height: 480px;
+       
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        align-items: flex-end; 
+
+        padding-bottom: 0;
+        top: -20px; */
+
+    /*     position: relative;
+        width: 100%;
+        height: 480px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: -60px; 
+        z-index: 2;
+        top: -20px; */
+        position: relative;
+        width: 100%;
+        height: 480px; 
+      /*   height: auto; */ /* Дозволяємо блоку рости вниз */
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        flex-direction: column; /* Змінюємо, щоб контент йшов один за одним */
+        align-items: center;
+        margin-bottom: 0;
+        z-index: 2;
+        top: -20px;
+        margin-bottom: -60px;
+    }
 
 
 
-<div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h2>@Model.Title</h2>
-        </div>
-        <div class="card-body">
-            <div class="lecture-content">
-                <div id="editorjs-content" class="artline-lecture-view"></div>
+    /* Затемнення фону, щоб картинка не перебивала текст */
+
+    .lesson-header-overlay {
+        /* max-width: 1582px;
+        width: 100%;
+        height: 100%;
+        padding-top: 150px; */
+
+        padding-top: 100px;
+        padding-bottom: 50px;
+        width: 100%;
+       
+    }
+
+
+
+    /* Біла картка лекції */
+
+    .lesson-card-info {
+     /*    background: #FFFFFF;
+        padding: 20px;
+        border-radius: 0;
+      
+
+        box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+        max-width: 900px;
+        margin: 0 auto;
+        transform: translateY(50px); 
+
+        z-index: 1; */
+
+      /*   background: #FFFFFF;
+        padding: 40px; 
+        box-shadow: 0 10px 40px rgba(43, 49, 180, 0.15);
+        max-width: 900px;
+        margin: 0 auto;
+      
+        z-index: 10;
+        position: relative; */
+
+
+        background: #FFFFFF;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(43, 49, 180, 0.15);
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
+        top: 60px; /* Спускаємо картку на середину хедера */
+        z-index: 11;
+
+       /*  margin-top: 200px; 
+        background: #FFFFFF;
+        position: relative;
+        z-index: 10; */
+
+       
+    }
+
+
+
+    .lesson-main-title {
+        color: #2B31B4;
+        font-family: 'Acia Piano', sans-serif;
+        font-weight: 300;
+        font-size: 3rem;
+        letter-spacing: 1px;
+    }
+
+
+
+    .module-title {
+        color: #2B31B4;
+        font-weight: 300;
+        letter-spacing: 1px;
+        font-family: "Accia Piano";
+        font-size: 2rem;
+    }
+
+
+
+    .toc-title {
+        color: #2B31B4;
+        text-decoration: none;
+        font-weight: 300;
+        transition: 0.3s;
+        font-family: "Acia Piano";
+        font-size: 2.7rem;
+    }
+
+
+
+    .toc-container {
+        /*    border-left: 3px solid #2B31B4; */
+
+        /* max-width: 900px;
+       
+
+        margin-top: 130px;
+        margin-left: 150px; */
+        /*  margin-top:60px; */
+        /*   top:70px;
+
+            position:absolute; */
+
+        max-width: 900px;
+        margin: 110px auto !important;
+        padding: 0 20px;
+
+       /*  max-width: 900px;
+        margin: 120px auto 60px auto !important; 
+        padding: 0 20px;
+        position: relative; */
+    }
+
+
+
+    .toc-link {
+        text-decoration: none;
+        font-weight: 300;
+        transition: 0.3s;
+        font-family: "Gilroy";
+        font-size: 1.3rem;
+        color: #494C90;
+    }
+
+
+
+        .toc-link:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+
+
+    .level-2 {
+        margin-left: 0;
+        font-weight: 600;
+    }
+
+
+
+    .level-3 {
+        margin-left: 20px;
+        font-size: 0.95rem;
+    }
+
+
+
+    /* Основний шрифт та читабельність */
+
+    .lesson-body-content {
+      /*   font-family: 'Gilroy', sans-serif;
+        line-height: 130%;
+        color: #494C90;
+
+        clear: both;
+        position:relative;
+        top:555px;
+        z-index:1;
+        background-color:#FFFFFF;
+        font-weight:300;
+        font-size:1.8rem; */
+
+/*         font-family: 'Gilroy', sans-serif;
+        line-height: 130%;
+        color: #494C90;
+        clear: both;
+        position: relative;
+
+        margin-top: 120px;
+        z-index: 1;
+        background-color: #FFFFFF;
+        font-weight: 300;
+        font-size: 1.8rem;
+        display: block; */
+
+        /* font-family: 'Gilroy', sans-serif;
+        line-height: 130%;
+        color: #494C90;
+        clear: both;
+        position: relative;
+        top: 0 !important; 
+        margin-top: 60px; 
+        z-index: 1;
+        background-color: #FFFFFF;
+        font-weight: 300;
+        font-size: 1.8rem;
+        display: block; */
+
+        position: relative;
+        margin-top: 550px !important;
+        clear: both;
+        display: block;
+        z-index: 1;
+        background-color: #FFFFFF;
+        font-weight: 300;
+        font-size: 2rem;
+        font-family: 'Gilroy', sans-serif;
+        line-height: 130%;
+        color: #494C90;
+
+
+    }
+
+    .test-container {
+        clear: both; /* Важливо: скидає всі обтікання картинками */
+        position: relative;
+        display: block;
+        width: 100%;
+        top:0px;
+        margin-top: 10px; /* Відступ між текстом лекції та тестом */
+        padding-bottom: 100px; /* Відступ знизу сторінки */
+        z-index: 5;
+        background-color: #FFFFFF; /* Щоб контент під ним не просвічувався */
+    }
+
+    /* Додатковий фікс для Editor.js блоків, щоб вони не вилітали за межі */
+    .lesson-body-content::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+
+
+    .lesson-text {
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+
+
+    .lesson-description {
+        font-family: 'Gilroy', sans-serif;
+        font-weight: 300;
+        color: #494C90;
+        font-size: 1.5rem;
+        line-height: 130%;
+        padding-right: 30px;
+        padding-left: 30px;
+    }
+
+
+
+    /* Заголовки всередині тексту */
+
+    .lesson-header-h2 {
+        color: #2B31B4;
+        font-weight: 300;
+        margin-top: 3rem;
+        margin-bottom: 1.5rem;
+        font-size:2.2rem;
+        font-family:"Acia Piano";
+    }
+
+
+
+
+
+
+
+    /* Картинки з підписами */
+
+    .lesson-image-container {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+
+
+    .lesson-img {
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+
+
+    .image-caption {
+        font-size: 0.9rem;
+        color: #9799C4;
+        margin-top: 10px;
+        font-style: italic;
+    }
+
+
+
+    /* Списки */
+
+    .lesson-list {
+        margin-bottom: 1.5rem;
+        padding-left: 20px;
+    }
+
+
+
+        .lesson-list li {
+            margin-bottom: 10px;
+        }
+
+
+
+    /* Стиль для цитат */
+
+    .lesson-quote {
+        position: relative;
+        background: #9799C4; /* Дуже світло-фіолетовий фон */
+
+       
+        max-width:876px;
+        padding: 30px 40px;
+       width:60%;
+        margin: 40px 0;
+        font-family: 'Gilroy', sans-serif;
+   
+    }
+
+
+
+        .lesson-quote p {
+            font-family:"Gilroy";
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            margin-left:20px;
+        }
+
+
+
+     /*    .lesson-quote cite {
+            display: block;
+            font-style: normal;
+            font-weight: 600;
+            color: #9799C4;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        } */
+        .lesson-quote cite,
+        .lesson-quote footer {
+            display: block; /* Щоб автор був з нового рядка */
+            font-style: normal; /* Прибираємо курсив */
+            font-weight: 600;
+            color: #9799C4; /* Світло-фіолетовий колір як на макеті */
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+
+
+        /* Додамо лапки як декор (опціонально) */
+
+        .lesson-quote::before {
+            content: "“";
+            position: absolute;
+            left: 10px;
+            top: 30px;
+            font-size: 80px;
+            color: #FFFFFF;
+            font-family: serif;
+        }
+
+    :root {
+        --quiz-primary: #2B31B4;
+        --quiz-text: #494C90;
+        --quiz-muted: #9799C4;
+        --quiz-border: #E0E0E0;
+    }
+
+    .quiz-main-title {
+        color: var(--quiz-primary);
+        font-size: 2rem;
+        font-weight: 400;
+        margin-bottom: 5px;
+        font-family:"Acia Piano";
+    }
+
+    .quiz-subtitle {
+        
+        font-size: 1.2rem;
+        color:#494C90;
+        font-family:"Gilroy";
+      
+    }
+
+    /* Прогрес бар */
+    .quiz-progress-container {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        width: 250px;
+        text-align: right;
+    }
+
+    .progress-text {
+        font-size: 0.8rem;
+        color: var(--quiz-muted);
+    }
+
+    .quiz-progress-bar {
+        height: 4px;
+        background: #E0E0E0;
+        margin-top: 5px;
+        border-radius: 2px;
+    }
+
+    .quiz-progress-fill {
+        height: 100%;
+        background: var(--quiz-primary);
+        transition: width 0.3s ease;
+    }
+
+    /* Питання */
+    .question-meta {
+        font-size: 1rem;
+        color: var(--quiz-muted);
+        display: block;
+        margin-bottom: 5px;
+        font-family:"Gilroy";
+        font-weight:300;
+    }
+
+    .question-text {
+        color: var(--quiz-primary);
+       /*  font-weight: bold; */
+        font-size: 1.5rem;
+        font-family: "Gilroy";
+        font-weight: 500;
+    }
+
+    /* Контейнер опцій (спільна рамка) */
+    .options-container {
+        border: 1px solid var(--quiz-border);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .custom-option-item {
+        border-bottom: 1px solid var(--quiz-border);
+        position: relative;
+    }
+
+        .custom-option-item:last-child {
+            border-bottom: none;
+        }
+
+    /* Приховуємо стандартний інпут */
+    .option-input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .option-label {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        cursor: pointer;
+        transition: background 0.2s;
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+        .option-label:hover {
+            background: #F9FAFF;
+        }
+
+    /* Маркер */
+    .custom-radio-mark {
+        width: 16px;
+        height: 16px;
+        border: 1px solid var(--quiz-border);
+        margin-right: 15px;
+        display: inline-block;
+        position: relative;
+        background: white;
+    }
+
+    .option-input:checked + .option-label {
+        background: #F4F5FF;
+    }
+
+        .option-input:checked + .option-label .custom-radio-mark {
+            border-color: var(--quiz-primary);
+            background: var(--quiz-primary);
+        }
+
+            .option-input:checked + .option-label .custom-radio-mark::after {
+                content: "";
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                background: white;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+    /* Кнопка */
+    .btn-submit-quiz {
+        background: var(--quiz-primary);
+        color: white;
+        border: none;
+        padding: 12px 35px;
+       
+        font-size: 1.5rem;
+        transition: 0.3s;
+        font-family:"Acia Piano";
+    }
+
+        .btn-submit-quiz:hover {
+            background: #1a1f8c;
+            box-shadow: 0 4px 12px rgba(43, 49, 180, 0.2);
+        }
+
+
+
+    /* Картка завершеного тесту */
+
+    .test-completed-card {
+        border-radius: 0;
+        border-left: 5px solid #2b31b4;
+        background-color: #F8F9FF;
+    }
+
+    .nav-text {
+        color: #8588D1;
+        font-size: 1.2rem;
+        font-family: "Accia Piano";
+        font-weight: 300;
+    }
+
+
+
+    .slider-arrow-img {
+        width: 45px;
+        height: 18px;
+        color: #8588D1;
+    }
+
+
+
+    .lesson-meta {
+        font-weight: 500;
+        font-family: "Gilroy";
+        font-size: 1.2rem;
+        color: #9799C4;
+    }
+
+
+
+    .content-container {
+ /*        background-color: #FFFFFF;
+        width: 100%;
+        max-width: 1582px;
+        margin-top: -95px;
+     
+      height:auto;
+      display:block;
+        position:relative; */
+
+
+
+       /*  background-color: #FFFFFF;
+        width: 100%;
+        max-width: 900px; 
+        margin: 0 auto; 
+        position: relative;
+        z-index: 5;
+        display: block;
+        height: auto;
+        padding-top: 180px; */
+
+
+
+        /* background-color: #FFFFFF;
+        width: 100%;
+        max-width: 1582px;
+        margin: 0 auto;
+        height: auto !important; 
+        min-height: 100px;
+        display: block; 
+        position: relative; */
+
+
+        background-color: #FFFFFF;
+        width: 100%;
+        max-width: 1582px;
+        margin: 0 auto !important;
+        position: relative;
+        top: -40px; /* Має бути такий самий top, як у картки, щоб вони "зрослися" */
+        display: block;
+        height: auto;
+        z-index: 10;
+    }
+
+    .back-picture img {
+        /* max-width:1582px; */
+
+        height: 260px;
+        width: 100%;
+        margin-top: -170px;
+    }
+
+
+
+    .toc-item::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 8px; /* Розмір крапки */
+
+        height: 8px; /* Розмір крапки */
+
+        background-color: #2B31B4; /* Ваш фіолетовий колір */
+
+        border-radius: 50%; /* Робимо коло */
+
+        display: inline-block;
+    }
+
+
+
+    .toc-item {
+        position: relative;
+        padding-left: 25px; /* Місце для крапочки */
+
+        list-style: none;
+        display: flex;
+        align-items: center;
+    }
+
+
+
+    .custom-hr {
+        border: none; /* Прибираємо стандартну рамку */
+
+        height: 2px; /* Задаємо товщину лінії */
+
+        background-color: #2B31B4; /* Світло-сірий колір */
+
+        margin: 40px 0; /* Відступи зверху та знизу */
+
+        width: 100%;
+    }
+
+    /* Контейнер, де лежить весь текст лекції */
+    .lesson-body-content .col-lg-10 {
+        display: block; /* Важливо для обтікання */
+    }
+
+    /* Батьківський контейнер, де Editor.js рендерить блоки */
+    .lesson-body-content .col-lg-10 {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Блок з картинкою, якій в редакторі задано певне налаштування */
+    /* Примітка: Editor.js зазвичай додає класи на кшталт .ce-block--stretched або подібні */
+
+    .ce-block {
+        width: 50%;
+        clear: both;
+    }
+
+        /* Якщо ви можете додати клас через RenderContent для картинок з налаштуванням "stretched" або "left" */
+        .ce-block:has(.image-tool--side) {
+            float: right;
+            width: 40%;
+            margin-left: 30px;
+            clear: none; /* Дозволяємо тексту бути поруч */
+        }
+
+    /* Універсальний хак для Editor.js: якщо картинка йде перед текстом */
+    .image-tool {
+        display: block;
+        margin-bottom: 20px;
+    }
+    /* Контейнер Editor.js */
+  /*   .lesson-body-content .col-lg-10 {
+        display: block; 
+        overflow: visible;
+    } */
+
+    .lesson-body-content .image-tool__image-picture {
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Плавне сповільнення */
+        position: relative;
+        z-index: 1;
+    }
+
+        .lesson-body-content .image-tool__image-picture:hover {
+            /* Збільшуємо та піднімаємо */
+            transform: scale(1.02) translateY(-8px);
+            /* Глибока тінь */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            /* Виводимо картинку поверх сусідніх елементів */
+            z-index: 2;
+        }
+
+    .ce-paragraph {
+        margin-bottom: 2rem;
+        text-align: justify; /* Можна використовувати для "книжкового" вигляду */
+        hyphens: auto; /* Автоматичні переноси */
+    }
+
+    .disabled-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+        filter: grayscale(1); /* Робимо стрілку сірою */
+    }
+
+        .disabled-link a {
+            pointer-events: none; /* Вимикаємо кліки */
+            text-decoration: none;
+        }
+
+  
+
+    @@media (max-width: 1600px) {
+        html {
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="d-flex justify-content-between flex-column gap-5">
+<div class="lesson-header-wrapper" style="background-image: url('@headerImage');">
+    <div class="lesson-header-overlay">
+        <div class="container2">
+
+            <div class="lesson-card-info">
+                @* <div class="lesson-nav d-flex justify-content-between align-items-center">
+                    <a href="#" class="nav-link-lesson"><i class="bi bi-arrow-left"></i> ПОПЕРЕДНЯ ЛЕКЦІЯ</a>
+                    <span class="module-title">МОДУЛЬ @Model.Module.OrderIndex • ТЕМА @Model.LessonIndex</span>
+                    <a href="#" class="nav-link-lesson">НАСТУПНА ЛЕКЦІЯ <i class="bi bi-arrow-right"></i></a>
+                </div> *@
+
+                <div class="d-flex justify-content-between mb-1 mt-4 align-items-center px-3 ">
+                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
+                         class="slider-arrow-img"
+                         alt="scrollLeft" />
+                         <span class="nav-text">ПОПЕРЕДНЯ ЛЕКЦІЯ</span>
+                    <span class="module-title">МОДУЛЬ @Model.Module.OrderIndex. ТЕМА @Model.LessonIndex</span>
+                   
+                    <span class="nav-text">НАСТУПНА ЛЕКЦІЯ</span>
+                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
+                         class="slider-arrow-img"
+                         alt="scrollRight" />
+                </div>
+                   
+
+
+                <div class="lesson-meta text-center mt-3 p-2">
+                    <span>Модуль @Model.Module.OrderIndex</span> •
+                    <span >В процесі</span>
+                </div>
+
+                <h1 class="lesson-main-title text-center mt-3">@Model.Title</h1>
+
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <p class="lesson-description text-center mt-3">
+                        @Model.Description
+                    </p>
+                }
             </div>
-
-            @if (Model.Resources != null && Model.Resources.Any())
+            @if (Model.TableOfContents.Any())
             {
-                <div class="lesson-resources mt-5">
-                    <h4 class="text-secondary border-bottom pb-2 mb-3">Додаткові матеріали (Зображення)</h4>
-
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                        @foreach (var resource in Model.Resources)
-                        {
-                            <div class="col d-flex justify-content-center">
-                                <div class="card h-100 resource-card shadow-sm">
-                                    @{
-                                        // Перевіряємо розширення файлу
-                                        var extension = System.IO.Path.GetExtension(resource.FilePath).ToLower();
-                                        var isImage = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }.Contains(extension);
-                                    }
-
-                                    @if (isImage)
-                                    {
-                                        <img src="@resource.FilePath" class="card-img-top" alt="@resource.FileName" />
-                                    }
-                                    else
-                                    {
-                                        <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
-                                            <i class="fas fa-file-pdf fa-4x text-danger"></i>
-                                        </div>
-                                    }
-
-                                    <div class="card-body d-flex flex-column justify-content-between p-3">
-                                        <h6 class="card-title text-truncate">@resource.FileName</h6>
-                                        <a href="@resource.FilePath" target="_blank" download="@resource.FileName" class="btn btn-outline-primary btn-sm w-100">
-                                            <i class="fas fa-download"></i> Завантажити файл
-                                        </a> 
-                                        <a href="@resource.FilePath" target="_blank" class="btn btn-outline-primary btn-sm w-100">
-                                            <i class="fas fa-eye"></i> Переглянути файл
-                                        </a>
-                                         @if (extension == ".pdf")
-                                        {
-                                            <a href="@resource.FilePath" target="_blank" class="btn btn-primary btn-sm w-100 mb-2">
-                                                <i class="fas fa-file-pdf"></i> Відкрити PDF
-                                            </a>
-                                        }
-                                        else if (extension == ".pptx" || extension == ".docx")
-                                        {
-                                            <a href="https://view.officeapps.live.com/op/view.aspx?src=@System.Net.WebUtility.UrlEncode(resource.FilePath)"
-                                               target="_blank"
-                                               class="btn btn-outline-success btn-sm w-100 mb-2">
-                                                <i class="fas fa-file-powerpoint"></i> Читати онлайн
-                                            </a>
-                                        }
-
-                                        <a href="@resource.FilePath" download="@resource.FileName" class="btn btn-light btn-sm w-100">
-                                            <i class="fas fa-download"></i> Завантажити файл
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        }
+                <div class=" content-container d-flex flex-column ">
+                    <div class="toc-container p-4 ">
+                        <h5 class="toc-title mb-3">ЗМІСТ</h5>
+                        <ul class="list-unstyled">
+                            @foreach (var item in Model.TableOfContents)
+                            {
+                                <li class="toc-item level-@item.Level mb-2">
+                                    <a href="#header-@item.Text.GetHashCode()" class="toc-link">
+                                        @item.Text
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="back-picture justify-content-end">
+                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776887206/BG_Profile_Page_qby864.webp" />
                     </div>
                 </div>
             }
-            @if (Model.Homeworks != null && Model.Homeworks.Any())
+
+        </div>
+    </div>
+</div>
+@* <hr class="custom-hr" /> *@
+
+@* <div class=" lesson-body-content mt-5">
+    <div class=" justify-content-center">
+        <div class="col-lg-8">
+            @Html.Raw(RenderContent(Model.Content))
+        </div>
+    </div>
+</div> *@
+<div class=" lesson-body-content mt-auto">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            @Html.Raw(RenderContent(Model.Content))
+        </div>
+    </div>
+</div>
+</div>
+
+@* @if (Model.Homeworks != null && Model.Homeworks.Any())
+{
+    <div class=" pt-5 border-top test-container">
+        <h2 class="quiz-main-title">ТЕСТ ДО ЛЕКЦІЇ</h2>
+        <p class="text-muted mb-4">Перевірте свої знання за матеріалами лекції.</p>
+
+        @{
+            var questions = ViewBag.Questions as List<diplomaProject.Models.Question>;
+        }
+
+        @if (TempData["HomeworkResult"] != null)
+        {
+            <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="background-color: #F0F2FF; color: #2b31b4;">
+                <strong>Результат тесту:</strong> @TempData["HomeworkResult"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (questions != null && questions.Any())
+        {
+            @if (ViewBag.IsTestCompleted == true)
             {
-                <div class="mt-5">
-                    <h3 class="fw-bold" style="color: #2b31b4;">Test Your Knowledge</h3>
-                    <hr />
-
-                    @{
-                        var questions = ViewBag.Questions as List<diplomaProject.Models.Question>;
-                    }
-
-                    @if (TempData["HomeworkResult"] != null)
-                    {
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>Результат тесту:</strong> @TempData["HomeworkResult"]
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    }
-
-                    @if (questions != null && questions.Any())
-                    {
-                        @if (ViewBag.IsTestCompleted == true)
-                        {
-                            <div class="alert alert-success mt-4 shadow-sm border-0" style="border-radius: 15px;">
-                                <h5><i class="bi bi-check-circle-fill"></i> Ви вже успішно пройшли цей тест!</h5>
-                                <p class="mb-0">Ваш результат: <strong>@ViewBag.CurrentGrade</strong> балів.</p>
-                            </div>
-                        }
-                        else
-                        {
-                            <form asp-controller="Course" asp-action="CheckHomework" method="post">
-                                <input type="hidden" name="lessonId" value="@Model.Id" />
-
-                                @foreach (var question in questions)
-                                {
-                                    <div class="card mb-4 shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
-                                        <div class="card-header text-white" style="background-color: #2b31b4;">
-                                            <h5 class="mb-0">@question.Text</h5>
-                                        </div>
-                                        <div class="card-body bg-white">
-                                            @foreach (var option in question.Options)
-                                            {
-                                                <div class="form-check mb-2 custom-option">
-                                                    <input class="form-check-input"
-                                                           type="@(question.IsMultipleChoice ? "checkbox" : "radio")"
-                                                           name="answers[@question.Id]"
-                                                           value="@option.Id"
-                                                           id="option_@option.Id">
-                                                    <label class="form-check-label" for="option_@option.Id">
-                                                        @option.Text
-                                                    </label>
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                }
-
-                                <button type="submit" class="btn text-white w-100 py-3 mt-3 shadow-sm"
-                                        style="background-color: #2b31b4; border-radius: 10px; font-weight: 700;">
-                                    SUBMIT TEST
-                                </button>
-                            </form>
-                        }
-                    }
-                    else
-                    {
-                        @* Випадок, коли Homework є, але список питань порожній *@
-                        <div class="text-center py-5 bg-light rounded-3 mt-4 border border-dashed">
-                            <i class="bi bi-journal-x text-muted" style="font-size: 3rem;"></i>
-                            <p class="text-muted mt-2">Тестові питання для цієї лекції знаходяться в розробці.</p>
-                        </div>
-                    }
+                <div class="test-completed-card p-4 shadow-sm text-center">
+                    <i class="bi bi-check-circle-fill d-block mb-2" style="font-size: 2rem; color: #2b31b4;"></i>
+                    <h5 class="fw-bold">Ви вже пройшли цей тест!</h5>
+                    <p class="mb-0">Ваш останній результат: <span class="badge" style="background-color: #2b31b4;">@ViewBag.CurrentGrade / 12</span></p>
                 </div>
             }
             else
             {
-                @* Повідомлення, якщо Homework взагалі не прив'язаний до лекції *@
-                <div class="mt-5 p-4 text-center border rounded-3 bg-light">
-                    <h5 class="text-secondary"><i class="bi bi-info-circle"></i> Тести відсутні</h5>
-                  
+                <form asp-controller="Course" asp-action="CheckHomework" method="post" class="quiz-form">
+                    <input type="hidden" name="lessonId" value="@Model.Id" />
+
+                    @foreach (var question in questions)
+                    {
+                        <div class="quiz-question-block mb-5">
+                            <h5 class="question-text mb-4">@question.Text</h5>
+
+                            <div class="options-container">
+                                @foreach (var option in question.Options)
+                                {
+                                    <div class="custom-option-item mb-3">
+                                        <input class="option-input"
+                                               type="@(question.IsMultipleChoice ? "checkbox" : "radio")"
+                                               name="answers[@question.Id]"
+                                               value="@option.Id"
+                                               id="option_@option.Id">
+
+                                        <label class="option-label p-3 d-flex align-items-center" for="option_@option.Id">
+                                            <span class="custom-radio-mark me-3"></span>
+                                            <span class="option-text-content">@option.Text</span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn-submit-quiz px-5 py-3">
+                            ЗАВЕРШИТИ ТЕСТ
+                        </button>
+                    </div>
+                </form>
+            }
+        } *@
+@if (Model.Homeworks != null && Model.Homeworks.Any())
+{
+    <div class="pt-5 border-top test-container position-relative px-4">
+
+        @{
+            var questions = ViewBag.Questions as List<diplomaProject.Models.Question>;
+            int totalQuestions = questions?.Count ?? 0;
+        }
+
+      @*   <div class="quiz-progress-container">
+            <span class="progress-text">Питань: @totalQuestions</span>
+            <div class="quiz-progress-bar">
+                <div class="quiz-progress-fill" style="width: 100%;"></div>
+            </div>
+        </div> *@
+
+        <h2 class="quiz-main-title">ТЕСТ ДО ЛЕКЦІЇ</h2>
+        <p class="quiz-subtitle mb-5">Перевірте своє розуміння матеріалу. Відповідайте на всі питання та натисніть «Завершити тест».</p>
+
+        @if (TempData["HomeworkResult"] != null)
+        {
+            <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="background-color: #F0F2FF; color: #2b31b4;">
+                <strong>Результат тесту:</strong> @TempData["HomeworkResult"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (questions != null && questions.Any())
+        {
+            @if (ViewBag.IsTestCompleted == true)
+            {
+                <div class="test-completed-card p-4 shadow-sm text-center">
+                    <i class="bi bi-check-circle-fill d-block mb-2" style="font-size: 2rem; color: #2b31b4;"></i>
+                    <h5 class="fw-bold">Ви вже пройшли цей тест!</h5>
+                    <p class="mb-0">Ваш останній результат: <span class="badge" style="background-color: #2b31b4;">@ViewBag.CurrentGrade / 12</span></p>
                 </div>
             }
-            </div>
-            </div>
-            </div>
+            else
+            {
+                <form asp-controller="Course" asp-action="CheckHomework" method="post" class="quiz-form">
+                    <input type="hidden" name="lessonId" value="@Model.Id" />
+                    <input type="hidden" name="homeworkId" value="@Model.Homeworks.First().Id" />
 
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Отримуємо JSON дані з моделі.
-            // Якщо Content порожній, використовуємо об'єкт з порожнім масивом блоків.
-            const rawContent = @Html.Raw(string.IsNullOrEmpty(Model.Content) ? "{\"blocks\":[]}" : Model.Content);
-            const container = document.getElementById('editorjs-content');
+                    @for (int i = 0; i < questions.Count; i++)
+                    {
+                        var question = questions[i];
+                        <div class="quiz-question-block mb-5">
+                            <span class="question-meta">Питання @(i + 1) з @totalQuestions</span>
+                            <h5 class="question-text mb-4">@question.Text</h5>
 
-            if (rawContent && rawContent.blocks) {
-                const html = rawContent.blocks.map(block => {
-                    switch (block.type) {
-                        case 'header':
-                            // Витягуємо вирівнювання з tunes (якщо воно є)
-                            const headerAlign = block.tunes?.anyTuneName?.alignment || 'left';
-                            return `<h${block.data.level} class="fw-bold mt-4 mb-3" style="text-align: ${headerAlign}">
-                        ${block.data.text}
-                    </h${block.data.level}>`;
+                            <div class="options-container">
+                                @foreach (var option in question.Options)
+                                {
+                                    <div class="custom-option-item">
+                                        <input class="option-input"
+                                               type="@(question.IsMultipleChoice ? "checkbox" : "radio")"
+                                               name="answers[@question.Id]"
+                                               value="@option.Id"
+                                               id="option_@option.Id">
 
-                        case 'paragraph':
-                            const pAlign = block.tunes?.anyTuneName?.alignment || 'left';
-                            return `<p class="mb-3" style="line-height: 1.6; font-size: 1.1rem; text-align: ${pAlign}">
-                        ${block.data.text}
-                    </p>`;
-
-                        case 'quote':
-                            return `<blockquote class="border-start border-4 border-primary ps-3 py-2 my-4 bg-light shadow-sm" style="font-style: italic;">
-                        <p class="mb-1">${block.data.text}</p>
-                        ${block.data.caption ? `<cite class="small text-muted">— ${block.data.caption}</cite>` : ''}
-                    </blockquote>`;
-
-                        case 'image':
-                            // const caption = block.data.caption ? `<p class="text-center text-muted small mt-2">${block.data.caption}</p>` : '';
-                            // return `<div class="text-center my-4">
-                            //             <img src="${block.data.file.url}" class="img-fluid rounded shadow-sm" style="max-height: 500px;" alt="Lesson Image" />
-                            //             ${caption}
-                            //         </div>`;
-                            const caption = block.data.caption ? `<p class="text-center text-muted small mt-2">${block.data.caption}</p>` : '';
-
-                            // 1. Визначаємо розмір на основі активованих екшенів
-                            let sizeClass = 'w-100'; // По замовчуванню (на всю ширину)
-
-                            if (block.data.size_small) {
-                                sizeClass = 'img-size-small';
-                            } else if (block.data.size_medium) {
-                                sizeClass = 'img-size-medium';
-                            }
-
-                            // 2. Додаємо класи до картинки
-                            return `<div class="text-center my-4">
-                        <img src="${block.data.file.url}"
-                             class="img-fluid rounded shadow-sm ${sizeClass}"
-                             alt="Lesson Image" />
-                        ${caption}
-                    </div>`;
-
-                        case 'list':
-                            const listTag = block.data.style === 'ordered' ? 'ol' : 'ul';
-                            const items = block.data.items.map(i => `<li class="mb-1">${i}</li>`).join('');
-                            return `<${listTag} class="ps-4 mb-3">${items}</${listTag}>`;
-
-                       
-
-                        default:
-                            return '';
+                                        <label class="option-label" for="option_@option.Id">
+                                            <span class="custom-radio-mark"></span>
+                                            <span class="option-text-content">@option.Text</span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     }
-                }).join('');
 
-                container.innerHTML = html;
+                    <div class="text-start mt-5">
+                        <button type="submit" class="btn-submit-quiz">
+                            ЗАВЕРШИТИ ТЕСТ
+                        </button>
+                    </div>
+                </form>
             }
-        });
+        }
+    </div>
+}
+        else
+        {
+            <div class="text-center py-5 bg-light rounded-3 mt-4 border-dashed">
+                <p class="text-muted mb-0">Тестові питання для цієї лекції знаходяться в розробці.</p>
+            </div>
+        }
+   @*  </div> *@
+
+@if (TempData["IsTestJustFinished"] != null)
+{
+    <script>
+        // Чекаємо малу частку секунди, щоб браузер встиг відрендерити все,
+        // і плавно повертаємо користувача на початок до навігації
+        setTimeout(function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
     </script>
 }
-
+     
     
-
-
-<style>
-    .img-size-small {
-        width: 30% !important;
-        margin: 0 auto;
-    }
-
-    /* Середня картинка (60% від ширини контейнера) */
-    .img-size-medium {
-        width: 60% !important;
-        margin: 0 auto;
-    }
-    .artline-lecture-view {
-        color: #333;
-        word-wrap: break-word;
-    }
-
-        .artline-lecture-view h2, .artline-lecture-view h3 {
-            color: #2b31b4; /* Твій фірмовий синій */
-        }
-
-        .artline-lecture-view img {
-            transition: transform 0.3s ease;
-        }
-
-            .artline-lecture-view img:hover {
-                transform: scale(1.01); /* Легкий ефект при наведенні на картинки в тексті */
-            }
-    /* Головний контейнер контенту */
-    .lecture-content {
-        font-size: 1.1rem;
-        line-height: 1.7;
-        word-wrap: break-word;
-    }
-
-        /* Специфічне обмеження для всіх картинок всередині тексту лекції */
-        .lecture-content img {
-            max-width: 100% !important; /* Не дає вийти за межі екрану */
-            height: auto !important; /* Зберігає пропорції */
-            display: block;
-            margin: 2rem auto; /* Центрує і дає відступи */
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        /* Обмежуємо максимальну висоту, щоб картинка не займала три екрани */
-        .lecture-content img {
-            max-height: 600px;
-            object-fit: contain;
-        }
-
-    /* Стилі для сітки додаткових матеріалів */
-    .resource-card {
-        max-width: 350px; /* Обмежуємо максимальну ширину самої картки */
-        margin: 0 auto; /* Центруємо картку в колонці */
-        border: 1px solid #e0e0e0;
-        border-radius: 12px;
-        overflow: hidden;
-    }
-
-        .resource-card .card-img-top {
-            height: 200px; /* Фіксована висота */
-            width: 100%;
-            object-fit: contain; /* КЛЮЧОВЕ: картинка вписується, а не розтягується */
-            background-color: #f8f9fa; /* Світлий фон для пустих місць з боків */
-            padding: 10px; /* Невеликий відступ, щоб картинка не торкалася країв */
-        }
-
-        /* Якщо це іконка (PDF) */
-        .resource-card .bg-light {
-            background-color: #f1f3f5 !important;
-        }
-
-        /* Робимо заголовок файлу красивим */
-        .resource-card .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #495057;
-        }
-</style>
