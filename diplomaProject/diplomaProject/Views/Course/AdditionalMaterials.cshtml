@@ -23,9 +23,9 @@
                 <span><i class="bi bi-hdd me-2"></i>1,2 гб</span>
             </div>
 
-            <button class="btn btn-brand px-5 py-3 w-100 w-md-auto font-weight-bold" style="letter-spacing: 1px;">
+            <a asp-controller="Course" asp-action="DownloadFullArchive" class="btn btn-brand px-5 py-3 w-100 w-md-auto font-weight-bold text-decoration-none d-inline-block text-center" style="letter-spacing: 1px;">
                 ЗАВАНТАЖИТИ ВЕСЬ КУРС
-            </button>
+            </a>
         </div>
     </div>
 
@@ -50,49 +50,63 @@
         </div>
     </div>
 
-    <div class="bg-white p-4 p-md-5 mb-5" style="border-radius: 4px; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.02);">
-        @if (!Model.Any())
+    @{
+        // Перевіряємо, чи є взагалі хоч один файл (Resource) у всіх модулях
+        var allResources = Model.SelectMany(m => m.Lessons).SelectMany(l => l.Resources ?? new List<diplomaProject.Models.Resource>()).ToList();
+    }
 
+    <div class="bg-white p-4 p-md-5 mb-5" style="border-radius: 4px; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.02);">
+        @if (!allResources.Any())
         {
             <div class="alert alert-info text-center">Матеріали поки що відсутні.</div>
         }
-
         else
-
         {
             @foreach (var module in Model)
-
             {
-
                 foreach (var lesson in module.Lessons.OrderBy(l => l.LessonIndex))
-
                 {
-                    <div class="lesson-material-card flex-column flex-md-row text-center text-md-start">
+                    // Перевіряємо чи є файли саме в цій лекції
+                    if (lesson.Resources != null && lesson.Resources.Any())
+                    {
+                        foreach (var resource in lesson.Resources)
+                        {
+                            <div class="lesson-material-card flex-column flex-md-row text-center text-md-start">
 
-                        <div class="flex-shrink-0 mb-3 mb-md-0">
-                            <div class="lesson-thumbnail-frame">
+                                <div class="flex-shrink-0 mb-3 mb-md-0">
+                                    <div class="lesson-thumbnail-frame bg-light border-0">
+                                        <i class="bi bi-file-earmark-text text-brand" style="font-size: 2rem;"></i>
+                                    </div>
+                                </div>
+
+                                <div class="flex-grow-1 text-start ps-md-3">
+                                    <div class="lesson-meta text-uppercase">
+                                        Модуль @module.OrderIndex. &bull; Тема @lesson.LessonIndex.
+                                    </div>
+                                    <h3 class="lesson-title fw-bold" style="font-family: 'Gilroy', sans-serif;">@resource.FileName</h3>
+                                </div>
+
+                                <div class="flex-shrink-0 d-flex gap-3 align-items-center mt-3 mt-md-0 justify-content-center">
+                                    @if (!string.IsNullOrEmpty(resource.FilePath))
+                                    {
+                                        string viewLink = resource.FilePath.StartsWith("http")
+                                            ? resource.FilePath
+                                            : Url.Content("~/materials/" + resource.FilePath.TrimStart('/'));
+                                            
+                                        <a href="@viewLink" target="_blank" class="btn btn-outline-brand px-4 py-2 text-decoration-none" style="text-transform: uppercase; font-size: 0.85rem;">
+                                            Переглянути
+                                        </a>
+                                    }
+                                    
+                                    <a asp-controller="Course" asp-action="DownloadResource" asp-route-resourceId="@resource.Id" class="btn btn-outline-brand px-3 py-2 d-flex align-items-center justify-content-center text-decoration-none">
+                                        <i class="bi bi-download" style="font-size: 1.2rem;"></i>
+                                    </a>
+                                </div>
+
                             </div>
-                        </div>
-
-                        <div class="flex-grow-1">
-                            <div class="lesson-meta text-uppercase">
-                                Модуль @module.OrderIndex. &bull; Тема @lesson.LessonIndex. &bull; Виконано 12.03
-                            </div>
-                            <h3 class="lesson-title">@lesson.Title</h3>
-                        </div>
-
-                        <div class="flex-shrink-0 d-flex gap-3 align-items-center mt-3 mt-md-0 justify-content-center">
-                            <a href="#" class="btn btn-outline-brand px-4 py-2" style="text-transform: uppercase; font-size: 0.85rem;">
-                                Переглянути
-                            </a>
-                            <a href="#" class="btn btn-outline-brand px-3 py-2 d-flex align-items-center justify-content-center">
-                                <i class="bi bi-download" style="font-size: 1.2rem;"></i>
-                            </a>
-                        </div>
-
-                    </div>
+                        }
+                    }
                 }
-
             }
         }
     </div>

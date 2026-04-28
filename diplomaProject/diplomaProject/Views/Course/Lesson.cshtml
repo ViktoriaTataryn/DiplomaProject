@@ -873,18 +873,41 @@
                     <a href="#" class="nav-link-lesson">НАСТУПНА ЛЕКЦІЯ <i class="bi bi-arrow-right"></i></a>
                 </div> *@
 
-                <div class="d-flex justify-content-between mb-1 mt-4 align-items-center px-3 ">
-                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
-                         class="slider-arrow-img"
-                         alt="scrollLeft" />
-                         <span class="nav-text">ПОПЕРЕДНЯ ЛЕКЦІЯ</span>
-                    <span class="module-title">МОДУЛЬ @Model.Module.OrderIndex. ТЕМА @Model.LessonIndex</span>
-                   
-                    <span class="nav-text">НАСТУПНА ЛЕКЦІЯ</span>
-                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
-                         class="slider-arrow-img"
-                         alt="scrollRight" />
-                </div>
+                    <div class="d-flex justify-content-between mb-1 mt-4 align-items-center px-3">
+                        <div class="d-flex align-items-center disabled-link" style="opacity: 0.5;">
+                            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg" class="slider-arrow-img" alt="scrollLeft" />
+                            <span class="nav-text ms-2">ПОПЕРЕДНЯ ЛЕКЦІЯ</span>
+                        </div>
+
+                        <span class="module-title">МОДУЛЬ @Model.Module.OrderIndex. ТЕМА @Model.LessonIndex</span>
+
+                        @if (ViewBag.NextLessonId != null)
+                        {
+                            // Якщо тест пройдено, або тесту для цієї лекції взагалі немає
+                            if (ViewBag.IsTestCompleted == true || Model.Homeworks == null || !Model.Homeworks.Any())
+                            {
+                                <a asp-action="Lesson" asp-controller="Course" asp-route-id="@ViewBag.NextLessonId" class="d-flex align-items-center text-decoration-none" style="cursor: pointer;">
+                                    <span class="nav-text me-2">НАСТУПНА ЛЕКЦІЯ</span>
+                                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg" class="slider-arrow-img" alt="scrollRight" />
+                                </a>
+                            }
+                            else
+                            {
+                                // Якщо тест ще не пройдено - робимо кнопку сірою
+                                <div class="d-flex align-items-center disabled-link" title="Пройдіть тест, щоб відкрити наступну лекцію">
+                                    <span class="nav-text me-2">НАСТУПНА ЛЕКЦІЯ</span>
+                                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg" class="slider-arrow-img" alt="scrollRight" />
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            // Якщо це остання лекція в курсі, ховаємо стрілочку
+                            <div class="d-flex align-items-center" style="visibility: hidden;">
+                                <span class="nav-text me-2">НАСТУПНА ЛЕКЦІЯ</span>
+                            </div>
+                        }
+                    </div>
                    
 
 
