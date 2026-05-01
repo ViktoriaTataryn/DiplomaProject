@@ -3,7 +3,7 @@
 @using System.Text.Json
 @using System.Linq
 
-
+@* <link rel="stylesheet" href="~/css/lesson.css" asp-append-version="true" /> *@
 
 @functions {
     public Microsoft.AspNetCore.Html.IHtmlContent RenderContent(string jsonContent)
@@ -88,112 +88,38 @@
 }
 
 <style>
-    html {
-        font-size: 16px;
-    }
+    /* Основний контейнер шапки */
+.lesson-header-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 500px; /* Висота фонової картинки */
+    margin-bottom: 250px; /* Місце для картки, що виступає знизу */
+}
 
-    /* Контейнер з фоном */
+/* Фонове зображення (картина) */
+.lesson-header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+}
 
-    .lesson-header-wrapper {
-/*         position: relative;
-        width: 100%;
-        height: 480px;
-       
-
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        display: flex;
-        align-items: flex-end; 
-
-        padding-bottom: 0;
-        top: -20px; */
-
-    /*     position: relative;
-        width: 100%;
-        height: 480px;
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        align-items: flex-end;
-        margin-bottom: -60px; 
-        z-index: 2;
-        top: -20px; */
-        position: relative;
-        width: 100%;
-        height: 480px; 
-      /*   height: auto; */ /* Дозволяємо блоку рости вниз */
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        flex-direction: column; /* Змінюємо, щоб контент йшов один за одним */
-        align-items: center;
-        margin-bottom: 0;
-        z-index: 2;
-        top: -20px;
-        margin-bottom: -60px;
-    }
-
-
-
-    /* Затемнення фону, щоб картинка не перебивала текст */
-
-    .lesson-header-overlay {
-        /* max-width: 1582px;
-        width: 100%;
-        height: 100%;
-        padding-top: 150px; */
-
-        padding-top: 100px;
-        padding-bottom: 50px;
-        width: 100%;
-       
-    }
-
-
-
-    /* Біла картка лекції */
-
-    .lesson-card-info {
-     /*    background: #FFFFFF;
-        padding: 20px;
-        border-radius: 0;
-      
-
-        box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
-        max-width: 900px;
-        margin: 0 auto;
-        transform: translateY(50px); 
-
-        z-index: 1; */
-
-      /*   background: #FFFFFF;
-        padding: 40px; 
-        box-shadow: 0 10px 40px rgba(43, 49, 180, 0.15);
-        max-width: 900px;
-        margin: 0 auto;
-      
-        z-index: 10;
-        position: relative; */
-
-
-        background: #FFFFFF;
-        padding: 40px;
-        box-shadow: 0 10px 40px rgba(43, 49, 180, 0.15);
-        max-width: 900px;
-        width: 100%;
-        margin: 0 auto;
-        position: relative;
-        top: 60px; /* Спускаємо картку на середину хедера */
-        z-index: 11;
-
-       /*  margin-top: 200px; 
-        background: #FFFFFF;
-        position: relative;
-        z-index: 10; */
-
-       
-    }
+/* Біла картка з текстом */
+.lesson-card-info {
+    position: relative;
+    top: 250px; /* Зміщуємо картку вниз на фонову картинку */
+    z-index: 10;
+    background: white;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 60px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 4px; /* Легке закруглення як на фото */
+}
 
 
 
@@ -215,41 +141,18 @@
         font-size: 2rem;
     }
 
+.nav-text {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #b0b0cc; /* Світло-сіро-синій для навігації */
+}
 
-
-    .toc-title {
-        color: #2B31B4;
-        text-decoration: none;
-        font-weight: 300;
-        transition: 0.3s;
-        font-family: "Acia Piano";
-        font-size: 2.7rem;
-    }
-
-
-
-    .toc-container {
-        /*    border-left: 3px solid #2B31B4; */
-
-        /* max-width: 900px;
-       
-
-        margin-top: 130px;
-        margin-left: 150px; */
-        /*  margin-top:60px; */
-        /*   top:70px;
-
-            position:absolute; */
-
-        max-width: 900px;
-        margin: 110px auto !important;
-        padding: 0 20px;
-
-       /*  max-width: 900px;
-        margin: 120px auto 60px auto !important; 
-        padding: 0 20px;
-        position: relative; */
-    }
+.lesson-main-title {
+    font-family: 'Georgia', serif; /* Або схожий serif шрифт */
+    color: #3f3f8c;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
 
 
 
@@ -421,466 +324,86 @@
         font-style: italic;
     }
 
+.lesson-description {
+    color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* Стилі для Змісту (TOC) нижче картки */
+.container2 {
+    max-width: 800px;
+    margin: 300px auto 50px; /* Відступ, щоб не перекривалося карткою */
+    position: relative;
+}
+
+.toc-title {
+    color: #3f3f8c;
+    font-size: 1.8rem;
+    font-family: serif;
+}
+
+.toc-link {
+    text-decoration: none;
+    color: #555;
+    transition: 0.3s;
+}
+
+.toc-link:hover {
+    color: #3f3f8c;
+}
+
+.toc-item::before {
+    content: "•";
+    color: #3f3f8c;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+/* Щоб стрілочки були дзеркальними */
+.slider-arrow-img[alt="scrollLeft"] {
+    transform: scaleX(-1);
+}
 
 
-    /* Списки */
 
-    .lesson-list {
-        margin-bottom: 1.5rem;
-        padding-left: 20px;
-    }
-
-
-
-        .lesson-list li {
-            margin-bottom: 10px;
-        }
-
-
-
-    /* Стиль для цитат */
-
-    .lesson-quote {
-        position: relative;
-        background: #9799C4; /* Дуже світло-фіолетовий фон */
-
-       
-        max-width:876px;
-        padding: 30px 40px;
-       width:60%;
-        margin: 40px 0;
-        font-family: 'Gilroy', sans-serif;
-   
-    }
-
-
-
-        .lesson-quote p {
-            font-family:"Gilroy";
-            font-size: 1.5rem;
-            color: #FFFFFF;
-            line-height: 1.6;
-            margin-bottom: 10px;
-            margin-left:20px;
-        }
-
-
-
-     /*    .lesson-quote cite {
-            display: block;
-            font-style: normal;
-            font-weight: 600;
-            color: #9799C4;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        } */
-        .lesson-quote cite,
-        .lesson-quote footer {
-            display: block; /* Щоб автор був з нового рядка */
-            font-style: normal; /* Прибираємо курсив */
-            font-weight: 600;
-            color: #9799C4; /* Світло-фіолетовий колір як на макеті */
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-        }
-
-
-
-        /* Додамо лапки як декор (опціонально) */
-
-        .lesson-quote::before {
-            content: "“";
-            position: absolute;
-            left: 10px;
-            top: 30px;
-            font-size: 80px;
-            color: #FFFFFF;
-            font-family: serif;
-        }
-
-    :root {
-        --quiz-primary: #2B31B4;
-        --quiz-text: #494C90;
-        --quiz-muted: #9799C4;
-        --quiz-border: #E0E0E0;
-    }
-
-    .quiz-main-title {
-        color: var(--quiz-primary);
-        font-size: 2rem;
-        font-weight: 400;
-        margin-bottom: 5px;
-        font-family:"Acia Piano";
-    }
-
-    .quiz-subtitle {
-        
-        font-size: 1.2rem;
-        color:#494C90;
-        font-family:"Gilroy";
-      
-    }
-
-    /* Прогрес бар */
-    .quiz-progress-container {
-        position: absolute;
-        top: 50px;
-        right: 0;
-        width: 250px;
-        text-align: right;
-    }
-
-    .progress-text {
-        font-size: 0.8rem;
-        color: var(--quiz-muted);
-    }
-
-    .quiz-progress-bar {
-        height: 4px;
-        background: #E0E0E0;
-        margin-top: 5px;
-        border-radius: 2px;
-    }
-
-    .quiz-progress-fill {
-        height: 100%;
-        background: var(--quiz-primary);
-        transition: width 0.3s ease;
-    }
-
-    /* Питання */
-    .question-meta {
-        font-size: 1rem;
-        color: var(--quiz-muted);
-        display: block;
-        margin-bottom: 5px;
-        font-family:"Gilroy";
-        font-weight:300;
-    }
-
-    .question-text {
-        color: var(--quiz-primary);
-       /*  font-weight: bold; */
-        font-size: 1.5rem;
-        font-family: "Gilroy";
-        font-weight: 500;
-    }
-
-    /* Контейнер опцій (спільна рамка) */
-    .options-container {
-        border: 1px solid var(--quiz-border);
-        border-radius: 4px;
-        overflow: hidden;
-    }
-
-    .custom-option-item {
-        border-bottom: 1px solid var(--quiz-border);
-        position: relative;
-    }
-
-        .custom-option-item:last-child {
-            border-bottom: none;
-        }
-
-    /* Приховуємо стандартний інпут */
-    .option-input {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    .option-label {
-        display: flex;
-        align-items: center;
-        padding: 15px 20px;
-        cursor: pointer;
-        transition: background 0.2s;
-        width: 100%;
-        margin-bottom: 0;
-    }
-
-        .option-label:hover {
-            background: #F9FAFF;
-        }
-
-    /* Маркер */
-    .custom-radio-mark {
-        width: 16px;
-        height: 16px;
-        border: 1px solid var(--quiz-border);
-        margin-right: 15px;
-        display: inline-block;
-        position: relative;
-        background: white;
-    }
-
-    .option-input:checked + .option-label {
-        background: #F4F5FF;
-    }
-
-        .option-input:checked + .option-label .custom-radio-mark {
-            border-color: var(--quiz-primary);
-            background: var(--quiz-primary);
-        }
-
-            .option-input:checked + .option-label .custom-radio-mark::after {
-                content: "";
-                position: absolute;
-                width: 6px;
-                height: 6px;
-                background: white;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            }
-
-    /* Кнопка */
-    .btn-submit-quiz {
-        background: var(--quiz-primary);
-        color: white;
-        border: none;
-        padding: 12px 35px;
-       
-        font-size: 1.5rem;
-        transition: 0.3s;
-        font-family:"Acia Piano";
-    }
-
-        .btn-submit-quiz:hover {
-            background: #1a1f8c;
-            box-shadow: 0 4px 12px rgba(43, 49, 180, 0.2);
-        }
-
-
-
-    /* Картка завершеного тесту */
-
-    .test-completed-card {
-        border-radius: 0;
-        border-left: 5px solid #2b31b4;
-        background-color: #F8F9FF;
-    }
-
-    .nav-text {
-        color: #8588D1;
-        font-size: 1.2rem;
-        font-family: "Accia Piano";
-        font-weight: 300;
-    }
-
-
-
-    .slider-arrow-img {
-        width: 45px;
-        height: 18px;
-        color: #8588D1;
-    }
-
-
-
-    .lesson-meta {
-        font-weight: 500;
-        font-family: "Gilroy";
-        font-size: 1.2rem;
-        color: #9799C4;
-    }
-
-
-
-    .content-container {
- /*        background-color: #FFFFFF;
-        width: 100%;
-        max-width: 1582px;
-        margin-top: -95px;
-     
-      height:auto;
-      display:block;
-        position:relative; */
-
-
-
-       /*  background-color: #FFFFFF;
-        width: 100%;
-        max-width: 900px; 
-        margin: 0 auto; 
-        position: relative;
-        z-index: 5;
-        display: block;
-        height: auto;
-        padding-top: 180px; */
-
-
-
-        /* background-color: #FFFFFF;
-        width: 100%;
-        max-width: 1582px;
-        margin: 0 auto;
-        height: auto !important; 
-        min-height: 100px;
-        display: block; 
-        position: relative; */
-
-
-        background-color: #FFFFFF;
-        width: 100%;
-        max-width: 1582px;
-        margin: 0 auto !important;
-        position: relative;
-        top: -40px; /* Має бути такий самий top, як у картки, щоб вони "зрослися" */
-        display: block;
-        height: auto;
-        z-index: 10;
-    }
-
-    .back-picture img {
-        /* max-width:1582px; */
-
-        height: 260px;
-        width: 100%;
-        margin-top: -170px;
-    }
-
-
-
-    .toc-item::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        width: 8px; /* Розмір крапки */
-
-        height: 8px; /* Розмір крапки */
-
-        background-color: #2B31B4; /* Ваш фіолетовий колір */
-
-        border-radius: 50%; /* Робимо коло */
-
-        display: inline-block;
-    }
-
-
-
-    .toc-item {
-        position: relative;
-        padding-left: 25px; /* Місце для крапочки */
-
-        list-style: none;
-        display: flex;
-        align-items: center;
-    }
-
-
-
-    .custom-hr {
-        border: none; /* Прибираємо стандартну рамку */
-
-        height: 2px; /* Задаємо товщину лінії */
-
-        background-color: #2B31B4; /* Світло-сірий колір */
-
-        margin: 40px 0; /* Відступи зверху та знизу */
-
-        width: 100%;
-    }
-
-    /* Контейнер, де лежить весь текст лекції */
-    .lesson-body-content .col-lg-10 {
-        display: block; /* Важливо для обтікання */
-    }
-
-    /* Батьківський контейнер, де Editor.js рендерить блоки */
-    .lesson-body-content .col-lg-10 {
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Блок з картинкою, якій в редакторі задано певне налаштування */
-    /* Примітка: Editor.js зазвичай додає класи на кшталт .ce-block--stretched або подібні */
-
-    .ce-block {
-        width: 50%;
-        clear: both;
-    }
-
-        /* Якщо ви можете додати клас через RenderContent для картинок з налаштуванням "stretched" або "left" */
-        .ce-block:has(.image-tool--side) {
-            float: right;
-            width: 40%;
-            margin-left: 30px;
-            clear: none; /* Дозволяємо тексту бути поруч */
-        }
-
-    /* Універсальний хак для Editor.js: якщо картинка йде перед текстом */
-    .image-tool {
-        display: block;
-        margin-bottom: 20px;
-    }
-    /* Контейнер Editor.js */
-  /*   .lesson-body-content .col-lg-10 {
-        display: block; 
-        overflow: visible;
-    } */
-
-    .lesson-body-content .image-tool__image-picture {
-        border-radius: 4px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Плавне сповільнення */
-        position: relative;
-        z-index: 1;
-    }
-
-        .lesson-body-content .image-tool__image-picture:hover {
-            /* Збільшуємо та піднімаємо */
-            transform: scale(1.02) translateY(-8px);
-            /* Глибока тінь */
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-            /* Виводимо картинку поверх сусідніх елементів */
-            z-index: 2;
-        }
-
-    .ce-paragraph {
-        margin-bottom: 2rem;
-        text-align: justify; /* Можна використовувати для "книжкового" вигляду */
-        hyphens: auto; /* Автоматичні переноси */
-    }
-
-    .disabled-link {
-        opacity: 0.5;
-        cursor: not-allowed;
-        filter: grayscale(1); /* Робимо стрілку сірою */
-    }
-
-        .disabled-link a {
-            pointer-events: none; /* Вимикаємо кліки */
-            text-decoration: none;
-        }
-
-    .lesson-body-content h1,
-    .lesson-body-content h2,
-    .lesson-body-content h3 {
-        scroll-margin-top: 100px;
-    }
-
-    @@media (max-width: 1600px) {
-        html {
-            font-size: 14px;
-        }
-    }
 </style>
 
 <div class="d-flex justify-content-between flex-column gap-5">
-<div class="lesson-header-wrapper" style="background-image: url('@headerImage');">
-    <div class="lesson-header-overlay">
+
+<div class="lesson-header-wrapper" >
+
+        <div class="lesson-header-overlay" style="background-image: url('@headerImage');">
+
+        </div>
+
         <div class="container2">
+            @if (Model.TableOfContents.Any())
+            {
+                <div class=" content-container d-flex flex-column ">
+                    <div class="toc-container p-4 ">
+                        <h5 class="toc-title mb-3">ЗМІСТ</h5>
+                        <ul class="list-unstyled">
+                            @foreach (var item in Model.TableOfContents)
+                            {
+                                <li class="toc-item level-@item.Level mb-2">
+                                    <a href="#header-@item.Text.GetHashCode()" class="toc-link">
+                                        @item.Text
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="back-picture justify-content-end">
+                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776887206/BG_Profile_Page_qby864.webp" />
+                    </div>
+                </div>
+            }
+        </div>
 
             <div class="lesson-card-info">
-                @* <div class="lesson-nav d-flex justify-content-between align-items-center">
-                    <a href="#" class="nav-link-lesson"><i class="bi bi-arrow-left"></i> ПОПЕРЕДНЯ ЛЕКЦІЯ</a>
-                    <span class="module-title">МОДУЛЬ @Model.Module.OrderIndex • ТЕМА @Model.LessonIndex</span>
-                    <a href="#" class="nav-link-lesson">НАСТУПНА ЛЕКЦІЯ <i class="bi bi-arrow-right"></i></a>
-                </div> *@
+              
 
                 <div class="d-flex justify-content-between mb-1 mt-4 align-items-center px-3 ">
                     <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
@@ -911,45 +434,10 @@
                     </p>
                 }
             </div>
-            @if (Model.TableOfContents.Any())
-            {
-                <div class=" content-container d-flex flex-column ">
-                    <div class="toc-container p-4 ">
-                        <h5 class="toc-title mb-3">ЗМІСТ</h5>
-                        <ul class="list-unstyled">
-                            @foreach (var item in Model.TableOfContents)
-                            {
-                                   
-                                <li class="toc-item level-@item.Level mb-2">
-
-                                        <a href="#header-@item.Text.GetHashCode()" class="toc-link">
-                                            @item.Text
-
-                                        </a>
-
-                                       
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                    <div class="back-picture justify-content-end">
-                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776887206/BG_Profile_Page_qby864.webp" />
-                    </div>
-                </div>
-            }
-
-        </div>
-    </div>
+ 
 </div>
-@* <hr class="custom-hr" /> *@
 
-@* <div class=" lesson-body-content mt-5">
-    <div class=" justify-content-center">
-        <div class="col-lg-8">
-            @Html.Raw(RenderContent(Model.Content))
-        </div>
-    </div>
-</div> *@
+
 <div class=" lesson-body-content mt-auto">
     <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -957,6 +445,7 @@
         </div>
     </div>
 </div>
+
 </div>
 
 @* @if (Model.Homeworks != null && Model.Homeworks.Any())
