@@ -587,14 +587,25 @@ namespace diplomaProject.Controllers
                 .OrderByDescending(s => s.SubmissionDate)
                 .ToListAsync();
 
-            //int courseId = 3;
             var course = await _context.Courses.FirstOrDefaultAsync();
             int courseId = course?.Id ?? 0;
 
             if (courseId == 0)
             {
-                return View(new List<Module>()); // Если курсов вообще нет, отдаем пустой список
+                // FIX: Initialize all required collections for the View to prevent NullReferenceException.
+                // We use the 'stats' and 'executedHomeworks' that were already queried above.
+                return View(new HomeworkDashboardDTO
+                {
+                    Stats = stats ?? new HomeworkStatsDTO(),
+                    CurrentHomework = null,
+                    ExecutedHomeworks = executedHomeworks ?? new List<HomeworkSubmission>(),
+                    AllModules = new List<Module>(),
+                    AverageScore = executedHomeworks != null && executedHomeworks.Any()
+                        ? executedHomeworks.Average(s => (double)s.Grade)
+                        : 0.0
+                });
             }
+
             var activeLesson = await _progressService.GetActiveLessonAsync(userId, courseId);
 
             ViewBag.DebugLessonId = activeLesson?.Id.ToString() ?? "null";
