@@ -502,7 +502,6 @@ namespace diplomaProject.Controllers
             }
             return NotFound();
         }
-
         [HttpGet]
         public async Task<IActionResult> DownloadModuleMaterials(int moduleId)
         {
@@ -530,6 +529,60 @@ namespace diplomaProject.Controllers
             }
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> DownloadModuleMaterials(int moduleId)
+        //{
+        //    var resources = await _context.Resources
+        //        .Include(r => r.Lesson)
+        //        .Where(r => r.Lesson.ModuleId == moduleId)
+        //        .ToListAsync();
+
+        //    if (!resources.Any()) return BadRequest("No materials found for this module.");
+
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+        //        {
+        //            foreach (var resource in resources)
+        //            {
+        //                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
+        //                if (System.IO.File.Exists(filePath))
+        //                {
+        //                    archive.CreateEntryFromFile(filePath, resource.FileName + Path.GetExtension(filePath));
+        //                }
+        //            }
+        //        }
+        //        return File(memoryStream.ToArray(), "application/zip", $"Module_{moduleId}_Materials.zip");
+        //    }
+        //}
+
+        //[HttpGet]
+        //public async Task<IActionResult> DownloadFullArchive()
+        //{
+        //    var resources = await _context.Resources
+        //        .Include(r => r.Lesson)
+        //            .ThenInclude(l => l.Module)
+        //        .ToListAsync();
+
+        //    if (!resources.Any()) return BadRequest("No materials found in the course.");
+
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+        //        {
+        //            foreach (var resource in resources)
+        //            {
+        //                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
+        //                if (System.IO.File.Exists(filePath))
+        //                {
+        //                    var entryName = $"Module_{resource.Lesson.Module.OrderIndex}/Lesson_{resource.Lesson.LessonIndex}/{resource.FileName}{Path.GetExtension(filePath)}";
+        //                    archive.CreateEntryFromFile(filePath, entryName);
+        //                }
+        //            }
+        //        }
+        //        return File(memoryStream.ToArray(), "application/zip", "Full_Course_Archive.zip");
+        //    }
+        //}
         [HttpGet]
         public async Task<IActionResult> DownloadFullArchive()
         {

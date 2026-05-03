@@ -45,11 +45,38 @@
                            
                             
                         }
+                        // else if (type == "image")
+                        // {
+                        //     string url = data.GetProperty("file").GetProperty("url").GetString();
+                        //     html.Append("<div class='lesson-image-container text-center mb-4'>");
+                        //     html.Append("<img src='" + url + "' class='img-fluid lesson-img' />");
+                        //     html.Append("</div>");
+                        // }
                         else if (type == "image")
                         {
                             string url = data.GetProperty("file").GetProperty("url").GetString();
-                            html.Append("<div class='lesson-image-container text-center mb-4'>");
-                            html.Append("<img src='" + url + "' class='img-fluid lesson-img' />");
+
+                            // Перевіряємо, чи картинка має бути широкою (горизонтальною)
+                            bool isStretched = false;
+                            if (data.TryGetProperty("stretched", out var stretchedProp))
+                            {
+                                isStretched = stretchedProp.GetBoolean();
+                            }
+
+                            // Додаємо клас wide-image, якщо картинка розтягнута
+                            string containerClass = isStretched
+                                ? "lesson-image-container wide-image"
+                                : "lesson-image-container";
+
+                            html.Append($"<div class='{containerClass}'>");
+                            html.Append($"<img src='{url}' class='img-fluid lesson-img' />");
+
+                            // Додамо підпис до картинки, якщо він є (в мистецтві це важливо)
+                            if (data.TryGetProperty("caption", out var imgCaption) && !string.IsNullOrEmpty(imgCaption.GetString()))
+                            {
+                                html.Append($"<p class='image-caption'>{imgCaption.GetString()}</p>");
+                            }
+
                             html.Append("</div>");
                         }
                         else if (type == "quote")
@@ -92,44 +119,44 @@
 .lesson-header-wrapper {
     position: relative;
     width: 100%;
-    min-height: 500px; /* Висота фонової картинки */
-    margin-bottom: 250px; /* Місце для картки, що виступає знизу */
+      
+  
+      
 }
 
 /* Фонове зображення (картина) */
 .lesson-header-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
+    /* position: absolute;
+   
+    left: 0; */
     width: 100%;
-    height: 100%;
+    margin-top:-20px;
+        height: 480px;
     background-size: cover;
     background-position: center;
-    z-index: 1;
+ /*    z-index: 1; */
 }
 
 /* Біла картка з текстом */
 .lesson-card-info {
-    position: relative;
-    top: 250px; /* Зміщуємо картку вниз на фонову картинку */
+    position: absolute;
+    top: 220px; /* Зміщуємо картку вниз на фонову картинку */
     z-index: 10;
+    left:200px;
     background: white;
-    max-width: 800px;
+    max-width: 1052px;
     margin: 0 auto;
-    padding: 40px 60px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border-radius: 4px; /* Легке закруглення як на фото */
+    padding: 20px 20px;
+        box-shadow: 0 10px 40px rgba(43, 49, 180, 0.15);
+   width:850px;
+
 }
 
 
 
-    .lesson-main-title {
-        color: #2B31B4;
-        font-family: 'Acia Piano', sans-serif;
-        font-weight: 300;
-        font-size: 2.6rem;
-        letter-spacing: 1px;
-    }
+ 
+
+ 
 
 
 
@@ -141,21 +168,30 @@
         font-size: 2rem;
     }
 
-.nav-text {
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #b0b0cc; /* Світло-сіро-синій для навігації */
-}
+    .lesson-meta {
+        font-weight: 500;
+        font-family: "Gilroy";
+        font-size: 1.2rem;
+        color: #9799C4;
+    }
 
-.lesson-main-title {
-    font-family: 'Georgia', serif; /* Або схожий serif шрифт */
-    color: #3f3f8c;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-}
+    .nav-text {
+        color: #8588D1;
+        font-size: 1.2rem;
+        font-family: "Accia Piano";
+        font-weight: 300;
+    }
+
+    .lesson-main-title {
+        color: #2B31B4;
+        font-family: "Accia Piano";
+    /*     font-weight: 300; */
+        font-size: 3rem;
+        letter-spacing: 1px;
+    }
 
 
-
+/* 
     .toc-link {
         text-decoration: none;
         font-weight: 300;
@@ -163,7 +199,7 @@
         font-family: "Gilroy";
         font-size: 1.3rem;
         color: #494C90;
-    }
+    } */
 
 
 
@@ -190,59 +226,24 @@
 
     /* Основний шрифт та читабельність */
 
-    .lesson-body-content {
-      /*   font-family: 'Gilroy', sans-serif;
-        line-height: 130%;
-        color: #494C90;
-
-        clear: both;
-        position:relative;
-        top:555px;
-        z-index:1;
-        background-color:#FFFFFF;
-        font-weight:300;
-        font-size:1.8rem; */
-
-/*         font-family: 'Gilroy', sans-serif;
-        line-height: 130%;
-        color: #494C90;
-        clear: both;
-        position: relative;
-
-        margin-top: 120px;
-        z-index: 1;
-        background-color: #FFFFFF;
-        font-weight: 300;
-        font-size: 1.8rem;
-        display: block; */
-
-        /* font-family: 'Gilroy', sans-serif;
-        line-height: 130%;
-        color: #494C90;
-        clear: both;
-        position: relative;
-        top: 0 !important; 
-        margin-top: 60px; 
-        z-index: 1;
-        background-color: #FFFFFF;
-        font-weight: 300;
-        font-size: 1.8rem;
-        display: block; */
+/*     .lesson-body-content {
+  
 
         position: relative;
-        margin-top: 550px !important;
+       
         clear: both;
         display: block;
         z-index: 1;
         background-color: #FFFFFF;
         font-weight: 300;
-        font-size: 2rem;
+     
         font-family: 'Gilroy', sans-serif;
-        line-height: 130%;
+  
         color: #494C90;
+        padding-left: 10px;
 
 
-    }
+    } */
 
     .test-container {
         clear: both; /* Важливо: скидає всі обтікання картинками */
@@ -250,10 +251,10 @@
         display: block;
         width: 100%;
         top:0px;
-        margin-top: 10px; /* Відступ між текстом лекції та тестом */
-        padding-bottom: 100px; /* Відступ знизу сторінки */
+        margin-top: 10px; 
+        padding-bottom: 100px; 
         z-index: 5;
-        background-color: #FFFFFF; /* Щоб контент під ним не просвічувався */
+        background-color: #FFFFFF; 
     }
 
     /* Додатковий фікс для Editor.js блоків, щоб вони не вилітали за межі */
@@ -266,22 +267,16 @@
 
 
     .lesson-text {
-        margin-bottom: 1.5rem;
-        font-size: 1.1rem;
-    }
-
-
-
-    .lesson-description {
-        font-family: 'Gilroy', sans-serif;
-        font-weight: 300;
+       /*  margin-bottom: 1.5rem; */
+        font-size: 1.4rem;
+        font-family: 'Gilroy';
+        line-height:1.7rem;
         color: #494C90;
-        font-size: 1.2rem;
-        line-height: 130%;
-        padding-right: 30px;
-        padding-left: 30px;
+        font-weight:300;
+ 
+    /*     width:65%; */
+     
     }
-
 
 
     /* Заголовки всередині тексту */
@@ -291,19 +286,14 @@
         font-weight: 300;
         margin-top: 3rem;
         margin-bottom: 1.5rem;
-        font-size:2.2rem;
-        font-family:"Acia Piano";
+        font-size: 2.2rem;
+        font-family: "Accia Piano";
     }
-
-
-
-
-
 
 
     /* Картинки з підписами */
 
-    .lesson-image-container {
+   /*  .lesson-image-container {
         margin: 40px 0;
         text-align: center;
     }
@@ -314,63 +304,408 @@
         border-radius: 8px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
+ */
 
-
-
-    .image-caption {
-        font-size: 0.9rem;
-        color: #9799C4;
-        margin-top: 10px;
-        font-style: italic;
+    .lesson-body-container{
+        background-color: #FFFFFF;
+       /*  padding-left:15px; */
+    }
+    /* Контейнер для всього контенту */
+    .lesson-grid-wrapper {
+        display: grid;
+        padding:15px;
+        /* Створюємо дві колонки:
+           1-ша: гнучка (текст)
+           2-ша: фіксована 350px (картинки) */
+        grid-template-columns: 1fr 400px;
+        gap: 10px;
+        max-width: 1200px; 
+      /*   max-width: 1534px; */
+        /*      margin: 0 auto; */
+        align-items: center;
     }
 
-.lesson-description {
-    color: #666;
-    line-height: 1.6;
-    font-size: 1rem;
-}
+        /* Всі блоки за замовчуванням ставимо в ліву колонку */
+        .lesson-grid-wrapper > * {
+            grid-column: 1;
+        }
+
+        /* А картинки примусово відправляємо в праву колонку */
+        .lesson-grid-wrapper .lesson-image-container {
+            grid-column: 2;
+            margin: 0;
+        }
+
+        .lesson-grid-wrapper  {
+            grid-column: 2;
+            margin: 0;
+        }
+
+        /* Якщо заголовок має бути на всю ширину (над обома колонками) */
+        .lesson-grid-wrapper h2,
+        .lesson-header-h2 {
+            grid-column: 1 / span 2;
+            margin-bottom: 20px;
+        }
+
+   
+/*     .lesson-img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    } */
+  
+    .lesson-image-container {
+        grid-column: 2;
+        margin-bottom: 1rem;
+       
+    }
+
+       
+        .lesson-image-container.wide-image {
+            grid-column: 1 / span 2; 
+            text-align: center;
+            margin: 40px 0;
+            width: 100%;
+        }
+
+            .lesson-image-container.wide-image .lesson-img {
+                width: 100%;
+                max-height: 600px; 
+                object-fit: cover; 
+            }
+
+
+
+
+
+
+    /* Підпис до фото (курсивом, як у журналах про мистецтво) */
+    .image-caption {
+        font-family: 'Gilroy', sans-serif;
+        font-style: italic;
+     
+        font-size: 1.1rem;
+       
+        margin-top: 10px;
+        text-align: right;
+        color:#9799C4;
+    }
+   
+
+
+
+    .lesson-description {
+        font-family: 'Gilroy';
+        font-weight: 300;
+        color: #494C90;
+        font-size: 1.4rem;
+        line-height:1.6rem;
+  /*       line-height: 130%; */
+        padding-right: 30px;
+        padding-left: 30px;
+    }
 
 /* Стилі для Змісту (TOC) нижче картки */
 .container2 {
-    max-width: 800px;
-    margin: 300px auto 50px; /* Відступ, щоб не перекривалося карткою */
-    position: relative;
+
+  /*   margin: 300px auto 50px;  */
+   /*  position: relative; */
+  /*  margin-top:300px; */
+   background-color: #FFFFFF;
+        border-bottom: 2px solid #2B31B4;
+}
+
+.back-picture img{
+        height: 270px;
+        width: 100%;
+       /*  margin-top: 200px; */
 }
 
 .toc-title {
-    color: #3f3f8c;
-    font-size: 1.8rem;
-    font-family: serif;
+        color: #2B31B4;
+        text-decoration: none;
+        font-weight: 300;
+        font-family: "Accia Piano";
+        font-size: 3rem;
+        letter-spacing:1px;
 }
 
-.toc-link {
-    text-decoration: none;
-    color: #555;
-    transition: 0.3s;
-}
+    .toc-link {
+        text-decoration: none;
+        font-weight: 300;
+        line-height:1.3rem;
+        font-family: "Gilroy";
+        font-size: 1.4rem;
+        color: #494C90;
+    }
 
 .toc-link:hover {
     color: #3f3f8c;
 }
 
-.toc-item::before {
-    content: "•";
-    color: #3f3f8c;
-    display: inline-block;
-    width: 1em;
-    margin-left: -1em;
-}
+    .toc-item::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 10px; /* Розмір крапки */
 
-/* Щоб стрілочки були дзеркальними */
-.slider-arrow-img[alt="scrollLeft"] {
-    transform: scaleX(-1);
+        height: 10px; /* Розмір крапки */
+
+        background-color: #2B31B4; /* Ваш фіолетовий колір */
+
+        border-radius: 50%; /* Робимо коло */
+
+        display: inline-block;
+    }
+
+
+
+    .toc-item {
+        position: relative;
+        padding-left: 20px; /* Місце для крапочки */
+
+        list-style: none;
+        display: flex;
+        align-items: center;
+    }
+/* .content-container{
+    margin-top:170px;
 }
+ */
+    .toc-container{
+     
+        margin-top:220px;
+        margin-left:200px;
+    }
+
+    .slider-arrow-img {
+        width: 45px;
+        height: 16px;
+        color: #8588D1;
+    }
+    /* Стиль для цитат */
+
+    .lesson-quote {
+        position: relative;
+        background: #9799C4;
+        max-width: 876px;
+        padding: 20px 15px;
+        width: 60%;
+        margin: 40px 0;
+        font-family: 'Gilroy';
+        color: #FFFFFF; /* Основний колір тексту */
+    }
+
+        .lesson-quote p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            margin-top: 40px; /* Трохи більше місця для лапок */
+        }
+
+        /* Лінія та стилі автора */
+        .lesson-quote cite,
+        .lesson-quote footer {
+            display: block;
+            font-style: normal;
+            font-weight: 500;
+            color: #FFFFFF; /* Змінено на білий, щоб було видно на фіолетовому */
+            font-size: 1.5rem;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #FFFFFF; /* Біла напівпрозора лінія */
+           /*  margin-left: 30px; */
+        }
+
+        /* Декоративні лапки як на макеті */
+        .lesson-quote::before {
+            content: "“";
+            position: absolute;
+            left: 20px;
+            top: -15px;
+            font-size: 100px;
+            color: #FFFFFF;
+            font-family: serif;
+            opacity: 0.8;
+        }
+
+    :root {
+        --quiz-primary: #2B31B4;
+        --quiz-text: #494C90;
+        --quiz-muted: #9799C4;
+        --quiz-border: #E0E0E0;
+    }
+
+    .quiz-main-title {
+        color: var(--quiz-primary);
+        font-size: 3rem;
+        font-weight: 300;
+        margin-bottom: 8px;
+        font-family: "Accia Piano";
+    }
+
+    .quiz-subtitle {
+        font-size: 1.2rem;
+        color: #494C90;
+        font-family: "Gilroy";
+        width:50%;
+    }
+
+    /* Прогрес бар */
+    .quiz-progress-container {
+        position: absolute;
+        top: 80px;
+        right: 20px;
+        width: 270px;
+   
+        text-align: left;
+    }
+
+    .progress-text {
+        font-size: 1.2rem;
+        color: var(--quiz-muted);
+    }
+
+    .quiz-progress-bar {
+        height: 8px;
+        background:#9799C4;
+        margin-top: 5px;
+    
+    }
+
+    .quiz-progress-fill {
+        height: 100%;
+        background: var(--quiz-primary);
+        transition: width 0.3s ease;
+    }
+
+    /* Питання */
+    .question-meta {
+        font-size: 1rem;
+        color: var(--quiz-muted);
+        display: block;
+        margin-bottom: 5px;
+        font-family: "Gilroy";
+        font-weight: 300;
+    }
+
+    .question-text {
+        color: var(--quiz-primary);
+        /*  font-weight: bold; */
+        font-size: 1.5rem;
+        font-family: "Gilroy";
+        font-weight: 500;
+    }
+
+    /* Контейнер опцій (спільна рамка) */
+    .options-container {
+        border: 1px solid var(--quiz-border);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .custom-option-item {
+        border-bottom: 1px solid var(--quiz-border);
+        position: relative;
+    }
+
+        .custom-option-item:last-child {
+            border-bottom: none;
+        }
+
+    /* Приховуємо стандартний інпут */
+    .option-input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .option-label {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        cursor: pointer;
+        transition: background 0.2s;
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+        .option-label:hover {
+            background: #F9FAFF;
+        }
+
+    /* Маркер */
+    .custom-radio-mark {
+        width: 16px;
+        height: 16px;
+        border: 1px solid var(--quiz-border);
+        margin-right: 15px;
+        display: inline-block;
+        position: relative;
+        background: white;
+    }
+
+    .option-input:checked + .option-label {
+        background: #F4F5FF;
+    }
+
+        .option-input:checked + .option-label .custom-radio-mark {
+            border-color: var(--quiz-primary);
+            background: var(--quiz-primary);
+        }
+
+            .option-input:checked + .option-label .custom-radio-mark::after {
+                content: "";
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                background: white;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+    /* Кнопка */
+    .btn-submit-quiz {
+        background: var(--quiz-primary);
+        color: white;
+        border: none;
+        padding: 12px 35px;
+        font-size: 1.5rem;
+        transition: 0.3s;
+        font-family: "Acia Piano";
+    }
+
+        .btn-submit-quiz:hover {
+            background: #1a1f8c;
+            box-shadow: 0 4px 12px rgba(43, 49, 180, 0.2);
+        }
+
+
+
+    /* Картка завершеного тесту */
+
+    .test-completed-card {
+        border-radius: 0;
+        border-left: 5px solid #2b31b4;
+        background-color: #F8F9FF;
+    }
+  
+
+    @@media(max-width: 1600px)  {
+        html {
+            font-size: 14px;
+        }
+    }
+    
+
 
 
 
 </style>
 
-<div class="d-flex justify-content-between flex-column gap-5">
+<div class="d-flex justify-content-between flex-column gap-0">
 
 <div class="lesson-header-wrapper" >
 
@@ -382,8 +717,8 @@
             @if (Model.TableOfContents.Any())
             {
                 <div class=" content-container d-flex flex-column ">
-                    <div class="toc-container p-4 ">
-                        <h5 class="toc-title mb-3">ЗМІСТ</h5>
+                    <div class="toc-container p-2 py-0">
+                        <h5 class="toc-title mb-1">Зміст</h5>
                         <ul class="list-unstyled">
                             @foreach (var item in Model.TableOfContents)
                             {
@@ -405,17 +740,21 @@
             <div class="lesson-card-info">
               
 
-                <div class="d-flex justify-content-between mb-1 mt-4 align-items-center px-3 ">
+                <div class="d-flex justify-content-between mb-1 mt-4 align-items-center px-2 ">
+                    <div class="d-flex px-2 ">
                     <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
-                         class="slider-arrow-img"
+                         class="slider-arrow-img mt-1"
                          alt="scrollLeft" />
                          <span class="nav-text">ПОПЕРЕДНЯ ЛЕКЦІЯ</span>
+                </div>
                     <span class="module-title">МОДУЛЬ @Model.Module.OrderIndex. ТЕМА @Model.LessonIndex</span>
-                   
+
+                <div class="d-flex px-2 ">
                     <span class="nav-text">НАСТУПНА ЛЕКЦІЯ</span>
                     <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
-                         class="slider-arrow-img"
+                         class="slider-arrow-img mt-1"
                          alt="scrollRight" />
+                </div>
                 </div>
                    
 
@@ -425,11 +764,11 @@
                     <span >В процесі</span>
                 </div>
 
-                <h1 class="lesson-main-title text-center mt-3">@Model.Title</h1>
+                <h1 class="lesson-main-title text-center mt-3 ">@Model.Title</h1>
 
                 @if (!string.IsNullOrEmpty(Model.Description))
                 {
-                    <p class="lesson-description text-center mt-3">
+                    <p class="lesson-description text-center mt-4">
                         @Model.Description
                     </p>
                 }
@@ -438,15 +777,26 @@
 </div>
 
 
-<div class=" lesson-body-content mt-auto">
+@* <div class=" lesson-body-content ">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="px-4 mt-4">
             @Html.Raw(RenderContent(Model.Content))
         </div>
     </div>
-</div>
+</div> *@
 
-</div>
+    <div class="lesson-body-container">
+        <!-- Новий батьківський клас -->
+        <div class="lesson-grid-wrapper">
+            @Html.Raw(RenderContent(Model.Content))
+        </div>
+    </div>
+
+@*     <div class="lesson-body-content">
+        @Html.Raw(RenderContent(Model.Content))
+    </div>
+
+</div> *@
 
 @* @if (Model.Homeworks != null && Model.Homeworks.Any())
 {
@@ -523,15 +873,16 @@
             int totalQuestions = questions?.Count ?? 0;
         }
 
-      @*   <div class="quiz-progress-container">
-            <span class="progress-text">Питань: @totalQuestions</span>
-            <div class="quiz-progress-bar">
-                <div class="quiz-progress-fill" style="width: 100%;"></div>
-            </div>
-        </div> *@
+        
 
         <h2 class="quiz-main-title">ТЕСТ ДО ЛЕКЦІЇ</h2>
         <p class="quiz-subtitle mb-5">Перевірте своє розуміння матеріалу. Відповідайте на всі питання та натисніть «Завершити тест».</p>
+            <div class="quiz-progress-container">
+                <span class="progress-text">Питань: @totalQuestions</span>
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" style="width: 100%;"></div>
+                </div>
+            </div>
 
         @if (TempData["HomeworkResult"] != null)
         {
@@ -600,7 +951,7 @@
                 <p class="text-muted mb-0">Тестові питання для цієї лекції знаходяться в розробці.</p>
             </div>
         }
-   @*  </div> *@
+    </div>
 
 
 
