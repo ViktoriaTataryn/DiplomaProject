@@ -16,8 +16,6 @@ namespace diplomaProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
-
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -27,7 +25,6 @@ namespace diplomaProject
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
-
 
                 // Налаштування паролів 
                 options.Password.RequireDigit = true;
@@ -65,6 +62,9 @@ namespace diplomaProject
 
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
+            // Added HttpClient to support file downloads from Cloudinary
+            builder.Services.AddHttpClient();
+
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IProgressService, ProgressService>();
             builder.Services.AddScoped<ProgressService>();
@@ -92,8 +92,6 @@ namespace diplomaProject
             //    }
             //}
 
-          
-
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -112,8 +110,6 @@ namespace diplomaProject
                 }
             }
 
-           
-
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -121,8 +117,6 @@ namespace diplomaProject
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
