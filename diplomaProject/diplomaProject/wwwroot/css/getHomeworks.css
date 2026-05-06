@@ -229,228 +229,242 @@
     color: #2B31B4;
     outline: none;
 }
-
-@media (max-width: 1600px) {
-    html {
-        
-        font-size: 14px;
-    }
+.btn-detail:hover {
+    background: #2B31B4;
+   
 }
-@media (max-width: 767px) {
-    .comp-icon img {
-        width: 17px;
-        height: 17px;
+.btn-detail-text:hover {
+    color:#ffff;
+}
+
+    @media (max-width: 1600px) {
+        html {
+            font-size: 14px;
+        }
     }
-    .cur-homework span{
-        font-size:1rem;
-    }
-    .cur-homework {
-        margin-top: 0px !important;
-        padding-top: 0px !important;
-        padding-bottom: 5px !important;
-        margin-bottom: 0 !important;
-    }
-    .hw-image {
-        order: -1; /* Змушує картинку бути найпершою зверху */
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        margin-bottom: 10px;
-        height: 20%;
-    
-        padding-bottom: 0 !important;
-    }
-    .mini-container .py-3 {
-        padding-top: 5px !important;
-        padding-bottom: 5px !important;
-    }
+
+    @media (max-width: 767px) {
+        .comp-icon img {
+            width: 17px;
+            height: 17px;
+        }
+
+        .cur-homework span {
+            font-size: 1rem;
+        }
+
+        .cur-homework {
+            margin-top: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 5px !important;
+            margin-bottom: 0 !important;
+        }
+
+        .hw-image {
+            order: -1; /* Змушує картинку бути найпершою зверху */
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+            height: 20%;
+            padding-bottom: 0 !important;
+        }
+
+        .mini-container .py-3 {
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
 
         .hw-image img {
             max-width: 150px; /* Регулюйте розмір фіолетового декору тут */
             height: 80px;
         }
 
-    /* Контент з текстом */
-    .progress-iner-content {
-        width: 100% !important;
-        padding: 0 !important;
-        /*   position: relative;
+        /* Контент з текстом */
+        .progress-iner-content {
+            width: 100% !important;
+            padding: 0 !important;
+            /*   position: relative;
         top: -50px;
         right: 10px;
         left: 10px;*/
-        position: static;
-        /* Замість top: -50px використовуємо від'ємний margin, 
+            position: static;
+            /* Замість top: -50px використовуємо від'ємний margin, 
            якщо треба наїхати на картинку зверху */
-        margin-top: -40px !important;
-        /* Встановлюємо реальні падінги */
-        padding-left: 15px !important;
-        padding-right: 15px !important;
-        padding-top: 0 !important;
-        padding-bottom: 5px !important;
-        height:auto;
-    }
-    .current-hw .hometask-text {
-        font-size:1.2rem;
-    }
+            margin-top: -40px !important;
+            /* Встановлюємо реальні падінги */
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+            padding-top: 0 !important;
+            padding-bottom: 5px !important;
+            height: auto;
+        }
+
+        .current-hw .hometask-text {
+            font-size: 1.2rem;
+        }
         /* Центруємо іконку комп'ютера та текст поруч */
-    .mini-container {
-        gap: 8px !important;
-        margin-bottom: 5px;
-    }
+        .mini-container {
+            gap: 8px !important;
+            margin-bottom: 5px;
+        }
 
-    /* Кнопки на мобілці */
-    .task-btn {
-       
-        margin-top: 5px;
-        width: 324px !important;
-        padding-top: 12px;
-        padding-right: 24px;
-        padding-bottom: 12px;
-        padding-left: 24px;
-        justify-content:center;
-        height:45px;
-    }
-    .task-btn-text {
-        font-size:1rem;
-    }
+        /* Кнопки на мобілці */
+        .task-btn {
+            margin-top: 5px;
+            width: 324px !important;
+            padding-top: 12px;
+            padding-right: 24px;
+            padding-bottom: 12px;
+            padding-left: 24px;
+            justify-content: center;
+            height: 45px;
+        }
+
+        .task-btn-text {
+            font-size: 1rem;
+        }
+
         #profileData {
-        flex-direction: column !important; /* Перемикаємо в колонку */
-        
-    }
-    .module-part::after {
-      
-        margin-left: 10px; /* Відступи від крапки */
-        margin-right: 5px;
-     
-
-    }
-    .hometask-text{
-        margin-bottom:0px !important;
-    }
-    #hometaskStats{
-        position:relative;
-        top:30px;
-       margin-bottom:40px;
-    }
-
-    #conteiner2 .d-flex.justify-content-sm-evenly {
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        padding-top: 5px !important;
-        padding-bottom: 5px !important;
-        gap: 0 !important; /* Прибираємо розриви, щоб лінії зійшлися */
-    }
-
-    /* Налаштовуємо кожен блок як 50% ширини */
-    #hometaskStats .hometask-box {
-        flex: 0 0 50% !important;
-        border-right: none !important; /* Скидаємо всі існуючі бордери */
-        border-bottom: none !important;
-        padding: 10px 10px !important; /* Компактні падінги */
-        text-align: center;
-        align-items: center;
-    }
-
-        /* Створюємо ефект "хреста" (лінії як на макеті) */
-
-        /* Вертикальна лінія для 1-го та 3-го блоків (ліва колонка) */
-        #hometaskStats .hometask-box:nth-child(1),
-        #hometaskStats .hometask-box:nth-child(3) {
-            border-right: 2px solid #8588D1 !important;
+            flex-direction: column !important; /* Перемикаємо в колонку */
         }
 
-        /* Горизонтальна лінія для 1-го та 2-го блоків (верхній ряд) */
-        #hometaskStats .hometask-box:nth-child(1),
-        #hometaskStats .hometask-box:nth-child(2) {
-            border-bottom: 2px solid #8588D1 !important;
+        .module-part::after {
+            margin-left: 10px; /* Відступи від крапки */
+            margin-right: 5px;
         }
 
-    /* Корекція тексту */
-/*    .hometask-text {
+        .hometask-text {
+            margin-bottom: 0px !important;
+        }
+
+        #hometaskStats {
+            position: relative;
+            top: 30px;
+            margin-bottom: 40px;
+        }
+
+        #conteiner2 .d-flex.justify-content-sm-evenly {
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+            gap: 0 !important; /* Прибираємо розриви, щоб лінії зійшлися */
+        }
+
+        /* Налаштовуємо кожен блок як 50% ширини */
+        #hometaskStats .hometask-box {
+            flex: 0 0 50% !important;
+            border-right: none !important; /* Скидаємо всі існуючі бордери */
+            border-bottom: none !important;
+            padding: 10px 10px !important; /* Компактні падінги */
+            text-align: center;
+            align-items: center;
+        }
+
+            /* Створюємо ефект "хреста" (лінії як на макеті) */
+
+            /* Вертикальна лінія для 1-го та 3-го блоків (ліва колонка) */
+            #hometaskStats .hometask-box:nth-child(1),
+            #hometaskStats .hometask-box:nth-child(3) {
+                border-right: 2px solid #8588D1 !important;
+            }
+
+            /* Горизонтальна лінія для 1-го та 2-го блоків (верхній ряд) */
+            #hometaskStats .hometask-box:nth-child(1),
+            #hometaskStats .hometask-box:nth-child(2) {
+                border-bottom: 2px solid #8588D1 !important;
+            }
+
+        /* Корекція тексту */
+        /*    .hometask-text {
         font-size: 0.85rem !important;
         line-height: 1.1 !important;
         margin-bottom: 5px !important;
     }*/
 
-    .hometask-num {
-        font-size: 1.4rem !important;
-    }
-    .hw-grade{
-        font-size:1rem;
-    }
-
-    .completed-block .d-flex.align-items-center.gap-4 {
-        flex-direction: column !important; /* Ставимо елементи в колонку */
-        align-items: flex-start !important;
-        gap: 15px !important;
-      
-    }
-
-    #homeworkSearch, #moduleFilter {
-        max-width: 100% !important; /* Розтягуємо пошук та фільтр на всю ширину */
-        width: 100% !important;
-    }
-        #homeworkSearch{
-            width:204px;
+        .hometask-num {
+            font-size: 1.4rem !important;
         }
-    #moduleFilter{
-        width:111px;
-    }
-    /* 2. Картка завдання (вертикальний вигляд) */
-    .homework-card {
-        flex-direction: column !important;
-        align-items: center !important;
-        text-align: center;
-        padding: 25px 10px !important;
-    }
 
-    /* Зображення модуля */
-    .art-frame-wrapper-mini {
-        margin-right: 0 !important;
-        margin-bottom: 20px;
-        width:326px;
-        height:179px;
-    }
+        .hw-grade {
+            font-size: 1rem;
+        }
 
-    /* Текстовий блок */
-    .homework-card .ms-4 {
-        margin-left: 0 !important;
-        width: 100%;
-        margin-bottom: 15px;
-    }
+        .completed-block .d-flex.align-items-center.gap-4 {
+            flex-direction: column !important; /* Ставимо елементи в колонку */
+            align-items: flex-start !important;
+            gap: 15px !important;
+        }
 
-    .hw-text {
-       /* justify-content: center;*/ /* Центруємо "Модуль • Тема • Дата" */
-        flex-wrap: wrap;
-    }
+        #homeworkSearch, #moduleFilter {
+            max-width: 100% !important; /* Розтягуємо пошук та фільтр на всю ширину */
+            width: 100% !important;
+        }
 
-    .hw-title {
-        font-size: 1.25rem !important;
-        display: block;
-        margin-top: 5px;
-    }
+        #homeworkSearch {
+            width: 204px;
+        }
 
-    /* Блок оцінки та кнопки */
-    .homework-card .ms-auto {
-        margin-left: 0 !important;
-        width: 100%;
-        flex-direction: row !important; /* Оцінка та кнопка в один ряд */
-        justify-content: space-between;
-        align-items: center !important;
-        margin-top: 5px;
-    }
+        #moduleFilter {
+            width: 111px;
+        }
+        /* 2. Картка завдання (вертикальний вигляд) */
+        .homework-card {
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center;
+            padding: 25px 10px !important;
+        }
 
-    .homework-card .text-end {
-        text-align: left !important;
-        margin-right: 0 !important;
-    }
+        /* Зображення модуля */
+        .art-frame-wrapper-mini {
+            margin-right: 0 !important;
+            margin-bottom: 20px;
+            width: 326px;
+            height: 179px;
+        }
 
-    /* Кнопка "ПЕРЕГЛЯНУТИ" */
-    .btn-detail {
-        width: 226px; /* Фіксована ширина як на макеті */
-        height:42px;
+        /* Текстовий блок */
+        .homework-card .ms-4 {
+            margin-left: 0 !important;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .hw-text {
+            /* justify-content: center;*/ /* Центруємо "Модуль • Тема • Дата" */
+            flex-wrap: wrap;
+        }
+
+        .hw-title {
+            font-size: 1.25rem !important;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Блок оцінки та кнопки */
+        .homework-card .ms-auto {
+            margin-left: 0 !important;
+            width: 100%;
+            flex-direction: row !important; /* Оцінка та кнопка в один ряд */
+            justify-content: space-between;
+            align-items: center !important;
+            margin-top: 5px;
+        }
+
+        .homework-card .text-end {
+            text-align: left !important;
+            margin-right: 0 !important;
+        }
+
+        /* Кнопка "ПЕРЕГЛЯНУТИ" */
+        .btn-detail {
+            width: 226px; /* Фіксована ширина як на макеті */
+            height: 42px;
+        }
+
+        .btn-detail-text {
+            font-size: 1rem;
+        }
     }
-    .btn-detail-text{
-        font-size:1rem;
-    }
-}
