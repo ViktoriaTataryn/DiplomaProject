@@ -44,5 +44,9 @@ namespace diplomaProject.Models
         public Module? Module { get; set; }
 
         public ProgressStatus Status { get; set; }= ProgressStatus.Close;
+
+    
     }
+
+   
 }

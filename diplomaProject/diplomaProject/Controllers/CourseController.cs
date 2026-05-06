@@ -226,12 +226,20 @@ namespace diplomaProject.Controllers
                 await _progressService.LessonInProgressAsync(userId, lesson.Id);
             }
 
+            var currentProgress = await _context.UserProgresses
+        .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
+
+            ViewBag.LessonStatusDisplayName = GetStatusDisplayName(currentProgress?.Status);
+
             var homework = await _context.Homeworks
                 .FirstOrDefaultAsync(h => h.LessonId == id);
 
+            bool isCompleted = false;
             if (homework != null)
             {
                 ViewBag.HomeworkId = homework.Id;
+                isCompleted = await _context.HomeworkSubmissions
+            .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
                 ViewBag.IsTestCompleted = await _context.HomeworkSubmissions
                     .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
                 ViewBag.Questions = await _context.Questions
@@ -239,7 +247,7 @@ namespace diplomaProject.Controllers
                     .Where(q => q.HomeworkId == homework.Id)
                     .ToListAsync();
 
-                if (ViewBag.IsTestCompleted)
+                if (isCompleted)
                 {
                     var submission = await _context.HomeworkSubmissions
                         .FirstOrDefaultAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
@@ -249,40 +257,65 @@ namespace diplomaProject.Controllers
             else
             {
                 ViewBag.HomeworkId = 0;
-                ViewBag.IsTestCompleted = false;
+               
                 ViewBag.Questions = new List<Question>();
                 ViewBag.CurrentGrade = 0;
+                isCompleted = true;
             }
 
+            ViewBag.IsTestCompleted = isCompleted || TempData["IsTestJustFinished"] != null;
+
             var nextLessonId = lesson.Module.Lessons
-                .OrderBy(l => l.LessonIndex)
-                .FirstOrDefault(l => l.LessonIndex > lesson.LessonIndex)?.Id;
+         .Where(l => l.LessonIndex > lesson.LessonIndex)
+         .OrderBy(l => l.LessonIndex)
+         .FirstOrDefault()?.Id;
 
             if (nextLessonId == null)
             {
                 var nextModule = await _context.Modules
-                    .OrderBy(m => m.OrderIndex)
-                    .FirstOrDefaultAsync(m => m.OrderIndex > lesson.Module.OrderIndex);
+             .Where(m => m.OrderIndex > lesson.Module.OrderIndex)
+             .OrderBy(m => m.OrderIndex)
+             .FirstOrDefaultAsync();
 
                 if (nextModule != null)
                 {
                     nextLessonId = await _context.Lessons
-                        .Where(l => l.ModuleId == nextModule.Id)
-                        .OrderBy(l => l.LessonIndex)
+                 .Where(l => l.ModuleId == nextModule.Id)
+                 .OrderBy(l => l.LessonIndex)
+                 .Select(l => l.Id)
+                 .FirstOrDefaultAsync();
+                }
+            }
+            ViewBag.NextLessonId = nextLessonId;
+
+            // 4. ПОШУК ПОПЕРЕДНЬОЇ ЛЕКЦІЇ (Логіка всередині модуля + перехід на попередній)
+            var prevLessonId = lesson.Module.Lessons
+                .Where(l => l.LessonIndex < lesson.LessonIndex)
+                .OrderByDescending(l => l.LessonIndex)
+                .FirstOrDefault()?.Id;
+
+            if (prevLessonId == null) // Шукаємо в попередньому модулі
+            {
+                var prevModule = await _context.Modules
+                    .Where(m => m.OrderIndex < lesson.Module.OrderIndex)
+                    .OrderByDescending(m => m.OrderIndex)
+                    .FirstOrDefaultAsync();
+
+                if (prevModule != null)
+                {
+                    prevLessonId = await _context.Lessons
+                        .Where(l => l.ModuleId == prevModule.Id)
+                        .OrderByDescending(l => l.LessonIndex)
                         .Select(l => l.Id)
                         .FirstOrDefaultAsync();
                 }
             }
-            ViewBag.NextLessonId = nextLessonId;
+            ViewBag.PreviousLessonId = prevLessonId;
 
             ViewBag.ModuleProgress = await _context.UserProgresses
                 .Where(p => p.UserId == userId && p.ModuleId == lesson.ModuleId)
                 .ToListAsync();
 
-            bool isCompleted = await _context.HomeworkSubmissions
-                .AnyAsync(s => s.StudentId == userId && s.Homework.LessonId == id);
-
-            ViewBag.IsTestCompleted = isCompleted || TempData["IsTestJustFinished"] != null;
 
             if (string.IsNullOrEmpty(lesson.Content))
             {
@@ -294,17 +327,7 @@ namespace diplomaProject.Controllers
 
         // --- FIXED DOWNLOAD LOGIC FOR CLOUDINARY ---
 
-        [HttpGet]
-        public async Task<IActionResult> AdditionalMaterials()
-        {
-            var modules = await _context.Modules
-                .Include(m => m.Lessons)
-                    .ThenInclude(l => l.Resources)
-                .OrderBy(m => m.OrderIndex)
-                .ToListAsync();
-
-            return View(modules);
-        }
+     
 
         // 4. Отправка домашнего задания (File based)
         [HttpPost]
@@ -448,22 +471,6 @@ namespace diplomaProject.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DownloadResource(int resourceId)
-        {
-            var resource = await _context.Resources.FindAsync(resourceId);
-            if (resource == null || string.IsNullOrEmpty(resource.FilePath)) return NotFound();
-
-            if (resource.FilePath.StartsWith("http")) return Redirect(resource.FilePath);
-
-            var localPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
-            if (System.IO.File.Exists(localPath))
-            {
-                var fileBytes = await System.IO.File.ReadAllBytesAsync(localPath);
-                return File(fileBytes, "application/octet-stream", resource.FileName);
-            }
-            return NotFound();
-        }
-        [HttpGet]
         public async Task<IActionResult> DownloadModuleMaterials(int moduleId)
         {
             var resources = await _context.Resources
@@ -488,60 +495,8 @@ namespace diplomaProject.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> DownloadModuleMaterials(int moduleId)
-        //{
-        //    var resources = await _context.Resources
-        //        .Include(r => r.Lesson)
-        //        .Where(r => r.Lesson.ModuleId == moduleId)
-        //        .ToListAsync();
 
-        //    if (!resources.Any()) return BadRequest("No materials found for this module.");
 
-        //    using (var memoryStream = new MemoryStream())
-        //    {
-        //        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-        //        {
-        //            foreach (var resource in resources)
-        //            {
-        //                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
-        //                if (System.IO.File.Exists(filePath))
-        //                {
-        //                    archive.CreateEntryFromFile(filePath, resource.FileName + Path.GetExtension(filePath));
-        //                }
-        //            }
-        //        }
-        //        return File(memoryStream.ToArray(), "application/zip", $"Module_{moduleId}_Materials.zip");
-        //    }
-        //}
-
-        //[HttpGet]
-        //public async Task<IActionResult> DownloadFullArchive()
-        //{
-        //    var resources = await _context.Resources
-        //        .Include(r => r.Lesson)
-        //            .ThenInclude(l => l.Module)
-        //        .ToListAsync();
-
-        //    if (!resources.Any()) return BadRequest("No materials found in the course.");
-
-        //    using (var memoryStream = new MemoryStream())
-        //    {
-        //        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-        //        {
-        //            foreach (var resource in resources)
-        //            {
-        //                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
-        //                if (System.IO.File.Exists(filePath))
-        //                {
-        //                    var entryName = $"Module_{resource.Lesson.Module.OrderIndex}/Lesson_{resource.Lesson.LessonIndex}/{resource.FileName}{Path.GetExtension(filePath)}";
-        //                    archive.CreateEntryFromFile(filePath, entryName);
-        //                }
-        //            }
-        //        }
-        //        return File(memoryStream.ToArray(), "application/zip", "Full_Course_Archive.zip");
-        //    }
-        //}
         [HttpGet]
         public async Task<IActionResult> DownloadFullArchive()
         {
@@ -650,6 +605,18 @@ namespace diplomaProject.Controllers
             };
 
             return View(viewModel);
+        }
+
+
+        public static string GetStatusDisplayName(ProgressStatus? status)
+        {
+            return status switch
+            {
+                ProgressStatus.InProgress => "В процесі",
+                ProgressStatus.Completed => "Завершено",
+                ProgressStatus.Open => "Відкрито",
+                _ => "В процесі" // Значення за замовчуванням
+            };
         }
     }
 }

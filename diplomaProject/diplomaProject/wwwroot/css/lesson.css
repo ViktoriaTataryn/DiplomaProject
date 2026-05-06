@@ -1,114 +1,36 @@
 ﻿html {
-    font-size: 16px;
+    scroll-behavior: smooth;
 }
 
-/* Контейнер з фоном */
-
+/* Основний контейнер шапки */
 .lesson-header-wrapper {
-    /*         position: relative;
-        width: 100%;
-        height: 480px;
-       
-
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        display: flex;
-        align-items: flex-end; 
-
-        padding-bottom: 0;
-        top: -20px; */
-    /*     position: relative;
-        width: 100%;
-        height: 480px;
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        align-items: flex-end;
-        margin-bottom: -60px; 
-        z-index: 2;
-        top: -20px; */
     position: relative;
     width: 100%;
+}
+
+/* Фонове зображення (картина) */
+.lesson-header-overlay {
+    width: 100%;
+    margin-top: -20px;
     height: 480px;
-    /*   height: auto; */ /* Дозволяємо блоку рости вниз */
     background-size: cover;
     background-position: center;
-    display: flex;
-    flex-direction: column; /* Змінюємо, щоб контент йшов один за одним */
-    align-items: center;
-    margin-bottom: 0;
-    z-index: 2;
-    top: -20px;
-    margin-bottom: -60px;
 }
 
-
-
-/* Затемнення фону, щоб картинка не перебивала текст */
-
-.lesson-header-overlay {
-    /* max-width: 1582px;
-        width: 100%;
-        height: 100%;
-        padding-top: 150px; */
-
-    padding-top: 100px;
-    padding-bottom: 50px;
-    width: 100%;
-}
-
-
-
-/* Біла картка лекції */
-
+/* Біла картка з текстом */
 .lesson-card-info {
-    /*    background: #FFFFFF;
-        padding: 20px;
-        border-radius: 0;
-      
-
-        box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
-        max-width: 900px;
-        margin: 0 auto;
-        transform: translateY(50px); 
-
-        z-index: 1; */
-    /*   background: #FFFFFF;
-        padding: 40px; 
-        box-shadow: 0 10px 40px rgba(43, 49, 180, 0.15);
-        max-width: 900px;
-        margin: 0 auto;
-      
-        z-index: 10;
-        position: relative; */
-
-
-    background: #FFFFFF;
-    padding: 40px;
-    box-shadow: 0 10px 40px rgba(43, 49, 180, 0.15);
-    max-width: 900px;
-    width: 100%;
+    position: absolute;
+    top: 220px;
+    z-index: 10;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    max-width: 1052px;
     margin: 0 auto;
-    position: relative;
-    top: 60px; /* Спускаємо картку на середину хедера */
-    z-index: 11;
-    /*  margin-top: 200px; 
-        background: #FFFFFF;
-        position: relative;
-        z-index: 10; */
+    padding: 20px 20px;
+    box-shadow: 0 10px 40px rgba(43, 49, 180, 0.15);
+    width: 70%;
 }
-
-
-
-.lesson-main-title {
-    color: #2B31B4;
-    font-family: 'Acia Piano', sans-serif;
-    font-weight: 300;
-    font-size: 3rem;
-    letter-spacing: 1px;
-}
-
 
 
 .module-title {
@@ -119,59 +41,31 @@
     font-size: 2rem;
 }
 
-
-
-.toc-title {
-    color: #2B31B4;
-    text-decoration: none;
-    font-weight: 300;
-    transition: 0.3s;
-    font-family: "Acia Piano";
-    font-size: 2.7rem;
-}
-
-
-
-.toc-container {
-    /*    border-left: 3px solid #2B31B4; */
-    /* max-width: 900px;
-       
-
-        margin-top: 130px;
-        margin-left: 150px; */
-    /*  margin-top:60px; */
-    /*   top:70px;
-
-            position:absolute; */
-
-    max-width: 900px;
-    margin: 110px auto !important;
-    padding: 0 20px;
-    /*  max-width: 900px;
-        margin: 120px auto 60px auto !important; 
-        padding: 0 20px;
-        position: relative; */
-}
-
-
-
-.toc-link {
-    text-decoration: none;
-    font-weight: 300;
-    transition: 0.3s;
+.lesson-meta {
+    font-weight: 500;
     font-family: "Gilroy";
-    font-size: 1.3rem;
-    color: #494C90;
+    font-size: 1.2rem;
+    color: #9799C4;
 }
 
+.nav-text {
+    color: #8588D1;
+    font-size: 1.2rem;
+    font-family: "Accia Piano";
+    font-weight: 300;
+}
 
+.lesson-main-title {
+    color: #2B31B4;
+    font-family: "Accia Piano";
+    font-size: 3rem;
+    letter-spacing: 1px;
+}
 
-    .toc-link:hover {
-        text-decoration: underline;
-        opacity: 0.8;
-    }
-
-
+.toc-link:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
 
 .level-2 {
     margin-left: 0;
@@ -179,76 +73,26 @@
 }
 
 
-
 .level-3 {
     margin-left: 20px;
     font-size: 0.95rem;
 }
 
-
-
-/* Основний шрифт та читабельність */
-
-.lesson-body-content {
-    /*   font-family: 'Gilroy', sans-serif;
-        line-height: 130%;
-        color: #494C90;
-
-        clear: both;
-        position:relative;
-        top:555px;
-        z-index:1;
-        background-color:#FFFFFF;
-        font-weight:300;
-        font-size:1.8rem; */
-    /*         font-family: 'Gilroy', sans-serif;
-        line-height: 130%;
-        color: #494C90;
-        clear: both;
-        position: relative;
-
-        margin-top: 120px;
-        z-index: 1;
-        background-color: #FFFFFF;
-        font-weight: 300;
-        font-size: 1.8rem;
-        display: block; */
-    /* font-family: 'Gilroy', sans-serif;
-        line-height: 130%;
-        color: #494C90;
-        clear: both;
-        position: relative;
-        top: 0 !important; 
-        margin-top: 60px; 
-        z-index: 1;
-        background-color: #FFFFFF;
-        font-weight: 300;
-        font-size: 1.8rem;
-        display: block; */
-
-    position: relative;
-    margin-top: 550px !important;
-    clear: both;
-    display: block;
-    z-index: 1;
-    background-color: #FFFFFF;
-    font-weight: 300;
-    font-size: 2rem;
-    font-family: 'Gilroy', sans-serif;
-    line-height: 130%;
-    color: #494C90;
+.lesson-header-h2 {
+    scroll-margin-top: 50px;
 }
 
 .test-container {
-    clear: both; /* Важливо: скидає всі обтікання картинками */
+    clear: both;
     position: relative;
     display: block;
     width: 100%;
+    border-top: 2px solid #2B31B4;
     top: 0px;
-    margin-top: 10px; /* Відступ між текстом лекції та тестом */
-    padding-bottom: 100px; /* Відступ знизу сторінки */
+    margin-top: 0;
+    padding-bottom: 100px;
     z-index: 5;
-    background-color: #FFFFFF; /* Щоб контент під ним не просвічувався */
+    background-color: #FFFFFF;
 }
 
 /* Додатковий фікс для Editor.js блоків, щоб вони не вилітали за межі */
@@ -259,24 +103,13 @@
 }
 
 
-
 .lesson-text {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-}
-
-
-
-.lesson-description {
-    font-family: 'Gilroy', sans-serif;
-    font-weight: 300;
+    font-size: 1.4rem;
+    font-family: 'Gilroy';
+    line-height: 1.7rem;
     color: #494C90;
-    font-size: 1.5rem;
-    line-height: 130%;
-    padding-right: 30px;
-    padding-left: 30px;
+    font-weight: 300;
 }
-
 
 
 /* Заголовки всередині тексту */
@@ -287,157 +120,235 @@
     margin-top: 3rem;
     margin-bottom: 1.5rem;
     font-size: 2.2rem;
-    font-family: "Acia Piano";
+    font-family: "Accia Piano";
 }
 
 
+.lesson-body-container {
+    background-color: #FFFFFF;
+}
 
+.lesson-grid-wrapper {
+    display: grid;
+    padding: 15px;
+    grid-template-columns: 1fr 400px; /* Текст займає весь вільний простір, картинки - 400px */
+    gap: 30px; /* Трохи збільшимо проміжок для великих екранів */
+    max-width: 1600px;
+    margin: 0 auto;
+    align-items: start;
+}
 
+    /* Всі блоки за замовчуванням ставимо в ліву колонку */
+    .lesson-grid-wrapper > * {
+        grid-column: 1;
+    }
 
+    /* А картинки примусово відправляємо в праву колонку */
+    .lesson-grid-wrapper .lesson-image-container {
+        grid-column: 2;
+        margin: 0;
+    }
 
+.lesson-grid-wrapper {
+    grid-column: 2;
+    margin: 0;
+}
 
-/* Картинки з підписами */
+    /* Якщо заголовок має бути на всю ширину (над обома колонками) */
+    .lesson-grid-wrapper h2,
+    .lesson-header-h2 {
+        grid-column: 1 / span 2;
+        margin-bottom: 20px;
+    }
 
 .lesson-image-container {
-    margin: 40px 0;
-    text-align: center;
+    grid-column: 2;
+    margin-bottom: 1rem;
 }
 
 
+    .lesson-image-container.wide-image {
+        grid-column: 1 / span 2;
+        text-align: center;
+        margin: 40px 0;
+        width: 100%;
+    }
 
-.lesson-img {
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
+        .lesson-image-container.wide-image .lesson-img {
+            width: 100%;
+            max-height: 600px;
+            object-fit: cover;
+        }
 
 
 .image-caption {
-    font-size: 0.9rem;
-    color: #9799C4;
-    margin-top: 10px;
+    font-family: 'Gilroy', sans-serif;
     font-style: italic;
+    font-size: 1.1rem;
+    margin-top: 10px;
+    text-align: right;
+    color: #9799C4;
+}
+
+.lesson-description {
+    font-family: 'Gilroy';
+    font-weight: 300;
+    color: #494C90;
+    font-size: 1.4rem;
+    line-height: 1.6rem;
+    padding-right: 30px;
+    padding-left: 30px;
 }
 
 
-
-/* Списки */
-
-.lesson-list {
-    margin-bottom: 1.5rem;
-    padding-left: 20px;
+.container2 {
+    background-color: #FFFFFF;
+    border-bottom: 2px solid #2B31B4;
 }
 
+.toc-container {
+    margin-top: 240px;
+    margin-left: 200px;
+}
 
+.back-picture img {
+    height: 270px;
+    width: 100%;
+}
 
-    .lesson-list li {
-        margin-bottom: 10px;
+.toc-title {
+    color: #2B31B4;
+    text-decoration: none;
+    font-weight: 300;
+    font-family: "Accia Piano";
+    font-size: 3rem;
+    letter-spacing: 1px;
+}
+
+.toc-link {
+    text-decoration: none;
+    font-weight: 300;
+    line-height: 1.3rem;
+    font-family: "Gilroy";
+    font-size: 1.4rem;
+    color: #494C90;
+}
+
+    .toc-link:hover {
+        color: #3f3f8c;
     }
 
+.toc-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background-color: #2B31B4;
+    border-radius: 50%;
+    display: inline-block;
+}
 
 
-/* Стиль для цитат */
+
+.toc-item {
+    position: relative;
+    padding-left: 20px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+
+.slider-arrow-img {
+    width: 45px;
+    height: 16px;
+    color: #8588D1;
+}
 
 .lesson-quote {
     position: relative;
-    background: #9799C4; /* Дуже світло-фіолетовий фон */
-
-
+    background: #9799C4;
     max-width: 876px;
-    padding: 30px 40px;
+    padding: 20px 15px;
     width: 60%;
     margin: 40px 0;
-    font-family: 'Gilroy', sans-serif;
+    font-family: 'Gilroy';
+    color: #FFFFFF;
 }
 
-
-
     .lesson-quote p {
-        font-family: "Gilroy";
         font-size: 1.5rem;
-        color: #FFFFFF;
         line-height: 1.6;
-        margin-bottom: 10px;
-        margin-left: 20px;
+        margin-bottom: 20px;
+        margin-top: 40px;
     }
 
-
-
-    /*    .lesson-quote cite {
-            display: block;
-            font-style: normal;
-            font-weight: 600;
-            color: #9799C4;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        } */
+    /* Лінія та стилі автора */
     .lesson-quote cite,
     .lesson-quote footer {
-        display: block; /* Щоб автор був з нового рядка */
-        font-style: normal; /* Прибираємо курсив */
-        font-weight: 600;
-        color: #9799C4; /* Світло-фіолетовий колір як на макеті */
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-top: 10px;
+        display: block;
+        font-style: normal;
+        font-weight: 500;
+        color: #FFFFFF;
+        font-size: 1.5rem;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 2px solid #FFFFFF;
     }
 
-
-
-    /* Додамо лапки як декор (опціонально) */
-
+    /* Декоративні лапки  */
     .lesson-quote::before {
         content: "“";
         position: absolute;
-        left: 10px;
-        top: 30px;
-        font-size: 80px;
+        left: 20px;
+        top: -15px;
+        font-size: 100px;
         color: #FFFFFF;
         font-family: serif;
+        opacity: 0.8;
     }
 
 :root {
     --quiz-primary: #2B31B4;
     --quiz-text: #494C90;
     --quiz-muted: #9799C4;
-    --quiz-border: #E0E0E0;
+    --quiz-border: #DCDCEB;
 }
 
 .quiz-main-title {
     color: var(--quiz-primary);
-    font-size: 2rem;
-    font-weight: 400;
-    margin-bottom: 5px;
-    font-family: "Acia Piano";
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 8px;
+    font-family: "Accia Piano";
 }
 
 .quiz-subtitle {
     font-size: 1.2rem;
     color: #494C90;
     font-family: "Gilroy";
+    width: 50%;
 }
 
 /* Прогрес бар */
 .quiz-progress-container {
     position: absolute;
-    top: 50px;
-    right: 0;
-    width: 250px;
-    text-align: right;
+    top: 80px;
+    right: 20px;
+    width: 270px;
+    text-align: left;
 }
 
 .progress-text {
-    font-size: 0.8rem;
+    font-size: 1.2rem;
     color: var(--quiz-muted);
 }
 
 .quiz-progress-bar {
-    height: 4px;
-    background: #E0E0E0;
+    height: 8px;
+    background: #9799C4;
     margin-top: 5px;
-    border-radius: 2px;
 }
 
 .quiz-progress-fill {
@@ -451,14 +362,13 @@
     font-size: 1rem;
     color: var(--quiz-muted);
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     font-family: "Gilroy";
-    font-weight: 300;
+    font-weight: 500;
 }
 
 .question-text {
     color: var(--quiz-primary);
-    /*  font-weight: bold; */
     font-size: 1.5rem;
     font-family: "Gilroy";
     font-weight: 500;
@@ -469,6 +379,9 @@
     border: 1px solid var(--quiz-border);
     border-radius: 4px;
     overflow: hidden;
+    color: #2B31B4;
+    font-family: "Gilroy";
+    font-size: 1.2rem;
 }
 
 .custom-option-item {
@@ -532,15 +445,14 @@
             transform: translate(-50%, -50%);
         }
 
-/* Кнопка */
 .btn-submit-quiz {
     background: var(--quiz-primary);
     color: white;
     border: none;
-    padding: 12px 35px;
+    padding: 12px 40px;
     font-size: 1.5rem;
     transition: 0.3s;
-    font-family: "Acia Piano";
+    font-family: "Accia Piano";
 }
 
     .btn-submit-quiz:hover {
@@ -558,197 +470,244 @@
     background-color: #F8F9FF;
 }
 
-.nav-text {
-    color: #8588D1;
-    font-size: 1.2rem;
-    font-family: "Accia Piano";
-    font-weight: 300;
+.res-picture {
+    width: 540px;
+    height: 140px;
+    flex-shrink: 0;
+    margin-right: 0;
+    margin-top: 1px;
+    opacity: 0.5;
 }
 
-
-
-.slider-arrow-img {
-    width: 45px;
-    height: 18px;
-    color: #8588D1;
-}
-
-
-
-.lesson-meta {
-    font-weight: 500;
-    font-family: "Gilroy";
-    font-size: 1.2rem;
-    color: #9799C4;
-}
-
-
-
-.content-container {
-    /*        background-color: #FFFFFF;
+    .res-picture img {
         width: 100%;
-        max-width: 1582px;
-        margin-top: -95px;
-     
-      height:auto;
-      display:block;
-        position:relative; */
-    /*  background-color: #FFFFFF;
-        width: 100%;
-        max-width: 900px; 
-        margin: 0 auto; 
-        position: relative;
-        z-index: 5;
+        height: 100%;
+        object-fit: cover;
         display: block;
-        height: auto;
-        padding-top: 180px; */
-    /* background-color: #FFFFFF;
-        width: 100%;
-        max-width: 1582px;
-        margin: 0 auto;
-        height: auto !important; 
-        min-height: 100px;
-        display: block; 
-        position: relative; */
+    }
 
-
+.res-container {
     background-color: #FFFFFF;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1580px;
     width: 100%;
-    max-width: 1582px;
-    margin: 0 auto !important;
-    position: relative;
-    top: -40px; /* Має бути такий самий top, як у картки, щоб вони "зрослися" */
-    display: block;
-    height: auto;
-    z-index: 10;
+    border-top: 2px solid #2B31B4;
+    padding-bottom: 40px;
 }
 
-.back-picture img {
-    /* max-width:1582px; */
-
-    height: 260px;
-    width: 100%;
-    margin-top: -170px;
+.res-link {
+    text-decoration: none;
+    font-weight: 300;
+    line-height: 1.1rem;
+    font-family: "Gilroy";
+    font-size: 1.25rem;
+    color: #2B31B4;
 }
 
+    .res-link:hover {
+        color: #3f3f8c;
+    }
 
-
-.toc-item::before {
+.res-item::before {
     content: "";
     position: absolute;
     left: 0;
-    width: 8px; /* Розмір крапки */
-
-    height: 8px; /* Розмір крапки */
-
-    background-color: #2B31B4; /* Ваш фіолетовий колір */
-
-    border-radius: 50%; /* Робимо коло */
-
+    width: 6px;
+    height: 6px;
+    background-color: #2B31B4;
     display: inline-block;
 }
 
-
-
-.toc-item {
+.res-item {
     position: relative;
-    padding-left: 25px; /* Місце для крапочки */
-
+    padding-left: 15px;
     list-style: none;
     display: flex;
     align-items: center;
 }
 
-
-
-.custom-hr {
-    border: none; /* Прибираємо стандартну рамку */
-
-    height: 2px; /* Задаємо товщину лінії */
-
-    background-color: #2B31B4; /* Світло-сірий колір */
-
-    margin: 40px 0; /* Відступи зверху та знизу */
-
+.empty-resources-message {
+    color: #494C90;
+    background-color: #f8f9ff;
+    border: 1px dashed #b0b0cc;
+    border-radius: 8px;
+    padding: 30px 20px;
+    margin: 10px auto;
+    max-width: 1580px;
     width: 100%;
+    font-size: 1.2rem;
+    font-family: 'Gilroy';
+    letter-spacing: 0.5px;
+    box-shadow: inset 0 0 10px rgba(74, 74, 138, 0.03);
 }
 
-/* Контейнер, де лежить весь текст лекції */
-.lesson-body-content .col-lg-10 {
-    display: block; /* Важливо для обтікання */
-}
-
-/* Батьківський контейнер, де Editor.js рендерить блоки */
-.lesson-body-content .col-lg-10 {
-    display: flex;
-    flex-direction: column;
-}
-
-/* Блок з картинкою, якій в редакторі задано певне налаштування */
-/* Примітка: Editor.js зазвичай додає класи на кшталт .ce-block--stretched або подібні */
-
-.ce-block {
-    width: 50%;
-    clear: both;
-}
-
-    /* Якщо ви можете додати клас через RenderContent для картинок з налаштуванням "stretched" або "left" */
-    .ce-block:has(.image-tool--side) {
-        float: right;
-        width: 40%;
-        margin-left: 30px;
-        clear: none; /* Дозволяємо тексту бути поруч */
-    }
-
-/* Універсальний хак для Editor.js: якщо картинка йде перед текстом */
-.image-tool {
-    display: block;
-    margin-bottom: 20px;
-}
-/* Контейнер Editor.js */
-/*   .lesson-body-content .col-lg-10 {
-        display: block; 
-        overflow: visible;
-    } */
-
-.lesson-body-content .image-tool__image-picture {
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Плавне сповільнення */
-    position: relative;
-    z-index: 1;
-}
-
-    .lesson-body-content .image-tool__image-picture:hover {
-        /* Збільшуємо та піднімаємо */
-        transform: scale(1.02) translateY(-8px);
-        /* Глибока тінь */
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-        /* Виводимо картинку поверх сусідніх елементів */
-        z-index: 2;
-    }
-
-.ce-paragraph {
-    margin-bottom: 2rem;
-    text-align: justify; /* Можна використовувати для "книжкового" вигляду */
-    hyphens: auto; /* Автоматичні переноси */
-}
-
-.disabled-link {
-    opacity: 0.5;
-    cursor: not-allowed;
-    filter: grayscale(1); /* Робимо стрілку сірою */
-}
-
-    .disabled-link a {
-        pointer-events: none; /* Вимикаємо кліки */
-        text-decoration: none;
+    .empty-resources-message::before {
+        content: "ⓘ";
+        display: block;
+        font-size: 1.6rem;
+        margin-bottom: 6px;
+        opacity: 0.6;
     }
 
 
-
-@media (max-width: 1600px) {
+@media(max-width: 1600px) {
     html {
         font-size: 14px;
+    }
+}
+
+@media (max-width: 767px) {
+    .lesson-grid-wrapper {
+        /* Перемикаємо на одну колонку */
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 10px;
+    }
+        /* Скидаємо прив'язку до колонок для всіх елементів */
+        .lesson-grid-wrapper > *,
+        .lesson-grid-wrapper .lesson-image-container,
+        .lesson-grid-wrapper h2,
+        .lesson-header-h2 {
+            grid-column: 1 !important; /* Усі займають першу (єдину) колонку */
+        }
+    /* Опціонально: робимо картинки на мобільних трохи меншими або адаптивними */
+    .lesson-image-container .lesson-img {
+        max-height: 400px;
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .lesson-header-h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .lesson-quote {
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .quiz-main-title {
+        font-size: 1.5rem;
+    }
+
+    .test-container {
+        padding-bottom: 10px;
+    }
+
+    .lesson-text {
+        font-size: 1.3rem;
+    }
+
+    .quiz-subtitle {
+        font-size: 1rem;
+        width: 80%;
+    }
+
+    .quiz-progress-container {
+        position: static;
+        width: 100%;
+        margin-top: -20px;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+
+    .progress-text {
+        font-size: 1rem;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .quiz-progress-bar {
+        width: 100%;
+    }
+
+    .btn-submit-quiz {
+        width: 100%;
+    }
+
+    .lesson-header-overlay {
+        height: 250px;
+    }
+
+    .lesson-card-info {
+        width: 95%;
+        padding: 15px 5px;
+        top: 80px;
+        left: 10px;
+        transform: none;
+    }
+
+        .lesson-card-info .d-flex.justify-content-between {
+            gap: 5px;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+        }
+
+    .nav-text {
+        display: none;
+    }
+
+    .lesson-description {
+        font-size: 1rem;
+        line-height: 1.2rem;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .module-title {
+        font-size: 1.4rem;
+        text-align: center;
+    }
+
+    .lesson-main-title {
+        font-size: 1.5rem;
+        padding: 0 10px;
+    }
+
+    .lesson-meta {
+        font-size: 0.85rem;
+        margin-top: 5px !important;
+        margin-bottom: 5px !important;
+    }
+
+    .toc-container {
+        width: 100%;
+        margin-bottom: 5px;
+        margin-top: 215px;
+        margin-left: 15px;
+    }
+
+    .toc-title {
+        font-size: 1.5rem;
+    }
+
+    .toc-link {
+        font-size: 1rem;
+        line-height: 1.2rem;
+    }
+
+    .toc-item::before {
+        width: 5px;
+        height: 5px;
+    }
+
+    .toc-item {
+        padding-left: 10px;
+    }
+
+    .back-picture img {
+        height: 130px;
+    }
+
+    .res-link {
+        font-size: 0.85rem;
+    }
+
+    .res-picture {
+        width: 185px;
+        height: 55px;
     }
 }

@@ -3,7 +3,7 @@
 @using System.Text.Json
 @using System.Linq
 
-@* <link rel="stylesheet" href="~/css/lesson.css" asp-append-version="true" /> *@
+<link rel="stylesheet" href="~/css/lesson.css" asp-append-version="true" />
 
 @functions {
     public Microsoft.AspNetCore.Html.IHtmlContent RenderContent(string jsonContent)
@@ -38,20 +38,20 @@
                         }
                         else if (type == "header")
                         {
+                            
                             int level = data.GetProperty("level").GetInt32();
                             string text = data.GetProperty("text").GetString();
-                            html.Append("<h" + level + " class='lesson-header-h2'>" + text + "</h" + level + ">");
+
+                            // Генеруємо такий самий ID, як у змісті
+                            string headerId = "header-" + text.GetHashCode();
+
+                            // Додаємо id до тегу заголовка
+                            html.Append($"<h{level} id='{headerId}' class='lesson-header-h2'>{text}</h{level}>");
                           
                            
                             
                         }
-                        // else if (type == "image")
-                        // {
-                        //     string url = data.GetProperty("file").GetProperty("url").GetString();
-                        //     html.Append("<div class='lesson-image-container text-center mb-4'>");
-                        //     html.Append("<img src='" + url + "' class='img-fluid lesson-img' />");
-                        //     html.Append("</div>");
-                        // }
+                    
                         else if (type == "image")
                         {
                             string url = data.GetProperty("file").GetProperty("url").GetString();
@@ -71,7 +71,7 @@
                             html.Append($"<div class='{containerClass}'>");
                             html.Append($"<img src='{url}' class='img-fluid lesson-img' />");
 
-                            // Додамо підпис до картинки, якщо він є (в мистецтві це важливо)
+                            // Додамо підпис до картинки
                             if (data.TryGetProperty("caption", out var imgCaption) && !string.IsNullOrEmpty(imgCaption.GetString()))
                             {
                                 html.Append($"<p class='image-caption'>{imgCaption.GetString()}</p>");
@@ -109,601 +109,10 @@
 
 @{
     ViewData["Title"] = Model.Title;
-    // Використовуємо нашу нову властивість. Якщо вона null — беремо фон модуля
    
     var headerImage = Model.FirstImageUrl ?? Model.Module?.ImageUrl;
 }
 
-<style>
-    /* Основний контейнер шапки */
-.lesson-header-wrapper {
-    position: relative;
-    width: 100%;
-      
-  
-      
-}
-
-/* Фонове зображення (картина) */
-.lesson-header-overlay {
-    /* position: absolute;
-   
-    left: 0; */
-    width: 100%;
-    margin-top:-20px;
-        height: 480px;
-    background-size: cover;
-    background-position: center;
- /*    z-index: 1; */
-}
-
-/* Біла картка з текстом */
-.lesson-card-info {
-    position: absolute;
-    top: 220px; /* Зміщуємо картку вниз на фонову картинку */
-    z-index: 10;
-    left:200px;
-    background: white;
-    max-width: 1052px;
-    margin: 0 auto;
-    padding: 20px 20px;
-        box-shadow: 0 10px 40px rgba(43, 49, 180, 0.15);
-   width:850px;
-
-}
-
-
-
- 
-
- 
-
-
-
-    .module-title {
-        color: #2B31B4;
-        font-weight: 300;
-        letter-spacing: 1px;
-        font-family: "Accia Piano";
-        font-size: 2rem;
-    }
-
-    .lesson-meta {
-        font-weight: 500;
-        font-family: "Gilroy";
-        font-size: 1.2rem;
-        color: #9799C4;
-    }
-
-    .nav-text {
-        color: #8588D1;
-        font-size: 1.2rem;
-        font-family: "Accia Piano";
-        font-weight: 300;
-    }
-
-    .lesson-main-title {
-        color: #2B31B4;
-        font-family: "Accia Piano";
-    /*     font-weight: 300; */
-        font-size: 3rem;
-        letter-spacing: 1px;
-    }
-
-
-/* 
-    .toc-link {
-        text-decoration: none;
-        font-weight: 300;
-        transition: 0.3s;
-        font-family: "Gilroy";
-        font-size: 1.3rem;
-        color: #494C90;
-    } */
-
-
-
-        .toc-link:hover {
-            text-decoration: underline;
-            opacity: 0.8;
-        }
-
-
-
-    .level-2 {
-        margin-left: 0;
-        font-weight: 600;
-    }
-
-
-
-    .level-3 {
-        margin-left: 20px;
-        font-size: 0.95rem;
-    }
-
-
-
-    /* Основний шрифт та читабельність */
-
-/*     .lesson-body-content {
-  
-
-        position: relative;
-       
-        clear: both;
-        display: block;
-        z-index: 1;
-        background-color: #FFFFFF;
-        font-weight: 300;
-     
-        font-family: 'Gilroy', sans-serif;
-  
-        color: #494C90;
-        padding-left: 10px;
-
-
-    } */
-
-    .test-container {
-        clear: both; /* Важливо: скидає всі обтікання картинками */
-        position: relative;
-        display: block;
-        width: 100%;
-        top:0px;
-        margin-top: 10px; 
-        padding-bottom: 100px; 
-        z-index: 5;
-        background-color: #FFFFFF; 
-    }
-
-    /* Додатковий фікс для Editor.js блоків, щоб вони не вилітали за межі */
-    .lesson-body-content::after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-
-
-
-    .lesson-text {
-       /*  margin-bottom: 1.5rem; */
-        font-size: 1.4rem;
-        font-family: 'Gilroy';
-        line-height:1.7rem;
-        color: #494C90;
-        font-weight:300;
- 
-    /*     width:65%; */
-     
-    }
-
-
-    /* Заголовки всередині тексту */
-
-    .lesson-header-h2 {
-        color: #2B31B4;
-        font-weight: 300;
-        margin-top: 3rem;
-        margin-bottom: 1.5rem;
-        font-size: 2.2rem;
-        font-family: "Accia Piano";
-    }
-
-
-    /* Картинки з підписами */
-
-   /*  .lesson-image-container {
-        margin: 40px 0;
-        text-align: center;
-    }
-
-
-
-    .lesson-img {
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
- */
-
-    .lesson-body-container{
-        background-color: #FFFFFF;
-       /*  padding-left:15px; */
-    }
-    /* Контейнер для всього контенту */
-    .lesson-grid-wrapper {
-        display: grid;
-        padding:15px;
-        /* Створюємо дві колонки:
-           1-ша: гнучка (текст)
-           2-ша: фіксована 350px (картинки) */
-        grid-template-columns: 1fr 400px;
-        gap: 10px;
-        max-width: 1200px; 
-      /*   max-width: 1534px; */
-        /*      margin: 0 auto; */
-        align-items: center;
-    }
-
-        /* Всі блоки за замовчуванням ставимо в ліву колонку */
-        .lesson-grid-wrapper > * {
-            grid-column: 1;
-        }
-
-        /* А картинки примусово відправляємо в праву колонку */
-        .lesson-grid-wrapper .lesson-image-container {
-            grid-column: 2;
-            margin: 0;
-        }
-
-        .lesson-grid-wrapper  {
-            grid-column: 2;
-            margin: 0;
-        }
-
-        /* Якщо заголовок має бути на всю ширину (над обома колонками) */
-        .lesson-grid-wrapper h2,
-        .lesson-header-h2 {
-            grid-column: 1 / span 2;
-            margin-bottom: 20px;
-        }
-
-   
-/*     .lesson-img {
-        max-width: 100%;
-        height: auto;
-        display: block;
-    } */
-  
-    .lesson-image-container {
-        grid-column: 2;
-        margin-bottom: 1rem;
-       
-    }
-
-       
-        .lesson-image-container.wide-image {
-            grid-column: 1 / span 2; 
-            text-align: center;
-            margin: 40px 0;
-            width: 100%;
-        }
-
-            .lesson-image-container.wide-image .lesson-img {
-                width: 100%;
-                max-height: 600px; 
-                object-fit: cover; 
-            }
-
-
-
-
-
-
-    /* Підпис до фото (курсивом, як у журналах про мистецтво) */
-    .image-caption {
-        font-family: 'Gilroy', sans-serif;
-        font-style: italic;
-     
-        font-size: 1.1rem;
-       
-        margin-top: 10px;
-        text-align: right;
-        color:#9799C4;
-    }
-   
-
-
-
-    .lesson-description {
-        font-family: 'Gilroy';
-        font-weight: 300;
-        color: #494C90;
-        font-size: 1.4rem;
-        line-height:1.6rem;
-  /*       line-height: 130%; */
-        padding-right: 30px;
-        padding-left: 30px;
-    }
-
-/* Стилі для Змісту (TOC) нижче картки */
-.container2 {
-
-  /*   margin: 300px auto 50px;  */
-   /*  position: relative; */
-  /*  margin-top:300px; */
-   background-color: #FFFFFF;
-        border-bottom: 2px solid #2B31B4;
-}
-
-.back-picture img{
-        height: 270px;
-        width: 100%;
-       /*  margin-top: 200px; */
-}
-
-.toc-title {
-        color: #2B31B4;
-        text-decoration: none;
-        font-weight: 300;
-        font-family: "Accia Piano";
-        font-size: 3rem;
-        letter-spacing:1px;
-}
-
-    .toc-link {
-        text-decoration: none;
-        font-weight: 300;
-        line-height:1.3rem;
-        font-family: "Gilroy";
-        font-size: 1.4rem;
-        color: #494C90;
-    }
-
-.toc-link:hover {
-    color: #3f3f8c;
-}
-
-    .toc-item::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        width: 10px; /* Розмір крапки */
-
-        height: 10px; /* Розмір крапки */
-
-        background-color: #2B31B4; /* Ваш фіолетовий колір */
-
-        border-radius: 50%; /* Робимо коло */
-
-        display: inline-block;
-    }
-
-
-
-    .toc-item {
-        position: relative;
-        padding-left: 20px; /* Місце для крапочки */
-
-        list-style: none;
-        display: flex;
-        align-items: center;
-    }
-/* .content-container{
-    margin-top:170px;
-}
- */
-    .toc-container{
-     
-        margin-top:220px;
-        margin-left:200px;
-    }
-
-    .slider-arrow-img {
-        width: 45px;
-        height: 16px;
-        color: #8588D1;
-    }
-    /* Стиль для цитат */
-
-    .lesson-quote {
-        position: relative;
-        background: #9799C4;
-        max-width: 876px;
-        padding: 20px 15px;
-        width: 60%;
-        margin: 40px 0;
-        font-family: 'Gilroy';
-        color: #FFFFFF; /* Основний колір тексту */
-    }
-
-        .lesson-quote p {
-            font-size: 1.5rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            margin-top: 40px; /* Трохи більше місця для лапок */
-        }
-
-        /* Лінія та стилі автора */
-        .lesson-quote cite,
-        .lesson-quote footer {
-            display: block;
-            font-style: normal;
-            font-weight: 500;
-            color: #FFFFFF; /* Змінено на білий, щоб було видно на фіолетовому */
-            font-size: 1.5rem;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #FFFFFF; /* Біла напівпрозора лінія */
-           /*  margin-left: 30px; */
-        }
-
-        /* Декоративні лапки як на макеті */
-        .lesson-quote::before {
-            content: "“";
-            position: absolute;
-            left: 20px;
-            top: -15px;
-            font-size: 100px;
-            color: #FFFFFF;
-            font-family: serif;
-            opacity: 0.8;
-        }
-
-    :root {
-        --quiz-primary: #2B31B4;
-        --quiz-text: #494C90;
-        --quiz-muted: #9799C4;
-        --quiz-border: #E0E0E0;
-    }
-
-    .quiz-main-title {
-        color: var(--quiz-primary);
-        font-size: 3rem;
-        font-weight: 300;
-        margin-bottom: 8px;
-        font-family: "Accia Piano";
-    }
-
-    .quiz-subtitle {
-        font-size: 1.2rem;
-        color: #494C90;
-        font-family: "Gilroy";
-        width:50%;
-    }
-
-    /* Прогрес бар */
-    .quiz-progress-container {
-        position: absolute;
-        top: 80px;
-        right: 20px;
-        width: 270px;
-   
-        text-align: left;
-    }
-
-    .progress-text {
-        font-size: 1.2rem;
-        color: var(--quiz-muted);
-    }
-
-    .quiz-progress-bar {
-        height: 8px;
-        background:#9799C4;
-        margin-top: 5px;
-    
-    }
-
-    .quiz-progress-fill {
-        height: 100%;
-        background: var(--quiz-primary);
-        transition: width 0.3s ease;
-    }
-
-    /* Питання */
-    .question-meta {
-        font-size: 1rem;
-        color: var(--quiz-muted);
-        display: block;
-        margin-bottom: 5px;
-        font-family: "Gilroy";
-        font-weight: 300;
-    }
-
-    .question-text {
-        color: var(--quiz-primary);
-        /*  font-weight: bold; */
-        font-size: 1.5rem;
-        font-family: "Gilroy";
-        font-weight: 500;
-    }
-
-    /* Контейнер опцій (спільна рамка) */
-    .options-container {
-        border: 1px solid var(--quiz-border);
-        border-radius: 4px;
-        overflow: hidden;
-    }
-
-    .custom-option-item {
-        border-bottom: 1px solid var(--quiz-border);
-        position: relative;
-    }
-
-        .custom-option-item:last-child {
-            border-bottom: none;
-        }
-
-    /* Приховуємо стандартний інпут */
-    .option-input {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    .option-label {
-        display: flex;
-        align-items: center;
-        padding: 15px 20px;
-        cursor: pointer;
-        transition: background 0.2s;
-        width: 100%;
-        margin-bottom: 0;
-    }
-
-        .option-label:hover {
-            background: #F9FAFF;
-        }
-
-    /* Маркер */
-    .custom-radio-mark {
-        width: 16px;
-        height: 16px;
-        border: 1px solid var(--quiz-border);
-        margin-right: 15px;
-        display: inline-block;
-        position: relative;
-        background: white;
-    }
-
-    .option-input:checked + .option-label {
-        background: #F4F5FF;
-    }
-
-        .option-input:checked + .option-label .custom-radio-mark {
-            border-color: var(--quiz-primary);
-            background: var(--quiz-primary);
-        }
-
-            .option-input:checked + .option-label .custom-radio-mark::after {
-                content: "";
-                position: absolute;
-                width: 6px;
-                height: 6px;
-                background: white;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            }
-
-    /* Кнопка */
-    .btn-submit-quiz {
-        background: var(--quiz-primary);
-        color: white;
-        border: none;
-        padding: 12px 35px;
-        font-size: 1.5rem;
-        transition: 0.3s;
-        font-family: "Acia Piano";
-    }
-
-        .btn-submit-quiz:hover {
-            background: #1a1f8c;
-            box-shadow: 0 4px 12px rgba(43, 49, 180, 0.2);
-        }
-
-
-
-    /* Картка завершеного тесту */
-
-    .test-completed-card {
-        border-radius: 0;
-        border-left: 5px solid #2b31b4;
-        background-color: #F8F9FF;
-    }
-  
-
-    @@media(max-width: 1600px)  {
-        html {
-            font-size: 14px;
-        }
-    }
-    
-
-
-
-
-</style>
 
 <div class="d-flex justify-content-between flex-column gap-0">
 
@@ -740,28 +149,57 @@
             <div class="lesson-card-info">
               
 
-                <div class="d-flex justify-content-between mb-1 mt-4 align-items-center px-2 ">
-                    <div class="d-flex px-2 ">
-                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
-                         class="slider-arrow-img mt-1"
-                         alt="scrollLeft" />
-                         <span class="nav-text">ПОПЕРЕДНЯ ЛЕКЦІЯ</span>
-                </div>
-                    <span class="module-title">МОДУЛЬ @Model.Module.OrderIndex. ТЕМА @Model.LessonIndex</span>
+            <div class="d-flex justify-content-between mb-1 mt-4 align-items-center px-2">
+                <!-- ПОПЕРЕДНЯ ЛЕКЦІЯ (Завжди активна, якщо не перша) -->
+                @if (ViewBag.PreviousLessonId != null)
+                {
+                    <a asp-action="Lesson" asp-controller="Course" asp-route-id="@ViewBag.PreviousLessonId"
+                       class="d-flex align-items-center text-decoration-none px-2" style="cursor: pointer;">
+                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg" class="slider-arrow-img mt-1" alt="scrollLeft"  />
+                        <span class="nav-text ms-2">ПОПЕРЕДНЯ ЛЕКЦІЯ</span>
+                    </a>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center px-2" style="opacity: 0.5;">
+                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg" class="slider-arrow-img mt-1" alt="scrollLeft" />
+                        <span class="nav-text ms-2">ПОПЕРЕДНЯ ЛЕКЦІЯ</span>
+                    </div>
+                }
 
-                <div class="d-flex px-2 ">
-                    <span class="nav-text">НАСТУПНА ЛЕКЦІЯ</span>
-                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
-                         class="slider-arrow-img mt-1"
-                         alt="scrollRight" />
+                <span class="module-title">МОДУЛЬ @Model.Module.OrderIndex. ТЕМА @Model.LessonIndex</span>
+
+                <!-- НАСТУПНА ЛЕКЦІЯ (Активна тільки після тесту) -->
+                <div class="d-flex px-2">
+                    @if (ViewBag.NextLessonId != null)
+                    {
+                        @if (ViewBag.IsTestCompleted == true || Model.Homeworks == null || !Model.Homeworks.Any())
+                        {
+                            <a asp-action="Lesson" asp-controller="Course" asp-route-id="@ViewBag.NextLessonId"
+                               class="d-flex align-items-center text-decoration-none" style="cursor: pointer;">
+                                <span class="nav-text me-2">НАСТУПНА ЛЕКЦІЯ</span>
+                                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg" class="slider-arrow-img mt-1" alt="scrollRight" />
+                            </a>
+                        }
+                        else
+                        {
+                            /* Неактивний вигляд (сірий) */
+                            <div class="d-flex align-items-center disabled-link"
+                                 style="opacity: 0.5; cursor: not-allowed;"
+                                 title="Пройдіть тест, щоб відкрити наступну лекцію">
+                                <span class="nav-text me-2">НАСТУПНА ЛЕКЦІЯ</span>
+                                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg" class="slider-arrow-img mt-1" alt="scrollRight" />
+                            </div>
+                        }
+                    }
                 </div>
-                </div>
+            </div>
                    
 
 
                 <div class="lesson-meta text-center mt-3 p-2">
                     <span>Модуль @Model.Module.OrderIndex</span> •
-                    <span >В процесі</span>
+                <span>@ViewBag.LessonStatusDisplayName</span>
                 </div>
 
                 <h1 class="lesson-main-title text-center mt-3 ">@Model.Title</h1>
@@ -777,96 +215,51 @@
 </div>
 
 
-@* <div class=" lesson-body-content ">
-    <div class="row justify-content-center">
-        <div class="px-4 mt-4">
-            @Html.Raw(RenderContent(Model.Content))
-        </div>
-    </div>
-</div> *@
-
     <div class="lesson-body-container">
-        <!-- Новий батьківський клас -->
         <div class="lesson-grid-wrapper">
             @Html.Raw(RenderContent(Model.Content))
         </div>
     </div>
 
-@*     <div class="lesson-body-content">
-        @Html.Raw(RenderContent(Model.Content))
-    </div>
+    @if (Model.Resources !=null && Model.Resources.Any())
+    {
 
-</div> *@
+        <div class="res-container px-4">
 
-@* @if (Model.Homeworks != null && Model.Homeworks.Any())
-{
-    <div class=" pt-5 border-top test-container">
-        <h2 class="quiz-main-title">ТЕСТ ДО ЛЕКЦІЇ</h2>
-        <p class="text-muted mb-4">Перевірте свої знання за матеріалами лекції.</p>
-
-        @{
-            var questions = ViewBag.Questions as List<diplomaProject.Models.Question>;
-        }
-
-        @if (TempData["HomeworkResult"] != null)
-        {
-            <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="background-color: #F0F2FF; color: #2b31b4;">
-                <strong>Результат тесту:</strong> @TempData["HomeworkResult"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="res-list mt-4 py-3">
+                <span class="quiz-main-title">Додаткові матеріали</span>
+                <ul class="list-unstyled mt-3">
+                @foreach (var res in Model.Resources)
+                {
+                    <li class="res-item level-@res. mb-2">
+                          
+                            <a asp-action="AdditionalMaterials"
+                               asp-controller="Course"
+                               asp-route-id="@res.Id"
+                               class="res-link">
+                                @res.FileName
+                            </a>
+                    </li>
+                }
+                </ul>
             </div>
-        }
 
-        @if (questions != null && questions.Any())
-        {
-            @if (ViewBag.IsTestCompleted == true)
-            {
-                <div class="test-completed-card p-4 shadow-sm text-center">
-                    <i class="bi bi-check-circle-fill d-block mb-2" style="font-size: 2rem; color: #2b31b4;"></i>
-                    <h5 class="fw-bold">Ви вже пройшли цей тест!</h5>
-                    <p class="mb-0">Ваш останній результат: <span class="badge" style="background-color: #2b31b4;">@ViewBag.CurrentGrade / 12</span></p>
-                </div>
-            }
-            else
-            {
-                <form asp-controller="Course" asp-action="CheckHomework" method="post" class="quiz-form">
-                    <input type="hidden" name="lessonId" value="@Model.Id" />
+            <div class="res-picture">
+                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1777979100/decor_plants_esqvwm.webp" alt="Alternate Text" />
+            </div>
 
-                    @foreach (var question in questions)
-                    {
-                        <div class="quiz-question-block mb-5">
-                            <h5 class="question-text mb-4">@question.Text</h5>
+        </div>
+    }
+    else
+    {
+        <div class="empty-resources-message text-center">
+            Матеріали для цієї лекції поки що відсутні.
+        </div>
+    }
 
-                            <div class="options-container">
-                                @foreach (var option in question.Options)
-                                {
-                                    <div class="custom-option-item mb-3">
-                                        <input class="option-input"
-                                               type="@(question.IsMultipleChoice ? "checkbox" : "radio")"
-                                               name="answers[@question.Id]"
-                                               value="@option.Id"
-                                               id="option_@option.Id">
-
-                                        <label class="option-label p-3 d-flex align-items-center" for="option_@option.Id">
-                                            <span class="custom-radio-mark me-3"></span>
-                                            <span class="option-text-content">@option.Text</span>
-                                        </label>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
-
-                    <div class="text-center mt-5">
-                        <button type="submit" class="btn-submit-quiz px-5 py-3">
-                            ЗАВЕРШИТИ ТЕСТ
-                        </button>
-                    </div>
-                </form>
-            }
-        } *@
-@if (Model.Homeworks != null && Model.Homeworks.Any())
+    @if (Model.Homeworks != null && Model.Homeworks.Any())
 {
-    <div class="pt-5 border-top test-container position-relative px-4">
+    <div class=" pt-5  test-container  px-4">
 
         @{
             var questions = ViewBag.Questions as List<diplomaProject.Models.Question>;
@@ -897,9 +290,9 @@
             @if (ViewBag.IsTestCompleted == true)
             {
                 <div class="test-completed-card p-4 shadow-sm text-center">
-                    <i class="bi bi-check-circle-fill d-block mb-2" style="font-size: 2rem; color: #2b31b4;"></i>
-                    <h5 class="fw-bold">Ви вже пройшли цей тест!</h5>
-                    <p class="mb-0">Ваш останній результат: <span class="badge" style="background-color: #2b31b4;">@ViewBag.CurrentGrade / 12</span></p>
+                    <i class="bi bi-check-circle-fill d-block mb-2" style="font-size: 3rem; color: #2b31b4;"></i>
+                        <h5 class="module-title">Ви вже пройшли цей тест!</h5>
+                        <p class="mb-0 lesson-description ">Ваш результат: <span class="px-2 py-1" style="background-color: #2b31b4; color:white; font-weight:500;">@ViewBag.CurrentGrade/12</span></p>
                 </div>
             }
             else
@@ -913,7 +306,7 @@
                         var question = questions[i];
                         <div class="quiz-question-block mb-5">
                             <span class="question-meta">Питання @(i + 1) з @totalQuestions</span>
-                            <h5 class="question-text mb-4">@question.Text</h5>
+                            <h5 class="question-text mb-3">@question.Text</h5>
 
                             <div class="options-container">
                                 @foreach (var option in question.Options)
