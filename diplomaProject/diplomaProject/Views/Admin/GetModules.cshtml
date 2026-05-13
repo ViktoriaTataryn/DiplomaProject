@@ -1,4 +1,8 @@
-﻿@model IEnumerable<diplomaProject.DTOs.ModuleDTO>
+﻿@model IEnumerable<diplomaProject.Models.Module>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Керування модулями";
+}
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -41,9 +45,9 @@
                                     <a asp-action="UpdateModule" asp-route-id="@module.Id" class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-edit"></i> Редагувати
                                     </a>
-                                        <a asp-action="DeleteModule" asp-route-id="@module.Id" class="btn btn-outline-danger btn-sm">
-                                            <i class="fas fa-trash"></i> Видалити
-                                        </a>
+                                    <a asp-action="DeleteModule" asp-route-id="@module.Id" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Видалити
+                                    </a>
                                 
                                 </div>
                             </td>

@@ -1,9 +1,18 @@
-﻿@model IEnumerable<diplomaProject.Models.UserProgress>
+﻿@using diplomaProject.Models
+@* Изменение 1: Заменили Models.User на Models.ApplicationUser *@
+@model IEnumerable<diplomaProject.Models.ApplicationUser>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Список студентів";
+}
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Студенти в процесі навчання</h2>
-        <span class="badge bg-primary">Усього: @Model.Count()</span>
+        @if (Model != null)
+        {
+            <span class="badge bg-primary">Усього: @Model.Count()</span>
+        }
     </div>
 
     <div class="row mb-4">
@@ -24,24 +33,23 @@
                     <tr>
                         <th>Студент</th>
                         <th>Електронна пошта</th>
-                        <th>Поточна лекція</th>
-                        <th>Остання активність</th>
+                        <th>Статус</th>
                         <th class="text-end">Дії</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (Model != null && Model.Any())
                     {
-                        @foreach (var progress in Model)
+                        @foreach (var student in Model)
                         {
                             <tr>
-                                <td><strong>@progress.User?.LastName @progress.User?.FirstName</strong></td>
-                                <td>@progress.User?.Email</td>
-                                <td>@progress.Lesson?.Title</td>
-                                <td>@progress.LastActivity.ToString("dd.MM.yyyy")</td>
+                                <td><strong>@student.LastName @student.FirstName</strong></td>
+                                @* Изменение 2: Заменили student.UserEmail на встроенное свойство IdentityUser -> student.Email *@
+                                <td>@student.Email</td>
+                                <td><span class="badge bg-success">Активний</span></td>
                                 <td class="text-end">
                                     <button type="button" class="btn btn-sm btn-outline-danger"
-                                            onclick="confirmDelete('@progress.UserId', '@progress.User?.FirstName @progress.User?.LastName')">
+                                            onclick="confirmDelete('@student.Id', '@student.FirstName @student.LastName')">
                                         <i class="fas fa-user-minus"></i> Видалити
                                     </button>
                                 </td>
@@ -51,7 +59,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="5" class="text-center py-4">Студентів не знайдено</td>
+                            <td colspan="4" class="text-center py-4">Студентів не знайдено</td>
                         </tr>
                     }
                 </tbody>
@@ -60,6 +68,7 @@
     </div>
 </div>
 
+@* Модальное окно удаления *@
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

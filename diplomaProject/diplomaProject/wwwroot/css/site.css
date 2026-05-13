@@ -560,3 +560,15 @@ h2.figma-title {
     margin: 0;
     font-weight: 400;
 }
+
+/* =========================================
+   Sidebar Roles Styling (Admin vs User)
+   ========================================= */
+#sidebar.admin-theme {
+    background-color: #FAFAFF; /* Легкий фиолетовый оттенок из твоей палитры Figma */
+    border-right: 2px solid #8588D1; /* Акцентная линия для админа */
+}
+
+#sidebar.user-theme {
+    background-color: #FFFFFF; /* Оставляем чистый белый для студента */
+}

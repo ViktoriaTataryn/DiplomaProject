@@ -13,7 +13,6 @@
                 min-height: 100vh;
                 background-color: #f8f9fa;
                 flex-direction: column;
-                /*  background-color: #F3F3FB; */
             }
     </style>
 </head>
@@ -27,64 +26,40 @@
 
         <div class="ms-auto d-flex align-items-center">
             <span class="me-3">@User.Identity?.Name</span>
-
-            @*    <i class="bi bi-person-circle fs-4 me-3 pointer-event"></i> *@
             <a asp-controller="User" asp-action="UpdateData" class="text-decoration-none text-dark">
                 <i class="bi bi-person-circle fs-4 me-3" style="cursor: pointer;"></i>
             </a>
-
-            @*   <form asp-controller="Auth" asp-action="LogOut" method="post" class="d-inline m-0">
-                <button type="submit" class="btn btn-outline-danger btn-sm">
-                LOGOUT
-                </button>
-                </form> *@
         </div>
     </header>
 
     <div id="layout-body">
 
-        <aside id="sidebar">
-       
+        <aside id="sidebar" class="user-theme">
             <nav class="nav flex-column">
                 <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Dashboard" ? "active" : "")"
                        asp-controller="User" asp-action="Dashboard">
                     Головна
                 </a>
-                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Course" ? "active" : "")" asp-controller="Course" asp-action="Index">
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Course" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")"
+                       asp-controller="Course" asp-action="Index">
                     Лекції
                 </a>
-                
                 <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "GetHomeworks" ? "active" : "")"
                        asp-controller="Course" asp-action="GetHomeworks">
                     Домашні завдання
                 </a>
-                
                 <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "AdditionalMaterials" ? "active" : "")"
                        asp-controller="Course" asp-action="AdditionalMaterials">
                     Додаткові матеріали
                 </a>
-
-                @* Admin management links placed between Additional Materials and Account *@
-                @if (User.IsInRole("Admin"))
-                {
-                    <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "AddModule" ? "active" : "")"
-                           asp-controller="Admin" asp-action="AddModule">
-                        Керування модулями
-                    </a>
-                    
-                    <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "GetLessons" ? "active" : "")"
-                           asp-controller="AdminLesson" asp-action="GetLessons">
-                        Керування лекціями
-                    </a>
-                }
-                
                 <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "UpdateData" ? "active" : "")"
                        asp-controller="User" asp-action="UpdateData">
                     Акаунт
                 </a>
             </nav>
+    
             <div class="sidebar-img">
-                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075814/Sidebar_Decoration_ljpp8v.webp" alt="Alternate Text" />
+                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075814/Sidebar_Decoration_ljpp8v.webp" alt="Decoration" />
             </div>
         </aside>
 

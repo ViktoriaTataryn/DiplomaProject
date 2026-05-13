@@ -2,20 +2,23 @@
 
 <div class="container mt-4">
     <div class="card shadow">
+        @* Заголовок картки з динамічною назвою лекції *@
         <div class="card-header bg-primary text-white">
             <h4>Редагування лекції: @Model.Title</h4>
         </div>
         <div class="card-body">
+            @* Форма редагування: enctype обов'язковий для завантаження файлів (NewResources) *@
             <form asp-action="UpdateLesson" id="editLessonForm" method="post" enctype="multipart/form-data">
                 <input type="hidden" asp-for="Id" />
 
+                @* Основні поля лекції *@
                 <div class="mb-3">
                     <label asp-for="Title" class="form-control-label">Назва лекції</label>
                     <input asp-for="Title" class="form-control" placeholder="Введіть назву..." />
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <label>Оберіть модуль</label>
                     <select asp-for="ModuleId" class="form-control" asp-items="ViewBag.Modules">
                         <option value="">-- Оберіть модуль --</option>
@@ -29,10 +32,13 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
+                @* Контейнер для візуального редактора Editor.js *@
                 <div id="editorjs" class="border rounded bg-white p-3" style="min-height: 400px;"></div>
+                @* Приховане поле, куди JS запише фінальний JSON перед відправкою *@
                 <input type="hidden" asp-for="Content" id="contentHiddenInput" />
 
-                <div class="mb-4">
+                @* Блок управління існуючими додатковими матеріалами *@
+                <div class="mb-4 mt-4">
                     <label class="form-control-label"><strong>Поточні додаткові матеріали:</strong></label>
 
                     @if (Model.ExistingResources != null && Model.ExistingResources.Any())
@@ -47,7 +53,7 @@
                                             @resource.FileName
                                         </a>
                                     </div>
-
+                                    @* Кнопка видалення ресурсу (викликає JS функцію) *@
                                     <button type="button" class="btn btn-outline-danger btn-sm"
                                             onclick="deleteResource(@resource.Id, this)">
                                         <i class="fas fa-times"></i>
@@ -62,12 +68,14 @@
                     }
                 </div>
 
+                @* Поле для завантаження нових файлів *@
                 <div class="mb-4">
                     <label class="form-control-label">Додати нові матеріали (Зображення/PDF)</label>
                     <input type="file" name="NewResources" class="form-control" multiple />
                     <small class="text-muted">Ви можете обрати кілька файлів одночасно.</small>
                 </div>
 
+                @* Навігаційні кнопки *@
                 <div class="d-flex justify-content-between">
                     <a asp-action="GetLessons" class="btn btn-secondary">Назад до списку</a>
                     <button type="submit" class="btn btn-success">Зберегти зміни</button>
@@ -78,35 +86,27 @@
 </div>
 
 @section Scripts {
+    @* Підключення скриптів редактора та його інструментів *@
     <script src="https://cdn.jsdelivr.net/npm/@@editorjs/editorjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@editorjs/header@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@editorjs/list@@1.8.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@editorjs/image@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/audio@@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@editorjs/quote@latest"></script>
 
-
     <script>
-        // 2. Отримуємо початкові дані з моделі
-        // Якщо Content порожній, передаємо структуру з порожнім масивом блоків
+        // 1. Отримуємо початкові дані з моделі для Editor.js
         const initialData = @Html.Raw(string.IsNullOrEmpty(Model.Content) ? "{\"blocks\":[]}" : Model.Content);
 
-        // 3. Ініціалізація Editor.js
+        // 2. Ініціалізація редактора
         const editor = new EditorJS({
             holder: 'editorjs',
             placeholder: 'Продовжуйте редагування лекції...',
-
-            // Завантажуємо дані з бази
             data: initialData,
-
             tools: {
-               
                 header: {
                     class: Header,
                     inlineToolbar: ['link'],
-          
                 },
-               
                 quote: {
                     class: Quote,
                     inlineToolbar: true,
@@ -115,17 +115,6 @@
                         captionPlaceholder: 'Автор цитати',
                     },
                 },
-                // audio: {
-                //     class: AudioTool,
-                //     config: {
-                //         endpoints: {
-                //             byFile: '/AdminLesson/UploadAudio', // Твій метод для завантаження
-
-                //         },
-                //         field: 'audio', // Назва параметра в C# методі
-                //         types: 'audio/mp3, audio/wav, audio/mpeg', // Дозволені типи
-                //     }
-                // },
                 list: {
                     class: List,
                     inlineToolbar: true
@@ -134,15 +123,13 @@
                     class: ImageTool,
                     config: {
                         endpoints: {
-                            // Шлях до твого методу в контролері
-                            byFile: '/AdminLesson/UploadImage'
+                            byFile: '/AdminLesson/UploadImage' // Метод контролера для обробки зображень
                         },
-                        // Якщо в C# параметр методу називається 'file', вказуємо це тут
                         field: 'file',
                         actions: [
                             {
                                 name: 'size_small',
-                                icon: 'S', // Можна вставити іконку або просто текст
+                                icon: 'S',
                                 title: 'Маленька (30%)',
                                 toggle: true,
                             },
@@ -156,34 +143,34 @@
                     }
                 }
             },
-
-            // Додаткові налаштування для зручності
             onReady: () => {
                 console.log('Editor.js готовий до роботи!');
             }
         });
 
-        // 4. Обробка відправки форми
-        const editForm = document.getElementById('editLessonForm'); // Переконайся, що у <form> такий id
-
+        // 3. Скрипт передвідправки форми
+        const editForm = document.getElementById('editLessonForm');
         editForm.addEventListener('submit', async (e) => {
-            // Зупиняємо стандартну відправку, щоб зібрати дані з редактора
-            e.preventDefault();
+            e.preventDefault(); // Зупиняємо, щоб встигнути витягнути дані з Editor.js
 
             try {
-                // Отримуємо JSON-об'єкт із редактора
                 const savedData = await editor.save();
-
-                // Записуємо JSON як рядок у приховане поле input
                 const contentInput = document.getElementById('contentHiddenInput');
-                contentInput.value = JSON.stringify(savedData);
-
-                // Тепер відправляємо форму на сервер
+                contentInput.value = JSON.stringify(savedData); // Конвертуємо JSON об'єкт у рядок
                 editForm.submit();
             } catch (error) {
-                console.error('Помилка при збереженні контенту:', error);
+                console.error('Помилка при збереженні:', error);
                 alert('Сталася помилка при спробі зберегти контент лекції.');
             }
         });
+
+        // 4. Функція видалення ресурсу (імітація або AJAX запит)
+        function deleteResource(id, element) {
+            if (confirm("Ви впевнені, що хочете видалити цей файл?")) {
+                // Тут можна додати AJAX запит до сервера. 
+                // Поки що просто видаляємо елемент зі списку на сторінці.
+                element.closest('.list-group-item').remove();
+            }
+        }
     </script>
 }

@@ -1,69 +1,150 @@
-﻿@model diplomaProject.DTOs.UpdateModuleDTO
+﻿@model diplomaProject.DTOs.UpdateLessonDTO
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Редагування лекції";
+}
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white py-3">
-                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i> Редагування модуля</h5>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4>Редагування лекції: @Model.Title</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="UpdateLesson" id="editLessonForm" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-control-label">Назва лекції</label>
+                    <input asp-for="Title" class="form-control" placeholder="Введіть назву..." />
+                    <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
-                <div class="card-body p-4">
-                    <form asp-action="UpdateModule" method="post" enctype="multipart/form-data">
-                        @*  Приховане поле для ID *@
-                        <input type="hidden" asp-for="Id" />
 
-                        <div class="mb-3">
-                            <label asp-for="Title" class="form-label fw-bold">Назва модуля</label>
-                            <input asp-for="Title" class="form-control" placeholder="Введіть назву..." />
-                            <span asp-validation-for="Title" class="text-danger small"></span>
-                        </div>
+                <div class="form-group mb-3">
+                    <label>Оберіть модуль</label>
+                    <select asp-for="ModuleId" class="form-control" asp-items="ViewBag.Modules">
+                        <option value="">-- Оберіть модуль --</option>
+                    </select>
+                    <span asp-validation-for="ModuleId" class="text-danger"></span>
+                </div>
 
-                        <div class="mb-3">
-                            <label asp-for="OrderIndex" class="form-label fw-bold">Порядковий номер (черговість)</label>
-                            <input asp-for="OrderIndex" type="number" class="form-control" />
-                            <span asp-validation-for="OrderIndex" class="text-danger small"></span>
-                        </div>
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-control-label">Опис лекції</label>
+                    <input asp-for="Description" class="form-control" placeholder="Введіть опис..." />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label fw-bold">Опис модуля</label>
-                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Короткий опис модуля..."></textarea>
-                            <span asp-validation-for="Description" class="text-danger small"></span>
-                        </div>
+                <label class="form-control-label">Контент лекції</label>
+                <div id="editorjs" class="border rounded bg-white p-3 mb-3" style="min-height: 400px;"></div>
+                <input type="hidden" asp-for="Content" id="contentHiddenInput" />
 
-                        <div class="mb-4">
-                            <label class="form-label fw-bold d-block">Зображення модуля</label>
+                <div class="mb-4">
+                    <label class="form-control-label"><strong>Поточні додаткові матеріали:</strong></label>
 
-                            @if (!string.IsNullOrEmpty(Model.ImageForUser))
+                    @if (Model.ExistingResources != null && Model.ExistingResources.Any())
+                    {
+                        <div class="list-group mt-2">
+                            @foreach (var resource in Model.ExistingResources)
                             {
-                                <div class="mb-2">
-                                    <p class="text-muted small mb-1">Поточне зображення:</p>
-                                    <img src="@Model.ImageForUser" class="rounded shadow-sm" style="width: 200px; height: 120px; object-fit: cover;" alt="Module Image" />
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-file-alt text-primary me-2"></i>
+                                        <a href="@resource.FilePath" target="_blank" class="text-decoration-none">
+                                            @resource.FileName
+                                        </a>
+                                    </div>
+
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                            onclick="deleteResource(@resource.Id, this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
                                 </div>
                             }
-
-                            <input asp-for="ImageUrl" type="file" class="form-control" accept="image/*" />
-                            <div class="form-text">Оберіть новий файл, якщо хочете замінити поточне зображення.</div>
                         </div>
-
-                        <hr />
-
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a asp-action="GetModules" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-1"></i> Назад до списку
-                            </a>
-                            <button type="submit" class="btn btn-success px-4">
-                                <i class="fas fa-save me-1"></i> Зберегти зміни
-                            </button>
-                        </div>
-                    </form>
+                    }
+                    else
+                    {
+                        <p class="text-muted small">Додаткових матеріалів поки немає.</p>
+                    }
                 </div>
-            </div>
+
+                <div class="mb-4">
+                    <label class="form-control-label">Додати нові матеріали (Зображення/PDF)</label>
+                    <input type="file" name="NewResources" class="form-control" multiple />
+                    <small class="text-muted">Ви можете обрати кілька файлів одночасно.</small>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="GetLessons" class="btn btn-secondary">Назад до списку</a>
+                    <button type="submit" class="btn btn-success">Зберегти зміни</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/list@@1.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/image@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/audio@@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/quote@latest"></script>
+
+    <script>
+        const initialData = @Html.Raw(string.IsNullOrEmpty(Model.Content) ? "{\"blocks\":[]}" : Model.Content);
+
+        const editor = new EditorJS({
+            holder: 'editorjs',
+            placeholder: 'Продовжуйте редагування лекції...',
+            data: initialData,
+            tools: {
+                header: {
+                    class: Header,
+                    inlineToolbar: ['link'],
+                },
+                quote: {
+                    class: Quote,
+                    inlineToolbar: true,
+                    config: {
+                        quotePlaceholder: 'Введіть цитату',
+                        captionPlaceholder: 'Автор цитати',
+                    },
+                },
+                list: {
+                    class: List,
+                    inlineToolbar: true
+                },
+                image: {
+                    class: ImageTool,
+                    config: {
+                        endpoints: {
+                            byFile: '/AdminLesson/UploadImage'
+                        },
+                        field: 'file'
+                    }
+                }
+            }
+        });
+
+        const editForm = document.getElementById('editLessonForm');
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const savedData = await editor.save();
+                const contentInput = document.getElementById('contentHiddenInput');
+                contentInput.value = JSON.stringify(savedData);
+                editForm.submit();
+            } catch (error) {
+                console.error('Помилка при збереженні контенту:', error);
+                alert('Сталася помилка при спробі зберегти контент лекції.');
+            }
+        });
+
+        function deleteResource(id, btn) {
+            if (confirm('Видалити цей файл?')) {
+                // Тут логіка видалення через fetch, якщо потрібно
+                btn.closest('.list-group-item').remove();
+            }
+        }
+    </script>
 }
