@@ -2,9 +2,10 @@
 using CloudinaryDotNet.Actions;
 using diplomaProject.Data;
 using diplomaProject.DTOs;
+using diplomaProject.Interfaces;
 using diplomaProject.Models;
 using diplomaProject.Services;
-using diplomaProject.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,6 +15,7 @@ using MyResource = diplomaProject.Models.Resource;
 
 namespace diplomaProject.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminLessonController : Controller
     {
         private readonly AppDbContext _context;
@@ -36,6 +38,7 @@ namespace diplomaProject.Controllers
         public async Task<IActionResult> GetLessons(string searchTerm)
         {
             var lessonQuery = _context.Lessons.Include(l => l.Module).AsQueryable();
+
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 searchTerm = searchTerm.Trim().ToLower();
@@ -45,21 +48,46 @@ namespace diplomaProject.Controllers
             var lessons = await lessonQuery
                 .OrderBy(l => l.Module.OrderIndex)
                 .ThenBy(l => l.LessonIndex)
-              .Select(l => new LessonDTO
-              {
-                  Id = l.Id,
-                  Title = l.Title,
-                  ModuleIndex = l.Module.OrderIndex,
-                  UserCompletedNum = _context.UserProgresses.Count(u => u.LessonId == l.Id && u.Status == ProgressStatus.Completed),
-              })
-              .ToListAsync();
+                .ToListAsync();
+
+            // Заполняем "виртуальные" поля данными
+            foreach (var lesson in lessons)
+            {
+                lesson.ModuleIndex = lesson.Module.OrderIndex;
+                lesson.UserCompletedNum = _context.UserProgresses
+                    .Count(u => u.LessonId == lesson.Id && u.Status == ProgressStatus.Completed);
+            }
 
             ViewBag.CurrentSearch = searchTerm;
-
-            return View(lessons);
-
-            //return Json(lessons); //постман
+            return View(lessons); // Теперь возвращаем Model, а не DTO
         }
+        //public async Task<IActionResult> GetLessons(string searchTerm)
+        //{
+        //    var lessonQuery = _context.Lessons.Include(l => l.Module).AsQueryable();
+        //    if (!string.IsNullOrEmpty(searchTerm))
+        //    {
+        //        searchTerm = searchTerm.Trim().ToLower();
+        //        lessonQuery = lessonQuery.Where(l => l.Title.ToLower().Contains(searchTerm));
+        //    }
+
+        //    var lessons = await lessonQuery
+        //        .OrderBy(l => l.Module.OrderIndex)
+        //        .ThenBy(l => l.LessonIndex)
+        //      .Select(l => new LessonDTO
+        //      {
+        //          Id = l.Id,
+        //          Title = l.Title,
+        //          ModuleIndex = l.Module.OrderIndex,
+        //          UserCompletedNum = _context.UserProgresses.Count(u => u.LessonId == l.Id && u.Status == ProgressStatus.Completed),
+        //      })
+        //      .ToListAsync();
+
+        //    ViewBag.CurrentSearch = searchTerm;
+
+        //    return View(lessons);
+
+        //    //return Json(lessons); //постман
+        //}
 
         [HttpGet]
         public async Task<IActionResult> AddLesson()

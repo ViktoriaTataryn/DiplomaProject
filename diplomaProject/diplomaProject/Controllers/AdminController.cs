@@ -101,37 +101,32 @@ namespace diplomaProject.Controllers
             return View();
         }
 
-        // ИСПРАВЛЕНИЕ: Метод теперь возвращает List<ApplicationUser>, чтобы View (GetStudents.cshtml) могла его корректно отобразить
+        // ИСПРАВЛЕНИЕ: Добавлен Select(s => s.User), чтобы исправить ошибку типа модели (как на скриншоте image_e9ee5f.png)
         [HttpGet]
         public async Task<IActionResult> GetStudents(string searchTerm)
         {
-            /* Оригинальная логика Вики (сохранена):
-            var studentsQuery =  _context.UserProgresses
-                .Include(s=>s.User)
-                .Include(s=>s.Lesson)
-                .Where(l=>l.Status==ProgressStatus.InProgress)
+            var studentsQuery = _context.UserProgresses
+                .Include(s => s.User)
+                .Include(s => s.Lesson)
+                .Where(l => l.Status == ProgressStatus.InProgress)
                 .AsQueryable();
-            */
-
-            var studentsQuery = _context.Users.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 searchTerm = searchTerm.Trim().ToLower();
-                studentsQuery = studentsQuery.Where(u => u.LastName.ToLower().Contains(searchTerm)
-                || u.FirstName.ToLower().Contains(searchTerm));
+                studentsQuery = studentsQuery.Where(u => u.User.LastName.ToLower().Contains(searchTerm)
+                || u.User.FirstName.ToLower().Contains(searchTerm));
             }
 
-            // Получаем только тех пользователей, у которых есть роль "Student"
-            var allStudents = await _userManager.GetUsersInRoleAsync("Student");
-            var studentIds = allStudents.Select(s => s.Id).ToList();
-
+            // Мы вытаскиваем из прогресса именно объекты User, так как GetStudents.cshtml ожидает IEnumerable<ApplicationUser>
             var students = await studentsQuery
-                .Where(u => studentIds.Contains(u.Id))
+                .Select(s => s.User)
+                .Distinct()
                 .ToListAsync();
 
             ViewBag.CurrentSearch = searchTerm;
             return View(students);
+            //return Json(students); //постман
         }
 
         //[HttpGet]
@@ -142,12 +137,11 @@ namespace diplomaProject.Controllers
         //    return View(user);
         //}
 
-        // ИСПРАВЛЕНИЕ: Переименовал метод в DeleteUser, чтобы он совпадал с asp-action="DeleteUser" во View
+        // ИСПРАВЛЕНИЕ: Имя метода изменено с DeleteUserConfirmed на DeleteUser, чтобы соответствовать asp-action во вьюхе
         [HttpPost]
         [ValidateAntiForgeryToken] // Захист від підробки запитів
         public async Task<IActionResult> DeleteUser(string Id)
         {
-            // Оригинальное имя метода: DeleteUserConfirmed
             var user = await _context.Users.FindAsync(Id);
             if (user == null) return NotFound();
 

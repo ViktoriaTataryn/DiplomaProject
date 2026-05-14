@@ -13,7 +13,7 @@ using System.Net.Http; // Added for Cloudinary downloads
 
 namespace diplomaProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Student,Admin")]
     public class CourseController : Controller
     {
         private readonly AppDbContext _context;

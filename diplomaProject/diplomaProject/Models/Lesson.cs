@@ -2,13 +2,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 
-
-
 namespace diplomaProject.Models
 {
     public class Lesson
     {
-    
         public int Id { get; set; }
 
         [Required]
@@ -21,44 +18,36 @@ namespace diplomaProject.Models
         public string? Description { get; set; }
 
         [Display(Name = "Video URL")]
-        public string? VideoUrl { get; set; } // Ссылка на видео, если будет нужно
+        public string? VideoUrl { get; set; }
 
-        // Связь с модулем к которому относится урок
         public Module Module { get; set; }
         public int ModuleId { get; set; }
 
-        // Список всех файлов (картинок, методичек), привязанных к уроку
         [Display(Name = "Resources")]
         public ICollection<Resource> Resources { get; set; } = new List<Resource>();
         public ICollection<Homework> Homeworks { get; set; }
 
         public int LessonIndex { get; set; }
 
+        // --- НОВЫЕ ПОЛЯ ДЛЯ АДМИНКИ ---
+        [NotMapped]
+        public int ModuleIndex { get; set; } // Для вывода номера модуля в таблице
+
+        [NotMapped]
+        public int UserCompletedNum { get; set; } // Статистика прохождений
+        // ------------------------------
+
         //public string GetBackgroundImage()
         //{
-        //    if (string.IsNullOrEmpty(Content)) return null;
-
-        //    try
-        //    {
-        //        var data = JsonDocument.Parse(Content);
-        //        var firstImage = data.RootElement.GetProperty("blocks")
-        //            .EnumerateArray()
-        //            .FirstOrDefault(b => b.GetProperty("type").GetString() == "image");
-
-        //        return firstImage.GetProperty("data").GetProperty("file").GetProperty("url").GetString();
-        //    }
-        //    catch
-        //    {
-        //        return null;
-        //    }
+        //    ... (твой закомментированный код сохранен)
         //}
-        [NotMapped] // Цей атрибут прямо каже Entity Framework: "Не шукай таку колонку в БД"
+
+        [NotMapped]
         public string? FirstImageUrl
         {
             get
             {
                 if (string.IsNullOrEmpty(Content)) return null;
-
                 try
                 {
                     using (JsonDocument doc = JsonDocument.Parse(Content))
@@ -68,19 +57,16 @@ namespace diplomaProject.Models
                         {
                             if (block.GetProperty("type").GetString() == "image")
                             {
-                                // Шлях залежить від вашої конфігурації Image Tool в Editor.js
                                 return block.GetProperty("data").GetProperty("file").GetProperty("url").GetString();
                             }
                         }
                     }
                 }
-                catch
-                {
-                    return null;
-                }
+                catch { return null; }
                 return null;
             }
         }
+
         [NotMapped]
         public List<(string Text, int Level)> TableOfContents
         {
@@ -88,7 +74,6 @@ namespace diplomaProject.Models
             {
                 var toc = new List<(string Text, int Level)>();
                 if (string.IsNullOrEmpty(Content)) return toc;
-
                 try
                 {
                     using (JsonDocument doc = JsonDocument.Parse(Content))
@@ -100,24 +85,14 @@ namespace diplomaProject.Models
                             {
                                 var text = block.GetProperty("data").GetProperty("text").GetString();
                                 var level = block.GetProperty("data").GetProperty("level").GetInt32();
-
-                                if (!string.IsNullOrEmpty(text))
-                                {
-                                    toc.Add((text, level));
-                                }
+                                if (!string.IsNullOrEmpty(text)) { toc.Add((text, level)); }
                             }
                         }
                     }
                 }
-                catch { /* Логування помилки за потреби */ }
-
+                catch { }
                 return toc;
             }
         }
-
-    
     }
-
-
 }
-

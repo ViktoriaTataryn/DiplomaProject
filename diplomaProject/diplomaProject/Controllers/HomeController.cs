@@ -13,8 +13,22 @@ namespace diplomaProject.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    // Если зашел админ сразу на список модулей
+                    return RedirectToAction("GetModules", "Admin");
+                }
+                else
+                {
+                    // Если студент на главную страницу курсов
+                    return RedirectToAction("Index", "Course");
+                }
+            }
+            // Если не залогинен — показываем обычный лендинг или страницу логина
             return View();
         }
 
