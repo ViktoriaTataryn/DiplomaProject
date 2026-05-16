@@ -281,7 +281,8 @@ namespace diplomaProject.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(review);
+                TempData["ErrorMessage"] = "Текст відгуку занадто короткий або дані некоректні.";
+                return RedirectToAction("Index", "Home");
 
                 //var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                 //return BadRequest(new { message = "Валідація не пройшла", details = errors }); //для постман
@@ -290,18 +291,21 @@ namespace diplomaProject.Controllers
             var userId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(userId))
             {
-                return Unauthorized("Користувач не авторизований. Перевірте токен.");
+                return Unauthorized("Користувач не авторизований.");
             }
             var userReview = new Review
             {
                 Content=review.Content,
-                Rating=review.Rating,
+                Rating=review.Rating ?? 5,
                 UserId = userId,
             };
              _context.Reviews.Add(userReview);
            await _context.SaveChangesAsync();
-           // return Ok(new { message = "Відгук додано успішно!", id = userReview.Id });//для постман
-           return RedirectToAction("Index","Home");
+            // return Ok(new { message = "Відгук додано успішно!", id = userReview.Id });//для постман
+            TempData["SuccessMessage"] = "Дякуємо! Ваш відгук успішно додано.";
+
+            // Додаємо якір #reviews, щоб сторінка прокрутилася до секції відгуків
+            return Redirect("/Home/Index#container8");
         }
     }
 }

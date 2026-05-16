@@ -126,9 +126,13 @@ namespace diplomaProject
             app.UseAuthentication(); // Хто цей користувач? (Перевірка логіна/пароля)
             app.UseAuthorization();  // Що йому дозволено? (Перевірка ролей)
 
+            //app.MapControllerRoute(
+            //    name: "default",
+            //    pattern: "{controller=User}/{action=Dashboard}/{id?}");
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=User}/{action=Dashboard}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

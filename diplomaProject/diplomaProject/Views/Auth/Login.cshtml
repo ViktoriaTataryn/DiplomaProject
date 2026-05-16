@@ -9,7 +9,7 @@
             <div class="card-body p-0">
                 <h2 class="text-center mb-5 figma-title">УВІЙТИ</h2>
 
-                <form asp-action="Login" method="post">
+                <form asp-action="Login" asp-route-returnurl="@Context.Request.Query["returnUrl"]"  method="post">
                     <div asp-validation-summary="All" class="text-danger small mb-3"></div>
 
                     <div class="mb-4">
