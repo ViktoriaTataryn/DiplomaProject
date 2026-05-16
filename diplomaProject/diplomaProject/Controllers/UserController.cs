@@ -23,18 +23,29 @@ namespace diplomaProject.Controllers
 
         public UserController(IDashboardService dashboardService, AppDbContext context, IProgressService progressService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
-            _dashboardService =dashboardService;
+            _dashboardService = dashboardService;
             _context = context;
             _progressService = progressService;
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
+        // Допоміжний метод для визначення правильного Layout
+        private string GetUserLayout()
+        {
+            return User.IsInRole("Admin") ? "_AdminLayout" : "_Layout";
+        }
+
         // GET: UserController
         [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
-           var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); //тільки id користувача
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("GetModules", "Admin");
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); //тільки id користувача
             var course = await _context.CourseRegistrations
                 .Where(c => c.UserId == userId)
                 .Select(c => c.CourseId)
@@ -43,15 +54,15 @@ namespace diplomaProject.Controllers
             //{
             //    return RedirectToAction("Index", "Home");
             //}
-            bool progress = await _context.UserProgresses.AnyAsync(c => c.UserId == userId&&c.CourseId==course);
+            bool progress = await _context.UserProgresses.AnyAsync(c => c.UserId == userId && c.CourseId == course);
             if (!progress)
             {
                 await _progressService.StartCourse(userId, course);
             }
-           // var course = 1;
-            var data =await _dashboardService.GetDashboardView(userId,course);
+            // var course = 1;
+            var data = await _dashboardService.GetDashboardView(userId, course);
 
-            var lessons = await _context.Lessons.Include(l=>l.Module)
+            var lessons = await _context.Lessons.Include(l => l.Module)
         .Where(l => l.Module.CourseId == course)
         .OrderBy(l => l.LessonIndex)
         .ToListAsync();
@@ -85,20 +96,20 @@ namespace diplomaProject.Controllers
         //    return View(homeworks);
         //}
 
-       
+
         [HttpGet]
         public async Task<IActionResult> UpdateData()
         {
             var user = await _userManager.GetUserAsync(User); //весь об'єкт ApplicationUser
             if (user == null) return NotFound();
-            var registerData= await _context.CourseRegistrations.FirstOrDefaultAsync(u=>u.UserId == user.Id);
-            var lastActivity = await _context.UserProgresses.Where(u=>u.UserId==user.Id).OrderByDescending(l=>l.LastActivity).FirstOrDefaultAsync();
+            var registerData = await _context.CourseRegistrations.FirstOrDefaultAsync(u => u.UserId == user.Id);
+            var lastActivity = await _context.UserProgresses.Where(u => u.UserId == user.Id).OrderByDescending(l => l.LastActivity).FirstOrDefaultAsync();
             var data = new UserProfileDTO
             {
-                RegistrationDate=user.RegistrationDate,
-                isPaid=registerData?.IsPaid ?? false,
-                LastActivity=lastActivity?.LastActivity ?? DateTime.MinValue,
-                PaymentDate=registerData?.PaymentDate ?? DateTime.MinValue,
+                RegistrationDate = user.RegistrationDate,
+                isPaid = registerData?.IsPaid ?? false,
+                LastActivity = lastActivity?.LastActivity ?? DateTime.MinValue,
+                PaymentDate = registerData?.PaymentDate ?? DateTime.MinValue,
                 EditModel = new EditUserDTO
                 {
                     FirstName = user.FirstName,
@@ -107,6 +118,10 @@ namespace diplomaProject.Controllers
                     UserPhone = user.PhoneNumber,
                 }
             };
+
+            // ПЕРЕДАЄМО LAYOUT ДЛЯ VIEW
+            ViewData["Layout"] = GetUserLayout();
+
             return View(data);
         }
 
@@ -251,6 +266,9 @@ namespace diplomaProject.Controllers
                     EditModel = editUser // Повертаємо те, що юзер щойно ввів у форму
                 };
 
+                // ЗБЕРІГАЄМО LAYOUT ПРИ ПОМИЛЦІ ВАЛІДАЦІЇ
+                ViewData["Layout"] = GetUserLayout();
+
                 return View("UpdateData", profileData); // Повертаємо заповнену модель
             }
 
@@ -294,14 +312,14 @@ namespace diplomaProject.Controllers
             }
             var userReview = new Review
             {
-                Content=review.Content,
-                Rating=review.Rating,
+                Content = review.Content,
+                Rating = review.Rating,
                 UserId = userId,
             };
-             _context.Reviews.Add(userReview);
-           await _context.SaveChangesAsync();
-           // return Ok(new { message = "Відгук додано успішно!", id = userReview.Id });//для постман
-           return RedirectToAction("Index","Home");
+            _context.Reviews.Add(userReview);
+            await _context.SaveChangesAsync();
+            // return Ok(new { message = "Відгук додано успішно!", id = userReview.Id });//для постман
+            return RedirectToAction("Index", "Home");
         }
     }
 }

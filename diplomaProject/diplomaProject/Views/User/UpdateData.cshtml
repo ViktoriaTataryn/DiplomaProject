@@ -1,15 +1,8 @@
 ﻿@using diplomaProject.DTOs
 @model UserProfileDTO
 @{
-    // Динамічний вибір Layout залежно від ролі користувача
-    if (User.IsInRole("Admin"))
-    {
-        Layout = "_AdminLayout";
-    }
-    else
-    {
-        Layout = "_Layout";
-    }
+    // Динамічний вибір Layout залежно від ролі користувача (отримується з контролера)
+    Layout = ViewData["Layout"]?.ToString() ?? (User.IsInRole("Admin") ? "_AdminLayout" : "_Layout");
 }
 
 @* Підключення стилів проекту *@
@@ -174,7 +167,7 @@
             </form>
         </div>
         <div class="end-img align-content-end">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776887206/BG_Profile_Page_qby864.webp" alt="exit-image"/>
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776887206/BG_Profile_Page_qby864.webp" alt="exit-image" />
         </div>
     </div>
 </div>

@@ -1,4 +1,5 @@
 using diplomaProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -13,27 +14,25 @@ namespace diplomaProject.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        public IActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
+            // 1. Проверяем, залогинен ли пользователь
+            if (User.Identity != null && User.Identity.IsAuthenticated)
             {
+                // 2. Если это Админ, отправляем в управление модулями
                 if (User.IsInRole("Admin"))
                 {
-                    // Если зашел админ сразу на список модулей
                     return RedirectToAction("GetModules", "Admin");
                 }
-                else
+                // 3. Если это студент тогда отправляем на его дашборд
+                else if (User.IsInRole("Student"))
                 {
-                    // Если студент на главную страницу курсов
-                    return RedirectToAction("Index", "Course");
+                    return RedirectToAction("Dashboard", "User");
                 }
             }
-            // Если не залогинен — показываем обычный лендинг или страницу логина
-            return View();
-        }
 
-        public IActionResult Privacy()
-        {
+            // 4. Если гость (Вика еще не пушнула лендинг) то показываем стандартную главную
             return View();
         }
 
@@ -43,4 +42,4 @@ namespace diplomaProject.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
-}
+}   

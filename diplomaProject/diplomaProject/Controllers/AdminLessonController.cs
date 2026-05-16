@@ -16,6 +16,7 @@ using MyResource = diplomaProject.Models.Resource;
 namespace diplomaProject.Controllers
 {
     [Authorize(Roles = "Admin")]
+
     public class AdminLessonController : Controller
     {
         private readonly AppDbContext _context;
@@ -365,7 +366,5 @@ namespace diplomaProject.Controllers
                 return Json(new { success = 0, message = ex.Message });
             }
         }
-
-
     }
 }

@@ -81,7 +81,6 @@ namespace diplomaProject.Data
                       .HasForeignKey(sa => sa.SelectedOptionId)
                       .OnDelete(DeleteBehavior.NoAction);
             });
-
         }
     }
 }
