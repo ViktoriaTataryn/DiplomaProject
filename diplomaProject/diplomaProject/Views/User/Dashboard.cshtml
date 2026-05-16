@@ -172,10 +172,14 @@
                         <span class="small-text" style=" display: block;">Поки немає оцінок</span>
                     }
                     else{
+                        <div class="grade-list-scroll">
+                            @{
                         var groupedGrades = Model.Grades
                         .GroupBy(g => g.Date.ToString("MMMM", new System.Globalization.CultureInfo("uk-UA")))
                         .ToList();
-                        foreach(var group in groupedGrades)
+                        }
+                        @foreach(var group in groupedGrades)
+                        
                         {
                             <div class="grade-item-container">
                                 <span>@group.Key</span>
@@ -188,6 +192,7 @@
                                 </div>
                                 </div>
                         }
+                        </div>
 
                         }
 

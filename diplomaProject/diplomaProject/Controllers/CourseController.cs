@@ -226,12 +226,20 @@ namespace diplomaProject.Controllers
                 await _progressService.LessonInProgressAsync(userId, lesson.Id);
             }
 
+            var currentProgress = await _context.UserProgresses
+        .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
+
+            ViewBag.LessonStatusDisplayName = GetStatusDisplayName(currentProgress?.Status);
+
             var homework = await _context.Homeworks
                 .FirstOrDefaultAsync(h => h.LessonId == id);
 
+            bool isCompleted = false;
             if (homework != null)
             {
                 ViewBag.HomeworkId = homework.Id;
+                isCompleted = await _context.HomeworkSubmissions
+            .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
                 ViewBag.IsTestCompleted = await _context.HomeworkSubmissions
                     .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
                 ViewBag.Questions = await _context.Questions
@@ -239,7 +247,7 @@ namespace diplomaProject.Controllers
                     .Where(q => q.HomeworkId == homework.Id)
                     .ToListAsync();
 
-                if (ViewBag.IsTestCompleted)
+                if (isCompleted)
                 {
                     var submission = await _context.HomeworkSubmissions
                         .FirstOrDefaultAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
@@ -249,40 +257,65 @@ namespace diplomaProject.Controllers
             else
             {
                 ViewBag.HomeworkId = 0;
-                ViewBag.IsTestCompleted = false;
+               
                 ViewBag.Questions = new List<Question>();
                 ViewBag.CurrentGrade = 0;
+                isCompleted = true;
             }
 
+            ViewBag.IsTestCompleted = isCompleted || TempData["IsTestJustFinished"] != null;
+
             var nextLessonId = lesson.Module.Lessons
-                .OrderBy(l => l.LessonIndex)
-                .FirstOrDefault(l => l.LessonIndex > lesson.LessonIndex)?.Id;
+         .Where(l => l.LessonIndex > lesson.LessonIndex)
+         .OrderBy(l => l.LessonIndex)
+         .FirstOrDefault()?.Id;
 
             if (nextLessonId == null)
             {
                 var nextModule = await _context.Modules
-                    .OrderBy(m => m.OrderIndex)
-                    .FirstOrDefaultAsync(m => m.OrderIndex > lesson.Module.OrderIndex);
+             .Where(m => m.OrderIndex > lesson.Module.OrderIndex)
+             .OrderBy(m => m.OrderIndex)
+             .FirstOrDefaultAsync();
 
                 if (nextModule != null)
                 {
                     nextLessonId = await _context.Lessons
-                        .Where(l => l.ModuleId == nextModule.Id)
-                        .OrderBy(l => l.LessonIndex)
+                 .Where(l => l.ModuleId == nextModule.Id)
+                 .OrderBy(l => l.LessonIndex)
+                 .Select(l => l.Id)
+                 .FirstOrDefaultAsync();
+                }
+            }
+            ViewBag.NextLessonId = nextLessonId;
+
+            // 4. ПОШУК ПОПЕРЕДНЬОЇ ЛЕКЦІЇ (Логіка всередині модуля + перехід на попередній)
+            var prevLessonId = lesson.Module.Lessons
+                .Where(l => l.LessonIndex < lesson.LessonIndex)
+                .OrderByDescending(l => l.LessonIndex)
+                .FirstOrDefault()?.Id;
+
+            if (prevLessonId == null) // Шукаємо в попередньому модулі
+            {
+                var prevModule = await _context.Modules
+                    .Where(m => m.OrderIndex < lesson.Module.OrderIndex)
+                    .OrderByDescending(m => m.OrderIndex)
+                    .FirstOrDefaultAsync();
+
+                if (prevModule != null)
+                {
+                    prevLessonId = await _context.Lessons
+                        .Where(l => l.ModuleId == prevModule.Id)
+                        .OrderByDescending(l => l.LessonIndex)
                         .Select(l => l.Id)
                         .FirstOrDefaultAsync();
                 }
             }
-            ViewBag.NextLessonId = nextLessonId;
+            ViewBag.PreviousLessonId = prevLessonId;
 
             ViewBag.ModuleProgress = await _context.UserProgresses
                 .Where(p => p.UserId == userId && p.ModuleId == lesson.ModuleId)
                 .ToListAsync();
 
-            bool isCompleted = await _context.HomeworkSubmissions
-                .AnyAsync(s => s.StudentId == userId && s.Homework.LessonId == id);
-
-            ViewBag.IsTestCompleted = isCompleted || TempData["IsTestJustFinished"] != null;
 
             if (string.IsNullOrEmpty(lesson.Content))
             {
@@ -293,6 +326,149 @@ namespace diplomaProject.Controllers
         }
 
         // --- FIXED DOWNLOAD LOGIC FOR CLOUDINARY ---
+
+     
+
+        // 4. Отправка домашнего задания (File based)
+        [HttpPost]
+        public async Task<IActionResult> SubmitHomework(int homeworkId, string homeworkText)
+        {
+            if (string.IsNullOrWhiteSpace(homeworkText))
+            {
+                ModelState.AddModelError("", "Homework text cannot be empty.");
+                return RedirectToAction("Lesson", new { id = homeworkId });
+            }
+
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "submissions");
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var fileName = $"homework_{homeworkId}_{Guid.NewGuid()}.txt";
+            var fullPath = Path.Combine(folderPath, fileName);
+
+            await System.IO.File.WriteAllTextAsync(fullPath, homeworkText);
+
+            var userId = _userManager.GetUserId(User);
+            var submission = new HomeworkSubmission
+            {
+                HomeworkId = homeworkId,
+                StudentId = userId,
+                FilePath = "/submissions/" + fileName,
+                SubmissionDate = DateTime.Now,
+                Status = HomeworkStatus.Pending
+            };
+
+            _context.HomeworkSubmissions.Add(submission);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Homework submitted successfully!";
+            return RedirectToAction("Lesson", new { id = homeworkId });
+        }
+
+        // 5. Автоматическая проверка теста
+        [HttpPost]
+        public async Task<IActionResult> CheckHomework(int lessonId, int homeworkId, Dictionary<int, List<int>> answers)
+        {
+            if (answers == null || !answers.Any())
+            {
+                TempData["Error"] = "Будь ласка, оберіть хоча б одну відповідь.";
+                return RedirectToAction("Lesson", new { id = lessonId });
+            }
+
+            var userId = _userManager.GetUserId(User);
+            bool alreadySubmitted = await _context.HomeworkSubmissions
+                .AnyAsync(s => s.HomeworkId == homeworkId && s.StudentId == userId);
+
+            if (alreadySubmitted)
+            {
+                return BadRequest("Ви вже здали цей тест.");
+            }
+
+            var questions = await _context.Questions
+                .Include(q => q.Options)
+                .Where(q => q.HomeworkId == homeworkId)
+                .ToListAsync();
+
+            int score = 0;
+            int maxScore = questions.Count;
+            var selectedOptionIds = answers.Values.SelectMany(x => x).ToList();
+
+            foreach (var question in questions)
+            {
+                var correctOptionIds = question.Options.Where(o => o.IsCorrect).Select(o => o.Id).ToList();
+                var studentIdsForThisQuestion = selectedOptionIds.Intersect(question.Options.Select(o => o.Id)).ToList();
+
+                bool isAnswerPerfect = correctOptionIds.Count == studentIdsForThisQuestion.Count &&
+                                       !correctOptionIds.Except(studentIdsForThisQuestion).Any();
+
+                if (isAnswerPerfect) score++;
+            }
+
+            var submission = new HomeworkSubmission
+            {
+                HomeworkId = homeworkId,
+                StudentId = userId,
+                SubmissionDate = DateTime.Now,
+                FilePath = "Quiz Result",
+                Status = HomeworkStatus.Approved,
+                Grade = score
+            };
+
+            foreach (var answer in answers)
+            {
+                foreach (var optionId in answer.Value)
+                {
+                    submission.StudentAnswers.Add(new StudentAnswer
+                    {
+                        QuestionId = answer.Key,
+                        SelectedOptionId = optionId
+                    });
+                }
+            }
+
+            _context.HomeworkSubmissions.Add(submission);
+            await _context.SaveChangesAsync();
+
+            
+
+            // Unlock next lesson after successful quiz
+            await _progressService.UnlockNextLessonAsync(userId, lessonId);
+
+          
+            TempData["IsTestJustFinished"] = true;
+
+            // Або якщо ви робите Redirect:
+            TempData["TestJustFinished"] = true;
+            return RedirectToAction("Lesson", new { id = lessonId });
+        }
+
+        // 6-12. Admin methods & Downloads (Keep original logic)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddHomework(Homework model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Homeworks.Add(model);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Homework added successfully!";
+            }
+            return RedirectToAction("Lesson", new { id = model.LessonId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CompletedHomeworks()
+        {
+            var userId = _userManager.GetUserId(User);
+            var completedTasks = await _context.HomeworkSubmissions
+                .Include(s => s.Homework)
+                .Where(s => s.StudentId == userId && s.Status == HomeworkStatus.Approved)
+                .ToListAsync();
+
+            return View(completedTasks);
+        }
 
         [HttpGet]
         public async Task<IActionResult> DownloadModuleMaterials(int moduleId)
@@ -318,6 +494,8 @@ namespace diplomaProject.Controllers
                 return File(memoryStream.ToArray(), "application/zip", $"Module_{moduleId}_Materials.zip");
             }
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> DownloadFullArchive()
@@ -427,6 +605,18 @@ namespace diplomaProject.Controllers
             };
 
             return View(viewModel);
+        }
+
+
+        public static string GetStatusDisplayName(ProgressStatus? status)
+        {
+            return status switch
+            {
+                ProgressStatus.InProgress => "В процесі",
+                ProgressStatus.Completed => "Завершено",
+                ProgressStatus.Open => "Відкрито",
+                _ => "В процесі" // Значення за замовчуванням
+            };
         }
     }
 }

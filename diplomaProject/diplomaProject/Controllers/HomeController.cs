@@ -1,6 +1,8 @@
+using diplomaProject.Data;
+using diplomaProject.DTOs;
 using diplomaProject.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace diplomaProject.Controllers
@@ -8,31 +10,44 @@ namespace diplomaProject.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        [AllowAnonymous]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // 1. Проверяем, залогинен ли пользователь
-            if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                // 2. Если это Админ, отправляем в управление модулями
-                if (User.IsInRole("Admin"))
-                {
-                    return RedirectToAction("GetModules", "Admin");
-                }
-                // 3. Если это студент тогда отправляем на его дашборд
-                else if (User.IsInRole("Student"))
-                {
-                    return RedirectToAction("Dashboard", "User");
-                }
-            }
+            var model = new LandingDTO();
 
-            // 4. Если гость (Вика еще не пушнула лендинг) то показываем стандартную главную
+      
+            model.Modules = await _context.Modules.Select(m => new ModuleProgressDTO
+            {
+                ModuleNumber = m.OrderIndex,
+                Name = m.Title
+
+            }).ToListAsync();
+
+           
+            model.Reviews = await _context.Reviews
+                .Include(r => r.User) 
+    .OrderByDescending(r => r.Id)
+                .Take(20)
+                .Select(r => new ReviewDTO
+                {
+                    Id = r.Id,
+                    UserName = r.User.FirstName, 
+                    Content = r.Content,
+                })
+                .ToListAsync();
+
+            return View(model);
+        }
+
+        public IActionResult Privacy()
+        {
             return View();
         }
 
@@ -42,4 +57,4 @@ namespace diplomaProject.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
-}   
+}

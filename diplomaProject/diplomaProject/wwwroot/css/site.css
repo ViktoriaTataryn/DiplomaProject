@@ -352,13 +352,79 @@ h2.figma-title {
         opacity: 0.3; /* Make background less intrusive on mobile */
         background-size: 150% auto;
     }
+
+
+
+    /*LANDING HEADER*/
+
+    #landing-header {
+        display: flex !important;
+        flex-direction: row-reverse; 
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        position: relative;
+    }
+
+
+        #landing-header img {
+            margin-right: auto;
+            width: 130px !important;
+            height: 35px;
+            order: 1 !important;
+            left: 25% !important;
+        }
+
+      
+        #landing-header .header-buttons {
+            display: none !important;
+        }
+
+        #landing-header .navbar-collapse.show,
+        #landing-header .navbar-collapse.collapsing {
+            display: flex !important;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 15px 30px rgba(43, 49, 180, 0.1);
+            z-index: 999;
+            gap: 15px;
+        }
+
+    .nav-link-landing {
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(43, 49, 180, 0.05);
+    }
+    
+}
+.custom-toggler {
+    border: none !important;
+    background: transparent;
+    padding: 0;
 }
 
-/* =========================================
+    .custom-toggler:focus {
+        box-shadow: none !important;
+    }
+
+    .custom-toggler .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%232B31B4' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+        display: block;
+        width: 30px;
+        height: 25px;
+    }
+
+
+        /* =========================================
    Figma Module List Styles (Новое добавление)
    ========================================= */
 
-.figma-modules-container {
+     .figma-modules-container {
     padding-bottom: 50px;
 }
 
@@ -559,16 +625,4 @@ h2.figma-title {
     color: var(--brand-blue);
     margin: 0;
     font-weight: 400;
-}
-
-/* =========================================
-   Sidebar Roles Styling (Admin vs User)
-   ========================================= */
-#sidebar.admin-theme {
-    background-color: #FAFAFF; /* Легкий фиолетовый оттенок из твоей палитры Figma */
-    border-right: 2px solid #8588D1; /* Акцентная линия для админа */
-}
-
-#sidebar.user-theme {
-    background-color: #FFFFFF; /* Оставляем чистый белый для студента */
 }

@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARTLINE - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+  
+
+    <header id="landing-header">
+
+
+        <button class="navbar-toggler custom-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#landing-nav-collapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <nav class="nav flex-row collapse navbar-collapse d-lg-flex order-2 order-lg-1" id="landing-nav-collapse">
+            <a href="#container2" class="nav-link-landing">ПРО КУРС</a>
+            <a href="#container4" class="nav-link-landing">ПРОГРАМА</a>
+            <a href="#container7" class="nav-link-landing">АВТОРИ</a>
+            <a href="#container8" class="nav-link-landing">ВІДГУКИ</a>
+        </nav>
+
+        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778234764/ARTLINE_pzx6ss.svg" class="order-1 order-lg-2"  style="width:170px; height:35px" alt="logo" />
+
+        <div class="header-buttons d-none d-lg-flex order-lg-3">
+            <button class="landing-btn1 p-2" type="button" onclick="location.href='@Url.Action("Register", "Auth")'">
+            ЗАПИСАТИСЯ
+        </button>
+
+            <button class="landing-btn2 p-2" type="button" onclick="location.href='@Url.Action("Login", "Auth")'">
+            УВІЙТИ
+        </button>
+
+        </div>
+
+    </header>
+
+
+    <div id="layout-body">
+
+        <main id="content-landing">
+            @RenderBody()
+        </main>
+
+    </div>
+
+
+   
+</body>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+</html>
+
+@*  <nav class="nav flex-row">
+    <a href="#container2" class="nav-link-landing ">
+    ПРО КУРС
+    </a>
+    <a href="#container4" class="nav-link-landing">
+    ПРОГРАМА
+    </a>
+    <a href="#container7" class="nav-link-landing">
+    АВТОРИ
+    </a>
+    <a href="#container8" class="nav-link-landing">
+    ВІДГУКИ
+    </a>
+    </nav> *@

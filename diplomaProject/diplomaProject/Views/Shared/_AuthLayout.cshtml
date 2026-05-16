@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ARTLINE</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body style="background-color: #F8F9FF;">
+
+    <header id="header">
+        <a asp-controller="Home" asp-action="Index">
+        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646612/Logo_jhzjc9.svg" style="width:225px; cursor:pointer" alt="logo" />
+        </a>
+
+        <div class="ms-auto d-flex align-items-center">
+            <span class="me-3">@User.Identity?.Name</span>
+
+            
+            <a asp-controller="User" asp-action="UpdateData" class="text-decoration-none text-dark">
+                <i class="bi bi-person-circle fs-4 me-3" style="cursor: pointer;"></i>
+            </a>
+
+         
+        </div>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-2 pt-2 ">
+            @RenderBody()
+        </main>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
