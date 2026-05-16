@@ -436,7 +436,7 @@ namespace diplomaProject.Controllers
             // Unlock next lesson after successful quiz
             await _progressService.UnlockNextLessonAsync(userId, lessonId);
 
-            TempData["HomeworkResult"] = $"Your score: {score} out of {maxScore}";
+          
             TempData["IsTestJustFinished"] = true;
 
             // Або якщо ви робите Redirect:

@@ -270,10 +270,19 @@
 
         <h2 class="quiz-main-title">ТЕСТ ДО ЛЕКЦІЇ</h2>
         <p class="quiz-subtitle mb-5">Перевірте своє розуміння матеріалу. Відповідайте на всі питання та натисніть «Завершити тест».</p>
-            <div class="quiz-progress-container">
+          @*   <div class="quiz-progress-container">
                 <span class="progress-text">Питань: @totalQuestions</span>
                 <div class="quiz-progress-bar">
                     <div class="quiz-progress-fill" style="width: 100%;"></div>
+                </div>
+            </div> *@
+            <div class="quiz-progress-container"
+                 id="quizData"
+                 data-total="@totalQuestions"
+                 data-finished="@(TempData["IsTestJustFinished"] != null ? "true" : "false")">
+                <span class="progress-text">Питань: <span id="answered-count">0</span> з @totalQuestions</span>
+                <div class="quiz-progress-bar">
+                    <div id="quiz-progress-fill" class="quiz-progress-fill" style="width: 0%;"></div>
                 </div>
             </div>
 
@@ -347,17 +356,44 @@
     </div>
 
 
-
-@if (TempData["IsTestJustFinished"] != null)
-{
-
+@section Scripts {
     <script>
-      
-        setTimeout(function () {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
+        document.addEventListener('DOMContentLoaded', function () {
+            const quizContainer = document.getElementById('quizData');
+            if (!quizContainer) return;
+
+            const totalQuestions = parseInt(quizContainer.getAttribute('data-total')) || 0;
+            const isFinished = quizContainer.getAttribute('data-finished') === 'true';
+
+            const progressFill = document.getElementById('quiz-progress-fill');
+            const answeredText = document.getElementById('answered-count');
+
+            // 1. Скрол
+            if (isFinished) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // 2. Логіка прогресу
+            function updateProgress() {
+                const answeredCount = document.querySelectorAll('input[type="radio"]:checked').length;
+
+                if (totalQuestions > 0 && progressFill) {
+                    const percentage = (answeredCount / totalQuestions) * 100;
+                    progressFill.style.width = percentage + '%';
+                    if (answeredText) answeredText.innerText = answeredCount;
+                }
+            }
+
+            // 3. Події
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', updateProgress);
+            });
+
+            updateProgress();
+        });
     </script>
 }
+
 
 
      

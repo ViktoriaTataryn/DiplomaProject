@@ -425,10 +425,16 @@ div#modulesSlider {
 /* Сітка */
 .grades-grid {
     display: grid;
-    grid-template-columns: repeat(5, 45px); /* 5 в ряд */
+    grid-template-columns: repeat(3, 45px); /* 5 в ряд */
     gap: 12px;
 }
-
+.grade-list-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+.grade-list-scroll::-webkit-scrollbar-thumb {
+    background-color: #8588D1;
+    border-radius: 10px;
+}
 /* Квадрат оцінки */
 .grade-square {
     width: 45px;
@@ -444,6 +450,11 @@ div#modulesSlider {
     font-family: "Accia Piano", serif;
 }
 
+.grade-list-scroll {
+    max-height: 110px; /* Приблизна висота для 2-3 рядів з назвою місяця */
+    overflow-y: auto; /* Вмикаємо вертикальну прокрутку */
+    padding-right: 10px; /* Місце для скроллбару */
+}
 
 @media (max-width: 767px) {
     .welcome-section {

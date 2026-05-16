@@ -352,13 +352,79 @@ h2.figma-title {
         opacity: 0.3; /* Make background less intrusive on mobile */
         background-size: 150% auto;
     }
+
+
+
+    /*LANDING HEADER*/
+
+    #landing-header {
+        display: flex !important;
+        flex-direction: row-reverse; 
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        position: relative;
+    }
+
+
+        #landing-header img {
+            margin-right: auto;
+            width: 130px !important;
+            height: 35px;
+            order: 1 !important;
+            left: 25% !important;
+        }
+
+      
+        #landing-header .header-buttons {
+            display: none !important;
+        }
+
+        #landing-header .navbar-collapse.show,
+        #landing-header .navbar-collapse.collapsing {
+            display: flex !important;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 15px 30px rgba(43, 49, 180, 0.1);
+            z-index: 999;
+            gap: 15px;
+        }
+
+    .nav-link-landing {
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(43, 49, 180, 0.05);
+    }
+    
+}
+.custom-toggler {
+    border: none !important;
+    background: transparent;
+    padding: 0;
 }
 
-/* =========================================
+    .custom-toggler:focus {
+        box-shadow: none !important;
+    }
+
+    .custom-toggler .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%232B31B4' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+        display: block;
+        width: 30px;
+        height: 25px;
+    }
+
+
+        /* =========================================
    Figma Module List Styles (Новое добавление)
    ========================================= */
 
-.figma-modules-container {
+     .figma-modules-container {
     padding-bottom: 50px;
 }
 
@@ -560,3 +626,113 @@ h2.figma-title {
     margin: 0;
     font-weight: 400;
 }
+
+
+
+/*Landing Header*/
+.landing-btn1 {
+    width: 200px;
+    height: 40px;
+    border: 1px solid #2B31B4;
+    font-size: 1rem;
+    font-family: 'Accia Piano';
+    text-align: center;
+    background-color: #2B31B4;
+    color: #FFFFFF;
+    margin-right: 10px;
+}
+.landing-btn2 {
+    width: 180px;
+    background-color: #FFFFFF;
+    color: #2B31B4;
+    font-size: 1rem;
+    font-family: 'Accia Piano';
+    text-align: center;
+    height: 40px;
+    border: 1px solid #2B31B4;
+}
+
+.landing-btn1:hover {
+    background-color: #1a1f8c; /* Трохи темніший синій */
+    transform: translateY(-3px); /* Піднімається вгору */
+    /* box-shadow: 0 10px 20px rgba(43, 49, 180, 0.3);*/
+    box-shadow: 0 6px 15px rgba(43, 49, 180, 0.4);
+}
+
+.landing-btn2:hover {
+    background-color: #F8F9FF; /* Легкий блакитний відтінок фону */
+    transform: translateY(-3px);
+
+      box-shadow: 0 6px 15px rgba(43, 49, 180, 0.4);
+   
+}
+
+.landing-btn1:active, .landing-btn2:active {
+    transform: scale(0.96); 
+}
+
+#landing-header {
+    height: 88px;
+    background: #fff;
+    border-bottom: 2px solid #2B31B4;
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    padding: 0 30px;
+    width: 100%;
+    /*   position: sticky;  */
+    top: 0;
+}
+.nav-link-landing {
+    color: #2B31B4;
+    margin-bottom: 10px;
+ /*   margin-left: 6px;*/
+    position: relative;
+    display: flex;
+    padding: 10px 10px 10px 15px;
+    align-items: center;
+    text-decoration: none;
+    top: 5px;
+    cursor:pointer;
+}
+
+.nav-link-landing::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%; /* Поява з центру */
+    background-color: #2B31B4;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-50%);
+}
+
+.nav-link-landing:hover::after {
+    width: 100%; 
+}
+
+.nav-link-landing:hover {
+    color: #1a1f8c;
+}
+#content-landing {
+  
+    padding: 20px;
+    padding-left: 17px;
+    flex: 1;
+    background-color: #FFFFFF;
+    overflow: hidden;
+    max-width: 1920px;
+    flex-grow: 1;
+    min-width: 0;
+    margin-bottom:0px;
+    padding-bottom:0px;
+ 
+}
+#landing-header img {
+    order: 2 !important;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+   
