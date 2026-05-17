@@ -58,13 +58,14 @@
 
     @* Фінальна форма, яка відправить все на сервер *@
     <form asp-action="AddQuestion" method="post" id="final-form">
-        <input type="hidden" name="LessonId" value="@lectureId" />
+        <input type="hidden" name="LessonId" value="@lectureId"/>
 
         @* Сюди JS перенесе всі створені питання перед відправкою *@
         <div id="hidden-inputs-container"></div>
 
-        <div class="border-top pt-3 d-flex justify-content-end gap-2" id="submit-container" style="display: none !important;">
-            <a asp-controller="AdminLesson" asp-action="GetLessons" class="btn btn-secondary">Скасувати</a>
+        <div class="border-top pt-3 d-flex justify-content-end gap-2" id="submit-container"
+             style="display: none !important;">
+            <a asp-controller="Course" asp-action="Index" class="btn btn-secondary">Скасувати</a>
             <button type="submit" class="btn btn-success px-5">Зберегти всі додані питання</button>
         </div>
     </form>
@@ -134,7 +135,7 @@
     }
 
     // Перед відправкою перевіряємо, щоб усі інпути були всередині форми
-    document.getElementById('final-form').onsubmit = function() {
+    document.getElementById('final-form').onsubmit = function () {
         const questionsList = document.getElementById('questions-list');
         this.appendChild(questionsList); // Переміщуємо всі картки всередину форми перед відправкою
     };

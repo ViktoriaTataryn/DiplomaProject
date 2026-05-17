@@ -1,5 +1,5 @@
 ﻿@*  @model IEnumerable<diplomaProject.Models.Module>  *@
-@model IEnumerable<diplomaProject.DTOs.ModuleProgressDTO>
+@model IEnumerable<diplomaProject.DTOs.ModuleProgressDto>
 
 @{
     ViewData["Title"] = "Course Curriculum";
@@ -10,30 +10,24 @@
     // щоб він був доступний і в HTML, і в скриптах незалежно від гілкування.
     // var activeModule = Model?.FirstOrDefault(m => m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
     //                    ?? Model?.FirstOrDefault(m => m.Status == "InProgress");
-    var activeModule = Model?
+    var activeModule = Model
         .Where(m => m.Status == "InProgress" && m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
         .OrderByDescending(m => m.ModuleNumber)
+        .FirstOrDefault() ?? Model
+        .Where(m => m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
+        .OrderByDescending(m => m.ModuleNumber)
         .FirstOrDefault();
-
-
-    if (activeModule == null)
-    {
-        activeModule = Model?
-            .Where(m => m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
-            .OrderByDescending(m => m.ModuleNumber)
-            .FirstOrDefault();
-    }
 }
 
-<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/moduleList.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/moduleList.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true"/>
 
 
 
 
 <div class="container-fluid mt-2 ">
-    @if (Model == null || !Model.Any())
+    @if (!Model.Any())
     {
         <div class="alert alert-info">No modules available yet.</div>
     }
@@ -41,36 +35,36 @@
     {
         <div class="row align-items-start justify-content-evenly">
             <div class="col-lg-8 p-2 order-2 order-lg-1" id="modulesList">
-            <div class="title mb-1 mt-2 py-3">СПИСОК ЛЕКЦІЙ</div>
+                <div class="title mb-1 mt-2 py-3">СПИСОК ЛЕКЦІЙ</div>
 
-            @foreach (var module in Model)
-            {
-                
-                string openFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655858/Frame_available_stjkiv.png";
-                string lockedFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655701/Frame_blocked_w4cquk.png";
+                @foreach (var module in Model)
+                {
+                    var openFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655858/Frame_available_stjkiv.png";
+                    var lockedFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655701/Frame_blocked_w4cquk.png";
 
-                bool isLocked = module.Status == "Close";
-                string currentFrame = isLocked ? lockedFrame : openFrame;
+                    var isLocked = module.Status == "Close";
+                    var currentFrame = isLocked ? lockedFrame : openFrame;
 
-                <div class="module-item mb-1 overflow-hidden">
-                   
-                   @*  <div class="module-summary d-flex align-items-center " *@
+                    <div class="module-item mb-1 overflow-hidden">
+
+                        @*  <div class="module-summary d-flex align-items-center " *@
                         <div id="module-header-@module.ModuleNumber"
                              class="module-summary d-flex align-items-center justify-content-between p-3"
-                         style="cursor: pointer;"
-                         onclick="toggleModule('@module.ModuleNumber')">
+                             style="cursor: pointer;"
+                             onclick="toggleModule('@module.ModuleNumber')">
 
-                        <div class="art-frame-wrapper-mini me-3">
-                            <img src="@currentFrame" class="frame-overlay-mini" />
-                            <div class="module-image-inner-mini">
-                                @if (!string.IsNullOrEmpty(module.ImageForUser))
-                                {
-                                    <img src="@module.ImageForUser" style="width: 100%; height: 100%; object-fit: cover; @(isLocked ? "opacity:0.5;" : "")" />
-                                }
+                            <div class="art-frame-wrapper-mini me-3">
+                                <img src="@currentFrame" class="frame-overlay-mini"/>
+                                <div class="module-image-inner-mini">
+                                    @if (!string.IsNullOrEmpty(module.ImageForUser))
+                                    {
+                                        <img src="@module.ImageForUser"
+                                             style="width: 100%; height: 100%; object-fit: cover; @(isLocked ? "opacity:0.5;" : "")"/>
+                                    }
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="flex-grow-1 d-flex flex-column justify-content-center moduleListText">
+                            <div class="flex-grow-1 d-flex flex-column justify-content-center moduleListText">
                             
                             <span class="text-muted small">
                               
@@ -92,173 +86,177 @@
                                     <span class="status"> Заблоковано</span>
                                 }
                             </span>
-                            <span class="text">Модуль @module.ModuleNumber</span>
-                            <span class="mb-0 text ">@module.Name</span>
-                       
+                                <span class="text">Модуль @module.ModuleNumber</span>
+                                <span class="mb-0 text ">@module.Name</span>
+
+                            </div>
+
+                            <div class="ms-auto">
+                                <i class="bi bi-chevron-down fs-4 arrow-icon" id="arrow-@module.ModuleNumber"></i>
+                            </div>
                         </div>
 
-                        <div class="ms-auto">
-                            <i class="bi bi-chevron-down fs-4 arrow-icon" id="arrow-@module.ModuleNumber"></i>
-                        </div>
-                    </div>
+                        @* Контент (Опис + Лекції) *@
+                        <div class="lessons-container d-none" id="module-@module.ModuleNumber">
+                            <div class="p-1">
 
-                    @* Контент (Опис + Лекції) *@
-                    <div class="lessons-container d-none" id="module-@module.ModuleNumber">
-                        <div class="p-1">
-
-                            @if (!string.IsNullOrEmpty(module.Description))
-                            {
-                                <div class="module-description mb-4 mt-1">
-                                    
-                                    <p class="text-desc ">@module.Description</p>
-                                </div>
-                            }
-
-
-                            <div class="timeline-container">
-                                <span class="mb-3 py-2 text d-block">Лекції:</span>
-                                @foreach (var lesson in module.Lessons)
+                                @if (!string.IsNullOrEmpty(module.Description))
                                 {
-                                    bool isActive = (lesson.Status == "InProgress");
-                                        bool isOpen = (lesson.Status == "Open");
-                                    bool isCompleted = (lesson.Status == "Completed");
+                                    <div class="module-description mb-4 mt-1">
 
-                                    <div class="timeline-item d-flex">
-                                        <div class="timeline-visual">
-                                            <div class="timeline-dot @(isCompleted ? "dot-completed" : "") @(isActive ? "dot-active" : "")">
-                                                @if (isCompleted)
-                                                {
-                                                    <i class="bi bi-check-lg"></i>
-                                                }
+                                        <p class="text-desc ">@module.Description</p>
+                                    </div>
+                                }
+
+
+                                <div class="timeline-container">
+                                    <span class="mb-3 py-2 text d-block">Лекції:</span>
+                                    @foreach (var lesson in module.Lessons)
+                                    {
+                                        var isActive = lesson.Status == "InProgress";
+                                        var isOpen = lesson.Status == "Open";
+                                        var isCompleted = lesson.Status == "Completed";
+
+                                        <div class="timeline-item d-flex">
+                                            <div class="timeline-visual">
+                                                <div
+                                                    class="timeline-dot @(isCompleted ? "dot-completed" : "") @(isActive ? "dot-active" : "")">
+                                                    @if (isCompleted)
+                                                    {
+                                                        <i class="bi bi-check-lg"></i>
+                                                    }
+                                                </div>
+                                                <div class="timeline-connector"></div>
                                             </div>
-                                            <div class="timeline-connector"></div>
-                                        </div>
 
                                             <div class="timeline-content pb-4 ms-2 ms-lg-3 flex-grow-1">
-                                            <div class="d-flex flex-column">
+                                                <div class="d-flex flex-column">
 
                                                     <div class="d-flex flex-row justify-content-between ">
                                                         <div style="max-width: 70%;">
 
-                                                        @if (isCompleted )
-                                                        {
-                                                            @* Назва як посилання для доступних лекцій *@
-                                                            <a asp-action="Lesson" asp-controller="Course" asp-route-id="@lesson.Id"
-                                                               class="lesson-title fw-medium text-decoration-none ">
-                                                                @lesson.Title
-                                                            </a>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span class="lesson-title @(isLocked ? "text-muted" : "fw-medium")">@lesson.Title</span>
-                                                        }
+                                                            @if (isCompleted)
+                                                            {
+                                                                @* Назва як посилання для доступних лекцій *@
+                                                                <a asp-action="Lesson" asp-controller="Course"
+                                                                   asp-route-id="@lesson.Id"
+                                                                   class="lesson-title fw-medium text-decoration-none ">
+                                                                    @lesson.Title
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span
+                                                                    class="lesson-title @(isLocked ? "text-muted" : "fw-medium")">@lesson.Title</span>
+                                                            }
                                                         </div>
-                                               
 
-                                                <div class="mt-1">
-                                                    @if (isCompleted)
-                                                    {
-                                                            <span class= "status">Пройдено</span>
-                                                    }
 
-                                                    else if (isActive)
-                                                    {
-                                                            <span class="status">В процесі</span>
-                                                    }
+                                                        <div class="mt-1">
+                                                            @if (isCompleted)
+                                                            {
+                                                                <span class="status">Пройдено</span>
+                                                            }
+
+                                                            else if (isActive)
+                                                            {
+                                                                <span class="status">В процесі</span>
+                                                            }
                                                             else if (isOpen)
                                                             {
                                                                 <span class="status">Відкрито</span>
                                                             }
-                                                    else
+                                                            else
+                                                            {
+                                                                <span class=" status">Заблоковано</span>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    @if (!isLocked && (isActive || isOpen))
                                                     {
-                                                            <span class=" status">Заблоковано</span>
+                                                        <div class="mt-3 continue-btn">
+
+                                                            <a asp-action="Lesson" asp-controller="Course"
+                                                               asp-route-id="@lesson.Id"
+                                                               class="continue-btn-text d-block ">
+                                                                ПРОДОВЖИТИ НАВЧАННЯ
+                                                            </a>
+                                                        </div>
                                                     }
                                                 </div>
-                                                </div>
-                                                    @if (!isLocked && (isActive || isOpen ))
-                                                {
-                                                    <div class="mt-3 continue-btn">
-                                                       
-                                                        <a asp-action="Lesson" asp-controller="Course" asp-route-id="@lesson.Id"
-                                                           class="continue-btn-text d-block ">
-                                                            ПРОДОВЖИТИ НАВЧАННЯ
-                                                        </a>
-                                                    </div>
-                                                }
                                             </div>
                                         </div>
-                                    </div>
-                                }
-                            </div>
+                                    }
+                                </div>
 
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
-        </div>
+                }
+            </div>
             @*  d-flex flex-column justify-content-between *@
 
             <div class="col-lg-4 sticky-top order-1 order-lg-2" id="block-progress">
 
-            <div class=" progress-inner-content px-3">
+                <div class=" progress-inner-content px-3">
                     <span class="title mb-2 mt-2 py-1 d-block">ПРОГРЕС КУРСУ </span>
-                   
-                <div class="progress-timeline-container mt-1">
-                    <div class="statue-avatar-container is-hidden">
-                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075828/Progress_Avatar_fri9bd.png" class="statue-img" alt="Статус курсу" />
-                    </div>
 
-                    <div class="progress-segments">
-                        @foreach (var module in Model)
-                        {
+                    <div class="progress-timeline-container mt-1">
+                        <div class="statue-avatar-container is-hidden">
+                            <img
+                                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075828/Progress_Avatar_fri9bd.png"
+                                class="statue-img" alt="Статус курсу"/>
+                        </div>
 
-                            var isCompleted = module.Status == "Completed";
-                            var isInProgress = module.Status == "InProgress";
+                        <div class="progress-segments">
+                            @foreach (var module in Model)
+                            {
+                                var isCompleted = module.Status == "Completed";
+                                var isInProgress = module.Status == "InProgress";
 
-                            @* Сегмент прогрес-бару для одного модуля *@
-                            <div class="progress-segment-wrapper -1 mx-1">
+                                @* Сегмент прогрес-бару для одного модуля *@
+                                <div class="progress-segment-wrapper -1 mx-1">
 
-                                @* Сама смужка сегмента *@
-                                <div class="progress-line @(isCompleted ? "is-completed" : "")"></div>
+                                    @* Сама смужка сегмента *@
+                                    <div class="progress-line @(isCompleted ? "is-completed" : "")"></div>
 
-                                @* Якщо модуль в процесі — показуємо над ним фігурку статуї *@
-                                @if (isInProgress)
-                                {
-                                   
-                                    <div class="statue-avatar-container text-center">
-                                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075828/Progress_Avatar_fri9bd.png" class="statue-img" alt="Ви тут" />
-                                    </div>
-                                }
+                                    @* Якщо модуль в процесі — показуємо над ним фігурку статуї *@
+                                    @if (isInProgress)
+                                    {
+                                        <div class="statue-avatar-container text-center">
+                                            <img
+                                                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075828/Progress_Avatar_fri9bd.png"
+                                                class="statue-img" alt="Ви тут"/>
+                                        </div>
+                                    }
 
 
-                            </div>
-                        }
+                                </div>
+                            }
                         </div>
                     </div>
                     <p class="small-text ">
-                       @*  Пройдено: @Model.FirstOrDefault()?.CompletedModule з @Model.FirstOrDefault()?.TotalModule  модулів *@
+                        @*  Пройдено: @Model.FirstOrDefault()?.CompletedModule з @Model.FirstOrDefault()?.TotalModule  модулів *@
                         Пройдено: @Model.Count(m => m.Status == "Completed") з @Model.Count() модулів
                     </p>
 
                     <hr class="mt-4 mb-3 custom-line">
 
-                   
-                    @if (activeModule != null && activeModule.CurrentLessonId.HasValue)
-                    @* @if (activeModule != null && activeModule.CurrentLessonId != null) *@
-                    {
-                        <div class="mt-2 py-2 mb-2 text-center btn-last-lesson" >
-                        <a asp-action="Lesson"
-                           asp-controller="Course"
-                           asp-route-id="@activeModule.CurrentLessonId"
-                               class="d-block btn-last-text w-100">
-                             ПЕРЕЙТИ ДО АКТИВНОЇ ЛЕКЦІЇ
-                        </a>
-                    </div>
-                    }
-            </div>
-       
-        </div>
 
+                    @if (activeModule != null && activeModule.CurrentLessonId.HasValue)
+                    {
+                        <div class="mt-2 py-2 mb-2 text-center btn-last-lesson">
+                            <a asp-action="Lesson"
+                               asp-controller="Course"
+                               asp-route-id="@activeModule.CurrentLessonId"
+                               class="d-block btn-last-text w-100">
+                                ПЕРЕЙТИ ДО АКТИВНОЇ ЛЕКЦІЇ
+                            </a>
+                        </div>
+                    }
+                </div>
+
+            </div>
 
 
         </div>
@@ -269,10 +267,10 @@
 
 
 
-        <script>
-            function toggleModule(number) {
-                const container = document.getElementById('module-' + number);
-                const arrow = document.getElementById('arrow-' + number);
+<script>
+    function toggleModule(number) {
+        const container = document.getElementById('module-' + number);
+        const arrow = document.getElementById('arrow-' + number);
         const card = container.closest('.module-item');
 
         const header = document.getElementById('module-header-' + number);
@@ -280,25 +278,25 @@
         // Перемикаємо клас 'is-open'
         header.classList.toggle('is-open');
 
-                if (container) {
-                    const isHidden = container.classList.contains('d-none');
+        if (container) {
+            const isHidden = container.classList.contains('d-none');
             const card = container.closest('.module-item');
-                    
 
-                    if (isHidden) {
-                        container.classList.remove('d-none');
-                        arrow.style.transform = 'rotate(180deg)';
+
+            if (isHidden) {
+                container.classList.remove('d-none');
+                arrow.style.transform = 'rotate(180deg)';
                 card.classList.add('is-expanded');
-               
-                    } else {
-                        container.classList.add('d-none');
-                        arrow.style.transform = 'rotate(0deg)';
-                card.classList.remove('is-expanded');
-              
-                    }
 
-                }
-        
+            } else {
+                container.classList.add('d-none');
+                arrow.style.transform = 'rotate(0deg)';
+                card.classList.remove('is-expanded');
+
             }
- </script>
+
+        }
+
+    }
+</script>
 

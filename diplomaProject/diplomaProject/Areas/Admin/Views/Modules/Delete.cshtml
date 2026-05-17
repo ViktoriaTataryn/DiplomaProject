@@ -1,13 +1,5 @@
-﻿@model diplomaProject.Models.Module
-@{
-    Layout = "_AdminLayout";
-}
+﻿@model Module
 
-<h3>Ви впевнені, що хочете видалити модуль "@Model.Title"?</h3>
-<form asp-action="DeleteModuleConfirmed" asp-route-id="@Model.Id" method="post">
-    <button type="submit" class="btn btn-danger">Видалити</button>
-    <a asp-action="GetModules" class="btn btn-secondary">Скасувати</a>
-</form>
 <div class="container mt-5">
     <div class="card border-danger shadow">
         <div class="card-header bg-danger text-white">
@@ -15,7 +7,7 @@
         </div>
         <div class="card-body">
             <p class="lead">Ви впевнені, що хочете видалити модуль <strong>"@Model.Title"</strong>?</p>
-            
+
             <div class="alert alert-warning">
                 <strong>Увага:</strong> Це призведе до видалення:
                 <ul>
@@ -24,13 +16,13 @@
                 </ul>
             </div>
 
-            <form asp-action="DeleteModule" method="post">
-                <input type="hidden" asp-for="Id" />
-                
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id"/>
+
                 <button type="submit" class="btn btn-danger">
                     <i class="fas fa-trash"></i> Так, видалити все
                 </button>
-                <a asp-action="GetModules" class="btn btn-secondary">Скасувати</a>
+                <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
             </form>
         </div>
     </div>

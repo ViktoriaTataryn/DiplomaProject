@@ -1,0 +1,37 @@
+[x-data="fileSelector"] {
+    position: relative;
+    border: 1px solid var(--primary-blue);
+    width: 14.125rem;
+    height: 8.75rem;
+    color: var(--primary-blue);
+
+    input {
+        display: none;
+    }
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    [x-bind="selector"] {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: all .2s;
+        color: var(--primary-blue);
+        background-color: color-mix(in oklab, color-mix(in oklab, var(--primary-blue), black 50%), transparent 50%);
+        border: none;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+.fs-icon {
+    font-size: 6rem;
+}

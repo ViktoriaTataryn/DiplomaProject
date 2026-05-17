@@ -1,18 +1,13 @@
-﻿@using diplomaProject.Models
-@* Изменение 1: Заменили Models.User на Models.ApplicationUser *@
-@model IEnumerable<diplomaProject.Models.ApplicationUser>
+﻿@* Изменение 1: Заменили Models.User на Models.ApplicationUser *@
+@model IEnumerable<ApplicationUser>
 @{
-    Layout = "_AdminLayout";
     ViewData["Title"] = "Список студентів";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Студенти в процесі навчання</h2>
-        @if (Model != null)
-        {
-            <span class="badge bg-primary">Усього: @Model.Count()</span>
-        }
+        <span class="badge bg-primary">Усього: @Model.Count()</span>
     </div>
 
     <div class="row mb-4">
@@ -30,38 +25,38 @@
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
-                    <tr>
-                        <th>Студент</th>
-                        <th>Електронна пошта</th>
-                        <th>Статус</th>
-                        <th class="text-end">Дії</th>
-                    </tr>
+                <tr>
+                    <th>Студент</th>
+                    <th>Електронна пошта</th>
+                    <th>Статус</th>
+                    <th class="text-end">Дії</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        @foreach (var student in Model)
-                        {
-                            <tr>
-                                <td><strong>@student.LastName @student.FirstName</strong></td>
-                                @* Изменение 2: Заменили student.UserEmail на встроенное свойство IdentityUser -> student.Email *@
-                                <td>@student.Email</td>
-                                <td><span class="badge bg-success">Активний</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                            onclick="confirmDelete('@student.Id', '@student.FirstName @student.LastName')">
-                                        <i class="fas fa-user-minus"></i> Видалити
-                                    </button>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
+                @if (Model.Any())
+                {
+                    @foreach (var student in Model)
                     {
                         <tr>
-                            <td colspan="4" class="text-center py-4">Студентів не знайдено</td>
+                            <td><strong>@student.LastName @student.FirstName</strong></td>
+                            @* Изменение 2: Заменили student.UserEmail на встроенное свойство IdentityUser -> student.Email *@
+                            <td>@student.Email</td>
+                            <td><span class="badge bg-success">Активний</span></td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                        onclick="confirmDelete('@student.Id', '@student.FirstName @student.LastName')">
+                                    <i class="fas fa-user-minus"></i> Видалити
+                                </button>
+                            </td>
                         </tr>
                     }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-4">Студентів не знайдено</td>
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>
@@ -76,9 +71,9 @@
                 <h5 class="modal-title">Підтвердження видалення</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form asp-action="DeleteUser" method="post">
+            <form asp-action="Delete" method="post">
                 @Html.AntiForgeryToken()
-                <input type="hidden" name="id" id="userIdToDelete" />
+                <input type="hidden" name="id" id="userIdToDelete"/>
                 <div class="modal-body">
                     Ви справді хочете видалити користувача <strong id="userNameText"></strong>?
                 </div>

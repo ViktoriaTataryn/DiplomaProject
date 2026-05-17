@@ -1,28 +1,30 @@
 ﻿html {
-   
+
     font-size: 16px;
 }
-.title{
-    font-size:2rem;
+
+.title {
+    font-size: 2rem;
 }
+
 .art-frame-wrapper-mini {
     position: relative;
     /* max-width: 130px;*/
     width: 157px;
-/*    height: 70px;*/
-    height:86px;
+    /*    height: 70px;*/
+    height: 86px;
     flex-shrink: 0;
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: width;
 }
 
-#moduleList{
-    max-width:1048px;
+#moduleList {
+    max-width: 1048px;
 }
 
 #block-progress {
     max-width: 512px;
-    height:382px;
+    height: 382px;
 }
 
 .module-item.is-expanded .art-frame-wrapper-mini {
@@ -49,7 +51,7 @@
     bottom: 8%;
     z-index: 1;
     overflow: hidden;
- /*   background-color: #eee;*/
+    /*   background-color: #eee;*/
 }
 
 .arrow-icon {
@@ -62,9 +64,9 @@
     border-bottom: 2px solid #9799C4;
 }
 
-   /* .module-item:hover:not(.locked) {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-    }*/
+/* .module-item:hover:not(.locked) {
+     box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+ }*/
 
 /*.module-description {
     border-left: 3px solid #8588D1;  Твій акцентний колір 
@@ -84,11 +86,13 @@
     font-weight: 300;
     padding-bottom: 8px;
 }
+
 .module-description {
     border-bottom: 2px solid #9799C4;
-    padding-top:0px;
-   
+    padding-top: 0px;
+
 }
+
 /*.list-group-item {
     transition: background-color 0.2s;
 }*/
@@ -110,27 +114,30 @@
     /*font-size: 17px;*/
     font-size: 1.5rem;
     font-weight: 500;
-    font-family: "Gilroy",serif
+    font-family: "Gilroy", serif
 }
+
 .timeline-container .text {
     /* font-size: 19px;*/
     font-size: 1.5rem;
     font-weight: 500;
-    font-family: "Gilroy",serif
+    font-family: "Gilroy", serif
 }
+
 .moduleListText .status {
     color: #9799C4;
-   /* font-size: 11px;*/
+    /* font-size: 11px;*/
     font-size: 1rem;
     padding-bottom: 8px;
     padding-top: 0px;
-    font-weight:500;
+    font-weight: 500;
 }
-.module-summary{
-    padding-left:3px !important;
-    padding:13px 10px;
-   
- 
+
+.module-summary {
+    padding-left: 3px !important;
+    padding: 13px 10px;
+
+
 }
 
 
@@ -143,42 +150,46 @@
     /* font-size: 19px;*/
     font-size: 1.3rem;
     color: #494C90;
-    font-family: "Gilroy",serif;
-    font-weight:300;
-        
+    font-family: "Gilroy", serif;
+    font-weight: 300;
+
 }
 
 .timeline-item {
     position: relative;
 }
+
 .continue-btn {
     background-color: #2B31B4;
     width: 320px;
-    max-width:432px;
+    max-width: 432px;
     height: 55px;
-  
+
     align-content: center;
     /*box-shadow: 0 4px 12px rgba(133, 136, 209, 0.3);*/
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
+
 .continue-btn-text {
     color: #FFFFFF;
     text-align: center;
     font-family: "Accia Piano", serif;
     text-decoration: none;
-    font-weight:300;
-   /* letter-spacing: 1px;*/
+    font-weight: 300;
+    /* letter-spacing: 1px;*/
     /* font-weight:300; */
     /* font-size: 16px;*/
     font-size: 1.25rem;
     /* transition: all 0.25s ease-in-out;*/
 }
+
 .continue-btn-text:hover {
     color: #FFFFFF;
 }
+
 .continue-btn:hover {
     transform: translateY(-2px); /* Кнопка ніби піднімається */
-/*    box-shadow: 0 6px 15px rgba(133, 136, 209, 0.5);*/
+    /*    box-shadow: 0 6px 15px rgba(133, 136, 209, 0.5);*/
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
     /* background-color: #7477c2 !important; */
 }
@@ -202,7 +213,7 @@
     border-radius: 50%;
     background-color: #fff;
     border: 2px solid #2B31B4;
-    z-index: 2; 
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -211,25 +222,25 @@
     /* margin-top: 5px;*/
 }
 
-    .timeline-dot.dot-completed {
-        background-color: #2B31B4;
-        border-color: #2B31B4;
-        color: white;
-    }
+.timeline-dot.dot-completed {
+    background-color: #2B31B4;
+    border-color: #2B31B4;
+    color: white;
+}
 
-    .timeline-dot.dot-active {
-        border-color: #2B31B4;
-        box-shadow: 0 0 0 3px rgba(43, 49, 180, 0.15), 0 0 8px rgba(43, 49, 180, 0.2);
-    }
+.timeline-dot.dot-active {
+    border-color: #2B31B4;
+    box-shadow: 0 0 0 3px rgba(43, 49, 180, 0.15), 0 0 8px rgba(43, 49, 180, 0.2);
+}
 
 /* ВЕРТИКАЛЬНА ЛІНІЯ */
 .timeline-connector {
-    flex-grow: 1; 
+    flex-grow: 1;
     width: 2px;
     background-color: #2B31B4;
     z-index: 1;
     margin-top: -10px;
-    margin-bottom:-5px;
+    margin-bottom: -5px;
     /* margin-top: 2px;
     margin-bottom: 2px;*/
 }
@@ -263,29 +274,32 @@
     padding-right: 0px;
     background-image: none;
     background-color: #FFFFFF;
-   
+
 }
+
 .progress-inner-content {
     padding: 7px 8px;
     background-color: #FFFFFF;
     height: auto;
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
 }
+
 .progress-segments {
     display: flex;
     flex-wrap: nowrap;
     width: 100%;
 
     height: auto;
-    align-items: flex-end; 
+    align-items: flex-end;
     padding-top: 30px;
 }
 
 .progress-segment-wrapper {
-    flex: 1; 
-    position: relative; 
+    flex: 1;
+    position: relative;
     min-width: 20px;
 }
+
 /* Контейнер для лінії та фігурки */
 /*.progress-timeline-container {
     padding-top: 20px;
@@ -295,7 +309,7 @@
 /* --- Контейнер для СТАТУЇ --- */
 .statue-avatar-container {
     position: absolute;
-    top: -40px !important; 
+    top: -40px !important;
     left: 50%;
     transform: translateX(-50%);
     width: auto;
@@ -309,11 +323,10 @@
 }
 
 .progress-segment-wrapper.mx-3 {
- 
-    margin-left: 6px ;
-    margin-right: 6px ;
-}
 
+    margin-left: 6px;
+    margin-right: 6px;
+}
 
 
 .progress-line {
@@ -323,10 +336,11 @@
     transition: all 0.3s ease;
     width: 100%;
 }
+
 .progress-timeline-container {
     position: relative;
-    padding-top: 10px !important; 
-    padding-bottom: 20px; 
+    padding-top: 10px !important;
+    padding-bottom: 20px;
 }
 
 
@@ -334,15 +348,11 @@
     width: 100%;
 }
 
-    
-    .progress-line.is-completed {
-        height: 18px; 
-        background-color: #8588D1; 
-    }
 
-
-
-
+.progress-line.is-completed {
+    height: 18px;
+    background-color: #8588D1;
+}
 
 
 .btn-last-lesson {
@@ -366,6 +376,7 @@
     /*font-size: 15px;*/
     font-size: 1.25rem;
 }
+
 hr.custom-line {
     border: 0;
     height: 1px;
@@ -373,8 +384,9 @@ hr.custom-line {
     background-color: #2B31B4 !important;
     margin: 25px 0px;
 }
-.small-text{
-    font-size:1.5rem;
+
+.small-text {
+    font-size: 1.5rem;
 }
 
 @media (max-width: 768px) {
@@ -383,11 +395,13 @@ hr.custom-line {
         padding: 20px 12px;
         top: 386px !important;
     }
-    .small-text{
-        margin-top:10px;
+
+    .small-text {
+        margin-top: 10px;
     }
-    .moduleListText .text{
-        font-size:1.25rem;
+
+    .moduleListText .text {
+        font-size: 1.25rem;
     }
 
     #block-progress {
@@ -398,13 +412,15 @@ hr.custom-line {
         height: 250px;
         /*   padding: 12px;*/
     }
-    .btn-last-text{
-        font-size:1.15rem;
-        font-weight:350;
+
+    .btn-last-text {
+        font-size: 1.15rem;
+        font-weight: 350;
     }
-    .btn-last-lesson{
-        width:327px;
-        height:48px;
+
+    .btn-last-lesson {
+        width: 327px;
+        height: 48px;
     }
 
     .text-desc {
@@ -420,10 +436,11 @@ hr.custom-line {
     .status {
         margin-bottom: 12px;
         font-size: 13px;
-        padding-bottom:10px;
+        padding-bottom: 10px;
     }
-    #moduleList .status{
-        margin-bottom:8px;
+
+    #moduleList .status {
+        margin-bottom: 8px;
     }
 
     .text {
@@ -431,52 +448,54 @@ hr.custom-line {
         line-height: 23px;
     }
 
-   /* .module-summary.is-open {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        padding-bottom: 5px;
-    }
-
-        .module-summary.is-open .art-frame-wrapper-mini {
-            width: 320px;
-            height: 176px;
-            margin-bottom: 5px;
-        }*/
-
+    /* .module-summary.is-open {
+         flex-direction: column !important;
+         align-items: flex-start !important;
+         padding-bottom: 5px;
+     }
+ 
+         .module-summary.is-open .art-frame-wrapper-mini {
+             width: 320px;
+             height: 176px;
+             margin-bottom: 5px;
+         }*/
     .module-image-inner-mini img {
         width: 95%;
         height: 95%;
     }
+
     .module-summary.is-open {
         flex-direction: column !important;
         /* Міняємо на center для мобілки */
         padding-bottom: 15px;
         align-items: flex-start !important;
-       
+
     }
+
     .progress-timeline-container {
-        padding-top:25px !important;
+        padding-top: 25px !important;
     }
-        .module-summary.is-open .art-frame-wrapper-mini {
-            width: 100%; /* Контейнер на всю ширину */
-            max-width: 320px; /* Обмежуємо розмір самої рамки */
-            height: 176px;
-            /* МАГІЯ ТУТ: автоматичні відступи зліва і справа вирівнюють блок по центру */
-            margin-left: auto !important;
-            margin-right: auto !important;
-            margin-bottom: 15px;
-            display: block;
-            position: relative;
-        }
 
-   
+    .module-summary.is-open .art-frame-wrapper-mini {
+        width: 100%; /* Контейнер на всю ширину */
+        max-width: 320px; /* Обмежуємо розмір самої рамки */
+        height: 176px;
+        /* МАГІЯ ТУТ: автоматичні відступи зліва і справа вирівнюють блок по центру */
+        margin-left: auto !important;
+        margin-right: auto !important;
+        margin-bottom: 15px;
+        display: block;
+        position: relative;
+    }
 
-        /*.module-summary.is-open .moduleListText {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;*/ /* Текст теж стане по центру під картинкою */
-        /*}*/
+
+    /*.module-summary.is-open .moduleListText {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;*/
+    /* Текст теж стане по центру під картинкою */
+    /*}*/
     /*.moduleListText {
         padding-right: 10px;
     }
@@ -484,8 +503,10 @@ hr.custom-line {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 15px;*/ /* Відступ від тексту до стрілочки */
-    /*min-width: 24px;*/ /* Щоб стрілочка не "стрибала" */
+        margin-left: 15px;*/
+    /* Відступ від тексту до стрілочки */
+    /*min-width: 24px;*/
+    /* Щоб стрілочка не "стрибала" */
     /*}
     .arrow-icon {*/
     /* Прибираємо можливі стандартні відступи іконок */
@@ -497,7 +518,7 @@ hr.custom-line {
         align-items: center !important; /* Центрує іконку по вертикалі */
         justify-content: center !important;
         min-height: 100%; /* Займає всю висоту заголовка */
-       
+
         margin-bottom: 0 !important;
         margin-top: -30px !important;
     }
@@ -510,7 +531,7 @@ hr.custom-line {
         height: auto;
         margin: 0 !important;
         color: #2B31B4;
-        font-size:18px;
+        font-size: 18px;
     }
 
     .is-open .arrow-icon {
@@ -518,32 +539,37 @@ hr.custom-line {
         transform: rotate(180deg) translateY(3px);
     }
 
-    .title{
-        font-size:1.4rem;
-        padding-left:10px;
+    .title {
+        font-size: 1.4rem;
+        padding-left: 10px;
     }
+
     .art-frame-wrapper-mini {
-        width:125px;
-        height:68px;
+        width: 125px;
+        height: 68px;
     }
-    .continue-btn{
-        width:297px;
-        height:48px;
-        margin-right:8px;
+
+    .continue-btn {
+        width: 297px;
+        height: 48px;
+        margin-right: 8px;
     }
+
     .continue-btn-text {
         font-size: 1.15rem;
     }
-    .lesson-title{
-        font-size:1rem;
+
+    .lesson-title {
+        font-size: 1rem;
     }
-  
-        /* Опціонально: робимо стрілочку в кутку, коли розгорнуто */
-        /*.module-summary.is-open .bi-chevron-down {
-            align-self: flex-end;
-            margin-top: -20px;*/ /* піднімаємо трохи вгору, якщо назва довга */
-        /*}*/
-    }
+
+    /* Опціонально: робимо стрілочку в кутку, коли розгорнуто */
+    /*.module-summary.is-open .bi-chevron-down {
+        align-self: flex-end;
+        margin-top: -20px;*/
+    /* піднімаємо трохи вгору, якщо назва довга */
+    /*}*/
+}
 
 
 @media (max-width: 1600px) {

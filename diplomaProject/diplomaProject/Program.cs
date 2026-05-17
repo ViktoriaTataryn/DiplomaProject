@@ -1,3 +1,4 @@
+using System.Reflection;
 using CloudinaryDotNet;
 using diplomaProject.Data;
 using diplomaProject.Interfaces;
@@ -7,134 +8,138 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+using Account = CloudinaryDotNet.Account;
 
-namespace diplomaProject
+namespace diplomaProject;
+
+public class Program
 {
-    public class Program
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+        // Add services to the container.
+        builder.Services.AddControllersWithViews();
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(connectionString));
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
-
-                // Налаштування паролів 
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                // РќР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ РїР°СЂРѕР»С–РІ 
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
 
-                // Налаштування унікальності пошти
+                // РќР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ СѓРЅС–РєР°Р»СЊРЅРѕСЃС‚С– РїРѕС€С‚Рё
                 options.User.RequireUniqueEmail = true;
 
                 options.SignIn.RequireConfirmedAccount = true;
-
             })
-                .AddEntityFrameworkStores<AppDbContext>() // Де зберігати дані
-                .AddDefaultTokenProviders(); // Потрібно для скидання паролів тощо
+            .AddEntityFrameworkStores<AppDbContext>() // Р”Рµ Р·Р±РµСЂС–РіР°С‚Рё РґР°РЅС–
+            .AddDefaultTokenProviders(); // РџРѕС‚СЂС–Р±РЅРѕ РґР»СЏ СЃРєРёРґР°РЅРЅСЏ РїР°СЂРѕР»С–РІ С‚РѕС‰Рѕ
 
-            builder.Services.AddTransient<IEmailSender, EmailSender>();
+        builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-            // 2. Налаштування кукі (куди кидати користувача, якщо він не авторизований)
-            builder.Services.ConfigureApplicationCookie(options =>
+        // 2. РќР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ РєСѓРєС– (РєСѓРґРё РєРёРґР°С‚Рё РєРѕСЂРёСЃС‚СѓРІР°С‡Р°, СЏРєС‰Рѕ РІС–РЅ РЅРµ Р°РІС‚РѕСЂРёР·РѕРІР°РЅРёР№)
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.LoginPath = "/Auth/Login"; // РЁР»СЏС… РґРѕ РІР°С€РѕС— СЃС‚РѕСЂС–РЅРєРё РІС…РѕРґСѓ
+            options.AccessDeniedPath = "/Auth/AccessDenied"; // РЇРєС‰Рѕ РЅРµРјР°С” РїСЂР°РІ (РЅР°РїСЂРёРєР»Р°Рґ, РЅРµ РђРґРјС–РЅ)
+        });
+
+        var cloudName = builder.Configuration["CloudinarySettings:CloudName"];
+        var apiKey = builder.Configuration["CloudinarySettings:ApiKey"];
+        var apiSecret = builder.Configuration["CloudinarySettings:ApiSecret"];
+
+        var account = new Account(cloudName, apiKey, apiSecret);
+        var cloudinary = new Cloudinary(account);
+
+        builder.Services.AddSingleton(cloudinary);
+
+        StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
+        // Added HttpClient to support file downloads from Cloudinary
+        builder.Services.AddHttpClient();
+
+        builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+        builder.Services.AddScoped<IProgressService, ProgressService>();
+        builder.Services.AddScoped<ProgressService>();
+        builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+
+        var app = builder.Build();
+
+        //using (var scope = app.Services.CreateScope())
+        //{
+        //    var services = scope.ServiceProvider;
+        //    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        //    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        //    await DbInitializer.SeedAdminUser(userManager, roleManager);
+
+        //    // РЎРїРёСЃРѕРє СЂРѕР»РµР№, СЏРєС– РїРѕС‚СЂС–Р±РЅС– РІР°С€РѕРјСѓ РїСЂРѕРµРєС‚Сѓ
+        //    string[] roles = { "Admin", "Student" };
+
+        //    foreach (var role in roles)
+        //    {
+        //        if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
+        //        {
+        //            roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
+        //        }
+        //    }
+        //}
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            try
             {
-                options.LoginPath = "/Auth/Login";  // Шлях до вашої сторінки входу
-                options.AccessDeniedPath = "/Auth/AccessDenied"; // Якщо немає прав (наприклад, не Адмін)
-            });
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-            var cloudName = builder.Configuration["CloudinarySettings:CloudName"];
-            var apiKey = builder.Configuration["CloudinarySettings:ApiKey"];
-            var apiSecret = builder.Configuration["CloudinarySettings:ApiSecret"];
-
-            CloudinaryDotNet.Account account = new CloudinaryDotNet.Account(cloudName, apiKey, apiSecret);
-            Cloudinary cloudinary = new Cloudinary(account);
-
-            builder.Services.AddSingleton(cloudinary);
-
-            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
-
-            // Added HttpClient to support file downloads from Cloudinary
-            builder.Services.AddHttpClient();
-
-            builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
-            builder.Services.AddScoped<IProgressService, ProgressService>();
-            builder.Services.AddScoped<ProgressService>();
-            builder.Services.AddScoped<IDashboardService, DashboardService>();
-
-
-            var app = builder.Build();
-
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var services = scope.ServiceProvider;
-            //    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-            //    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-            //    await DbInitializer.SeedAdminUser(userManager, roleManager);
-
-            //    // Список ролей, які потрібні вашому проекту
-            //    string[] roles = { "Admin", "Student" };
-
-            //    foreach (var role in roles)
-            //    {
-            //        if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
-            //        {
-            //            roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
-            //        }
-            //    }
-            //}
-
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                try
+                foreach (var methodInfo in typeof(DbInitializer).GetMethods(BindingFlags.Public | BindingFlags.Static)
+                             .Where(m => m.Name.StartsWith("Seed")))
                 {
-                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-                    // Тепер await спрацює без помилок
-                    await DbInitializer.SeedAdminUser(userManager, roleManager);
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Помилка під час створення початкових даних.");
+                    var parameters = methodInfo.GetParameters();
+                    var arguments = parameters.Select(p => services.GetRequiredService(p.ParameterType)).ToArray();
+                    if (methodInfo.Invoke(null, arguments) is Task task) await task;
                 }
             }
-
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            catch (Exception ex)
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "РџРѕРјРёР»РєР° РїС–Рґ С‡Р°СЃ СЃС‚РІРѕСЂРµРЅРЅСЏ РїРѕС‡Р°С‚РєРѕРІРёС… РґР°РЅРёС….");
             }
-
-            //app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseAuthentication(); // Хто цей користувач? (Перевірка логіна/пароля)
-            app.UseAuthorization();  // Що йому дозволено? (Перевірка ролей)
-
-            //app.MapControllerRoute(
-            //    name: "default",
-            //    pattern: "{controller=User}/{action=Dashboard}/{id?}");
-
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-
-            app.Run();
         }
+
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Home/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
+
+        //app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseAuthentication(); // РҐС‚Рѕ С†РµР№ РєРѕСЂРёСЃС‚СѓРІР°С‡? (РџРµСЂРµРІС–СЂРєР° Р»РѕРіС–РЅР°/РїР°СЂРѕР»СЏ)
+        app.UseAuthorization(); // Р©Рѕ Р№РѕРјСѓ РґРѕР·РІРѕР»РµРЅРѕ? (РџРµСЂРµРІС–СЂРєР° СЂРѕР»РµР№)
+
+        app.MapControllerRoute(
+            "areas",
+            "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+
+        app.MapControllerRoute(
+            "default",
+            "{controller=Home}/{action=Index}/{id?}");
+
+        await app.RunAsync();
     }
 }

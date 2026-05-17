@@ -1,14 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace diplomaProject.DTOs
+namespace diplomaProject.DTOs;
+
+public class CreateModuleDto
 {
-    public class CreateModuleDTO
-    {
-        [Required]
-        public string Title { get; set; }
-        public int OrderIndex { get; set; }
-        public string? Description { get; set; }
-        public int CourseId { get; set; } = 3;
-         public IFormFile? imageFile { get; set; } 
-    }
+    [Required] public required string Title { get; set; }
+
+    public int OrderIndex { get; set; }
+    public string? Description { get; set; }
+    public IFormFile? ImageFile { get; set; }
 }

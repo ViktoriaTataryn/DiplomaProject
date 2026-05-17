@@ -1,8 +1,7 @@
-﻿namespace diplomaProject.DTOs
+﻿namespace diplomaProject.DTOs;
+
+public class StripeResponseDto
 {
-    public class StripeResponseDTO
-    {
-        public string SessionId { get; set; }
-        public string PubKey { get; set; }
-    }
+    public string? SessionId { get; set; }
+    public string? PubKey { get; set; }
 }

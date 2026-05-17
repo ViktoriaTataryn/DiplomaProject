@@ -1,8 +1,7 @@
-﻿namespace diplomaProject.DTOs
+﻿namespace diplomaProject.DTOs;
+
+public class GradeDto
 {
-    public class GradeDTO
-    {
-        public int Value { get; set; }
-        public DateTime Date { get; set; }
-    }
+    public int Value { get; set; }
+    public DateTime Date { get; set; }
 }

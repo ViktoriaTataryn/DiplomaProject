@@ -1,0 +1,132 @@
+﻿@model diplomaProject.DTOs.UpdateModuleDto
+@{
+    ViewData["Title"] = "Редагування модуля";
+}
+
+@section Head
+{
+    <link rel="stylesheet" href="~/css/admin-module-file-selector.css" asp-append-version="true"/>
+    <style>
+        [x-data="lessons"] {
+            border: 1px solid var(--primary-blue);
+            color: var(--primary-blue);
+            padding: 1rem 1.5rem;
+
+            button {
+                border: none;
+                color: var(--primary-blue);
+                background-color: transparent;
+
+                &:disabled {
+                    opacity: 0.6;
+                }
+            }
+        }
+    </style>
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4>Редагування модуля: @Model.Title</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Update" id="editModuleForm" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id"/>
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-control-label">Назва модуля</label>
+                    <input asp-for="Title" class="form-control" placeholder="Введіть назву..."/>
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="OrderIndex">Номер модуля</label>
+                    <input asp-for="OrderIndex" class="form-control"/>
+                    <span asp-validation-for="OrderIndex" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-control-label">Опис модуля</label>
+                    <input asp-for="Description" class="form-control" placeholder="Введіть опис..."/>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageFile">Обкладинка модуля</label>
+                    <div x-data="fileSelector" data-initial-image="@System.Text.Encodings.Web.HtmlEncoder.Default.Encode(Model.ImageForUser ?? string.Empty)">
+                        <input type="file" asp-for="ImageFile" x-bind="fileInput" x-ref="fileInput" class="form-control"
+                               accept="image/*"/>
+                        <img x-show="imageForUser" :src="imageForUser" alt="Preview"/>
+                        <div x-show.important="!imageForUser"
+                             class="d-flex align-content-center justify-content-center">
+                            <i class="bi bi-plus-lg fs-icon"></i>
+                        </div>
+                        <button x-bind="selector" type="button">
+                            <i class="bi bi-plus-lg fs-icon"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LessonNames">Порядок лекцій</label>
+                    <div x-data="lessons">
+                        <template x-for="(lesson, index) in lessonNames" :key="index">
+                            <div>
+                                <hr x-show="index" class="mx-0 my-2 opacity-75"/>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <input type="hidden" asp-for="LessonNames" x-model="lesson"/>
+                                    <h4 x-text="lesson" class="mb-0"></h4>
+                                    <div class="d-flex flex-column">
+                                        <button type="button" @@click="moveUp(index)" :disabled="!index">
+                                            <i class="bi" :class="index ? 'bi-caret-up-fill' : 'bi-caret-up'"></i>
+                                        </button>
+                                        <button type="button" @@click="moveDown(index)"
+                                                :disabled="index === lessonNames.length - 1">
+                                            <i class="bi"
+                                               :class="index === lessonNames.length - 1 ? 'bi-caret-down' : 'bi-caret-down-fill'"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Назад до списку</a>
+                    <button type="submit" class="btn btn-success">Зберегти зміни</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.11/dist/cdn.min.js"></script>
+    <script src="~/js/admin-module-file-selector.js" asp-append-version="true"></script>
+
+    <script>
+        function lessons() {
+            return {
+                lessonNames: @Json.Serialize(Model.LessonNames),
+                moveUp(index) {
+                    if (index <= 0) return;
+
+                    const newArr = [...this.lessonNames];
+                    [newArr[index - 1], newArr[index]] = [newArr[index], newArr[index - 1]];
+                    this.lessonNames = newArr;
+                },
+                moveDown(index) {
+                    if (index < 0 || index >= this.lessonNames.length - 1) return;
+
+                    const newArr = [...this.lessonNames];
+                    [newArr[index], newArr[index + 1]] = [newArr[index + 1], newArr[index]];
+                    this.lessonNames = newArr;
+                }
+            }
+        }
+
+    </script>
+}

@@ -1,7 +1,8 @@
 ﻿* {
     box-sizing: border-box;
-  
+
 }
+
 html {
     font-size: 16px;
 }
@@ -22,8 +23,7 @@ body {
 #modulesList {
     background-color: #FFFFFF;
     overflow: hidden;
-   
-    
+
 
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
 }
@@ -31,9 +31,9 @@ body {
 .text {
     color: #2B31B4;
     font-size: 1.2rem;
-    font-family: "Gilroy Regular",serif;
+    font-family: "Gilroy Regular", serif;
     font-weight: 500;
-   /* line-height:1;*/
+    /* line-height:1;*/
 }
 
 .status {
@@ -43,10 +43,10 @@ body {
 
 .art-frame-wrapper {
     position: relative;
-   /* min-width: 280px;*/
-   max-width:376px;
-   height:200px;
-   /* height: 180px;*/
+    /* min-width: 280px;*/
+    max-width: 376px;
+    height: 200px;
+    /* height: 180px;*/
     display: flex;
     align-items: center;
     justify-content: center;
@@ -107,7 +107,6 @@ body {
 }
 
 
-
 .slider-arrow-top {
     width: 40px;
     display: flex;
@@ -120,7 +119,6 @@ body {
 .slider-arrow-img:hover {
     transform: translateY(-2px);
 }
-
 
 
 .slider-wrapper {
@@ -166,11 +164,9 @@ body {
 }
 
 
-
-
 div#modulesSlider {
     display: flex !important;
-    flex-wrap: nowrap !important; 
+    flex-wrap: nowrap !important;
     overflow-x: auto !important;
     scroll-behavior: smooth;
     gap: 20px;
@@ -182,28 +178,28 @@ div#modulesSlider {
     -ms-overflow-style: none !important;
 }
 
-    div#modulesSlider::-webkit-scrollbar {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        background: transparent !important;
-    }
+div#modulesSlider::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+}
 
 #grades {
     background-color: #FFFFFF;
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
     width: 40% !important;
     max-width: 618px;
-    
+
 }
 
 #hometask {
     background-color: #FFFFFF;
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
     width: 58% !important;
-    max-width:942px;
-    
-    
+    max-width: 942px;
+
+
 }
 
 .hometask-box {
@@ -222,9 +218,10 @@ div#modulesSlider {
     /* letter-spacing: 1px;*/
 }
 
-#hometask .hometask-text{
-    padding-top:8px;
+#hometask .hometask-text {
+    padding-top: 8px;
 }
+
 #grades .hometask-text {
     padding-top: 8px;
 }
@@ -243,8 +240,8 @@ div#modulesSlider {
     font-family: "Gilroy", serif;
     line-height: 1;
     font-size: 1.2rem;
-    font-weight:300;
-   /* letter-spacing: 0.5px;*/
+    font-weight: 300;
+    /* letter-spacing: 0.5px;*/
     /*  font-weight: 300; */
 }
 
@@ -273,7 +270,7 @@ div#modulesSlider {
     background-size: 107% 107%;
     /* transform: scale(1.05);*/
     background-repeat: no-repeat;
-   /* background-size: cover;*/
+    /* background-size: cover;*/
     overflow: hidden;
     background-position: center;
     max-width: 1580px;
@@ -306,13 +303,13 @@ div#modulesSlider {
 .progress-inner-content {
     /*padding: 30px 12px;*/
     width: 100%;
-    padding-bottom:10px !important;
-  
+    padding-bottom: 10px !important;
+
 }
 
 .small-text {
     font-family: "Gilroy-Medium";
-  
+
     font-size: 1.5rem;
     color: #9799C4;
 }
@@ -323,16 +320,17 @@ div#modulesSlider {
 
 .buy-button {
     background-color: #2B31B4;
-    max-width:755px;
-    width:46%;
-    height:55px;
-   /* width: 450px;*/
+    max-width: 755px;
+    width: 46%;
+    height: 55px;
+    /* width: 450px;*/
     /*height: 43px;*/
     align-content: center;
-    margin-top:40px !important;
+    margin-top: 40px !important;
 }
-.progress-inner-content .hometask-text{
-    line-height:1.1;
+
+.progress-inner-content .hometask-text {
+    line-height: 1.1;
 }
 
 .btn-text {
@@ -345,9 +343,10 @@ div#modulesSlider {
     font-size: 1.4rem;
     font-weight: 300;
 }
+
 .btn-text:hover {
     color: #FFFFFF;
-    
+
 }
 
 
@@ -355,7 +354,7 @@ div#modulesSlider {
 .progress-timeline-container {
     position: relative;
     padding-top: 50px; /* Місце для статуї */
-    padding-bottom: 30px; 
+    padding-bottom: 30px;
 
 }
 
@@ -369,30 +368,30 @@ div#modulesSlider {
 
 /* Базовий стиль смужки модуля ( NotStarted ) */
 .progress-line {
-    height: 8px; 
+    height: 8px;
     background-color: #9799C4;
     max-width: 160px;
     transition: all 0.3s ease;
 }
 
-    /* Стиль для ЗАВЕРШЕНОГО модуля  */
-    .progress-line.is-completed {
-        height: 45px; 
-        background-color: #8588D1; 
-    }
+/* Стиль для ЗАВЕРШЕНОГО модуля  */
+.progress-line.is-completed {
+    height: 45px;
+    background-color: #8588D1;
+}
 
 /* --- Контейнер для СТАТУЇ --- */
 .statue-avatar-container {
     position: absolute;
-    top: -50px; 
+    top: -50px;
     left: 45%;
-    transform: translateX(-50%); 
+    transform: translateX(-50%);
     z-index: 10;
 }
 
 /* Стилі для самої картинки */
 .statue-img {
-    height: 87px; 
+    height: 87px;
     object-fit: contain;
 }
 
@@ -414,27 +413,21 @@ div#modulesSlider {
     margin-bottom: 20px;
 }
 
-    /* Назва місяця */
-    .grade-item-container span {
-        font-size: 1.2rem;
-        color: #494C90;
-        font-family: "Gilroy", serif;
-        font-weight: 300;
-    }
+/* Назва місяця */
+.grade-item-container span {
+    font-size: 1.2rem;
+    color: #494C90;
+    font-family: "Gilroy", serif;
+    font-weight: 300;
+}
 
 /* Сітка */
 .grades-grid {
     display: grid;
-    grid-template-columns: repeat(3, 45px); /* 5 в ряд */
+    grid-template-columns: repeat(5, 45px); /* 5 в ряд */
     gap: 12px;
 }
-.grade-list-scroll::-webkit-scrollbar {
-    width: 4px;
-}
-.grade-list-scroll::-webkit-scrollbar-thumb {
-    background-color: #8588D1;
-    border-radius: 10px;
-}
+
 /* Квадрат оцінки */
 .grade-square {
     width: 45px;
@@ -450,79 +443,76 @@ div#modulesSlider {
     font-family: "Accia Piano", serif;
 }
 
-.grade-list-scroll {
-    max-height: 110px; /* Приблизна висота для 2-3 рядів з назвою місяця */
-    overflow-y: auto; /* Вмикаємо вертикальну прокрутку */
-    padding-right: 10px; /* Місце для скроллбару */
-}
 
 @media (max-width: 767px) {
     .welcome-section {
-        
+
         overflow: hidden;
-        min-height: 150px; 
-        margin-bottom:15px;
-      
+        min-height: 150px;
+        margin-bottom: 15px;
+
     }
+
     .slider-arrow-img {
         display: none !important;
     }
 
     .welcome-text {
-        z-index: 2; 
-        width: 80% !important; 
+        z-index: 2;
+        width: 80% !important;
         margin-right: -25%;
         margin-top: 10px;
-      
+
     }
-    
 
-        .welcome-text .title {
-            font-size: 22px !important;
-            font-weight: 500;
-            line-height: 28px;
-            margin-bottom: 8px;
-        }
 
-        .welcome-text .subtitle {
-            font-size: 13px !important; 
-            margin-top: 5px !important;
-            white-space: nowrap;
-            line-height:14px;
-          
-        }
+    .welcome-text .title {
+        font-size: 22px !important;
+        font-weight: 500;
+        line-height: 28px;
+        margin-bottom: 8px;
+    }
+
+    .welcome-text .subtitle {
+        font-size: 13px !important;
+        margin-top: 5px !important;
+        white-space: nowrap;
+        line-height: 14px;
+
+    }
 
     .welcome-picture {
-        width: 65% !important; 
+        width: 65% !important;
         display: flex;
         justify-content: flex-end;
-        padding-top:-10px !important;
+        padding-top: -10px !important;
     }
 
-        .welcome-picture img {
-            max-width: 280px !important; 
-            height: auto;
-            opacity: 0.9; 
-            object-fit: contain;
-            top: -70px ;
-            right: -40px !important;
-            padding-top:0px ;
+    .welcome-picture img {
+        max-width: 280px !important;
+        height: auto;
+        opacity: 0.9;
+        object-fit: contain;
+        top: -70px;
+        right: -40px !important;
+        padding-top: 0px;
 
-        }
+    }
+
     .title {
-        
+
         font-size: 24px;
         letter-spacing: 0px;
         font-weight: 350;
-        
+
     }
 
     #progressContainer {
-        margin-top: 0 ; 
-        padding-top: 15px !important; 
+        margin-top: 0;
+        padding-top: 15px !important;
         position: relative !important;
         top: -60px;
-       
+
         width: 100% !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
@@ -530,14 +520,14 @@ div#modulesSlider {
         padding-left: 0px;
         padding-right: 0px;
         background-image: none;
-        background-color:#FFFFFF;
+        background-color: #FFFFFF;
     }
 
- 
+
     .m-3 {
         margin: 10px !important; /* Трохи зменшуємо зовнішні відступи на мобільних */
     }
-   
+
     .row {
         margin-left: 0 !important;
         margin-right: 0 !important;
@@ -546,13 +536,13 @@ div#modulesSlider {
         padding-right: 0 !important;
     }
 
-    
+
     body, html {
         overflow-x: hidden !important; /* Забороняє прокрутку вправо */
-        width: 100% ;
+        width: 100%;
     }
 
-    
+
     .buy-button, .buy-button a {
         display: block !important;
         width: 100% !important;
@@ -561,12 +551,13 @@ div#modulesSlider {
         padding-left: 0 !important;
         padding-right: 0 !important;
         text-align: center;
-       
+
     }
-    .buy-button{
-        margin-top:35px;
+
+    .buy-button {
+        margin-top: 35px;
     }
-   
+
     .btn-text {
         display: block !important;
         width: 100% !important;
@@ -576,63 +567,70 @@ div#modulesSlider {
         text-decoration: none;
     }
 
-  
+
     .progress-inner-content {
         padding: 7px 8px !important;
     }
 
- 
+
     .small-text, .hometask-text {
         width: 100% !important;
-        display: block ;
-        letter-spacing:0px;
-        font-size:15px;
-        line-height:14px;
-        margin-bottom:15px;
+        display: block;
+        letter-spacing: 0px;
+        font-size: 15px;
+        line-height: 14px;
+        margin-bottom: 15px;
     }
+
     .progress-segments {
         display: flex !important;
-        flex-wrap: nowrap !important; 
-     
+        flex-wrap: nowrap !important;
+
         width: 100% !important;
         overflow: visible !important;
-      
-        height: 30px; 
+
+        height: 30px;
     }
 
     .progress-segment-wrapper {
-        flex: 1 1 auto !important; 
+        flex: 1 1 auto !important;
         min-width: 0 !important;
-     
+
         overflow: visible !important;
     }
+
     /* Контейнер для лінії та фігурки */
     .progress-timeline-container {
         padding-top: 20px;
         padding-bottom: 10px;
-       margin-top:8px;
+        margin-top: 8px;
     }
+
     /* --- Контейнер для СТАТУЇ --- */
     .statue-avatar-container {
-   
-        top: -28px; 
+
+        top: -28px;
         left: 45%;
-        
+
     }
+
     .progress-segment-wrapper.mx-3 {
-       
+
         margin-left: 6px !important;
         margin-right: 6px !important;
     }
+
     .statue-img {
-        height: 44px; 
+        height: 44px;
         object-fit: contain;
     }
+
     .progress-line {
-        height:8px;
+        height: 8px;
     }
+
     #conteiner2 {
-          margin-top: -15px !important;
+        margin-top: -15px !important;
         /*width: 100% !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
@@ -657,11 +655,11 @@ div#modulesSlider {
         flex-direction: row;*/
         max-width: 351px;
         width: 100% !important;
-        padding-top:10px !important;
-     /*   padding: 10px !important;*/
-       /* padding-top: 15px !important;
-        padding-left: 5px !important;
-        padding-right: 10px !important;*/
+        padding-top: 10px !important;
+        /*   padding: 10px !important;*/
+        /* padding-top: 15px !important;
+         padding-left: 5px !important;
+         padding-right: 10px !important;*/
         margin-bottom: 20px;
         margin-top: 0px;
         flex-direction: row;
@@ -674,8 +672,9 @@ div#modulesSlider {
         flex: 1 1 0;
         border-right: 2px solid #8588D1;
     }
-    #hometask .title{
-        padding-bottom:30px;
+
+    #hometask .title {
+        padding-bottom: 30px;
     }
 
 
@@ -698,6 +697,7 @@ div#modulesSlider {
         width: 100%;
         text-align: center;
     }
+
     #grades {
         max-width: 351px;
         width: 100% !important;
@@ -712,33 +712,33 @@ div#modulesSlider {
         width: 100% !important;
         flex-direction: row;*/
     }
-       /* #grades .d-flex {
-            display: flex !important;
-            flex-direction: row !important; 
-            align-items: flex-start !important;
-            width: 100% !important;
-           
-        }
 
-       
-        #grades .px-1.flex-grow-1 {
-            flex: 2 !important; 
-            min-width: 0 !important; 
-            border-right: 2px solid #8588D1 ;
-            padding-right: 10px !important;
-        }
-
+    /* #grades .d-flex {
+         display: flex !important;
+         flex-direction: row !important; 
+         align-items: flex-start !important;
+         width: 100% !important;
         
-        #grades .hometask-box {
-            flex: 1 !important; 
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            text-align: center;
-            padding-left: 5px !important;
-            padding-right: 0 !important;
-        }*/
+     }
 
+    
+     #grades .px-1.flex-grow-1 {
+         flex: 2 !important; 
+         min-width: 0 !important; 
+         border-right: 2px solid #8588D1 ;
+         padding-right: 10px !important;
+     }
+
+     
+     #grades .hometask-box {
+         flex: 1 !important; 
+         display: flex !important;
+         flex-direction: column !important;
+         align-items: center !important;
+         text-align: center;
+         padding-left: 5px !important;
+         padding-right: 0 !important;
+     }*/
     /* Налаштування самих квадратиків оцінок,  */
     /*.grade-square {
         width: 30px !important;
@@ -756,7 +756,8 @@ div#modulesSlider {
         font-weight: bold;
         display: block;
         margin-bottom: 5px;
-        text-transform: capitalize;*/ /* Місяці з великої літери */
+        text-transform: capitalize;*/
+    /* Місяці з великої літери */
     /*}*/
     .grades-grid {
         /*display: grid;
@@ -768,55 +769,57 @@ div#modulesSlider {
     .grade-square {
         width: 35px;
         height: 35px;
-     
+
         font-size: 1rem;
-      
-        
+
+
     }
 
-    
+
     #modulesSlider.slider-wrapper {
         display: flex !important;
-        flex-direction: column !important; 
-    
-        overflow-x: visible !important; 
+        flex-direction: column !important;
+
+        overflow-x: visible !important;
         width: 100% !important;
-       
+
     }
+
     .module-image-inner img {
         width: 100%;
         height: 100%;
         object-fit: cover; /* Фото заповнює блок, не втрачаючи пропорцій */
         display: block;
     }
-    .module-image-inner  {
+
+    .module-image-inner {
         width: 300px;
         height: 155px;
-        
+
     }
 
     .slider-item {
         width: 100% !important;
         flex: 0 0 auto !important;
         margin-bottom: 5px !important;
-        
+
     }
-   
+
     .module-card {
         width: 100% !important;
         max-width: 100% !important;
         display: block !important;
-        padding-bottom:0px !important;
-       
+        padding-bottom: 0px !important;
+
     }
 
-   
+
     .art-frame-wrapper {
-       /* height: auto !important;*/
-        aspect-ratio: 16 / 9; 
-       /* width: 100% !important;*/
-       width:320px;
-       height:176px;
+        /* height: auto !important;*/
+        aspect-ratio: 16 / 9;
+        /* width: 100% !important;*/
+        width: 320px;
+        height: 176px;
     }
 
     /* 5. Налаштування тексту під картинкою */
@@ -824,15 +827,18 @@ div#modulesSlider {
         padding-top: 5px !important;
         padding-bottom: 10px !important;
     }
+
     #modulesList .d-flex.justify-content-between.mb-2 .title:last-child {
         display: none !important;
     }
+
     #modulesList .d-flex.justify-content-between.mb-2 {
-        padding-bottom:10px;
-       
+        padding-bottom: 10px;
+
     }
-    
-    }
+
+}
+
 @media (max-width: 1600px) {
     html {
         /* Тепер 1rem = 14px. 

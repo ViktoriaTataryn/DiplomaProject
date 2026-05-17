@@ -50,10 +50,10 @@
     border-radius: 2px; /* Sharp corners like in Figma */
 }
 
-    .btn-brand:hover {
-        background-color: #2a2b5e;
-        color: white;
-    }
+.btn-brand:hover {
+    background-color: #2a2b5e;
+    color: white;
+}
 
 .btn-outline-brand {
     color: var(--brand-blue);
@@ -62,10 +62,10 @@
     border-radius: 2px;
 }
 
-    .btn-outline-brand:hover {
-        background-color: var(--brand-light);
-        color: var(--brand-blue);
-    }
+.btn-outline-brand:hover {
+    background-color: var(--brand-light);
+    color: var(--brand-blue);
+}
 
 /* Lesson Materials List */
 .lesson-material-card {
@@ -77,10 +77,10 @@
     gap: 24px;
 }
 
-    /* Remove border for the last item */
-    .lesson-material-card:last-child {
-        border-bottom: none;
-    }
+/* Remove border for the last item */
+.lesson-material-card:last-child {
+    border-bottom: none;
+}
 
 /* Figma style blue frame for lesson thumbnail */
 .lesson-thumbnail-frame {

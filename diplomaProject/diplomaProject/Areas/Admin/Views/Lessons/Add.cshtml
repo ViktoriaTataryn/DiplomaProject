@@ -1,7 +1,6 @@
-﻿@model diplomaProject.DTOs.CreateLessonDTO
+﻿@model diplomaProject.DTOs.CreateLessonDto?
 
 @{
-    Layout = "_AdminLayout";
     ViewData["Title"] = "Додати нову лекцію";
 }
 
@@ -13,24 +12,23 @@
                     <h3 class="mb-0">Створення лекції</h3>
                 </div>
                 <div class="card-body">
-                    <form asp-action="AddLesson" id="lessonForm" method="post" enctype="multipart/form-data">
+                    <form asp-action="Add" id="lessonForm" method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <div class="row">
                             <div class="col-md-8 mb-3">
                                 <label asp-for="Title" class="form-label font-weight-bold">Назва лекції</label>
-                                <input asp-for="Title" class="form-control" placeholder="Наприклад: Основи композиції" />
+                                <input asp-for="Title" class="form-control" placeholder="Наприклад: Основи композиції"/>
                                 <span asp-validation-for="Title" class="text-danger"></span>
                             </div>
 
-                           
-                                <div class="col-md-8 mb-3">
-                                    <label asp-for="LessonIndex" class="form-label font-weight-bold">Номер лекції</label>
-                                    <input asp-for="LessonIndex" class="form-control"  />
-                                    <span asp-validation-for="LessonIndex" class="text-danger"></span>
-                                </div>
 
-                      
+                            <div class="col-md-8 mb-3">
+                                <label asp-for="LessonIndex" class="form-label font-weight-bold">Номер лекції</label>
+                                <input asp-for="LessonIndex" class="form-control"/>
+                                <span asp-validation-for="LessonIndex" class="text-danger"></span>
+                            </div>
+
 
                             <div class="col-md-4 mb-3">
                                 <label asp-for="ModuleId" class="form-label font-weight-bold">Модуль курсу</label>
@@ -42,42 +40,48 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Description" class="form-label font-weight-bold">Короткий опис (для картки курсу)</label>
+                            <label asp-for="Description" class="form-label font-weight-bold">Короткий опис (для картки
+                                курсу)</label>
                             <textarea asp-for="Description" class="form-control" rows="2"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
-                            <div class="mb-4">
-                                <label asp-for="Content" class="form-label font-weight-bold text-primary">Зміст лекції (текст та ілюстрації)</label>
+                        <div class="mb-4">
+                            <label asp-for="Content" class="form-label font-weight-bold text-primary">Зміст лекції
+                                (текст та ілюстрації)</label>
 
-                                <div id="editorjs" class="border rounded bg-white p-3" style="min-height: 400px; cursor: text;"></div>
+                            <div id="editorjs" class="border rounded bg-white p-3"
+                                 style="min-height: 400px; cursor: text;"></div>
 
-                                <input type="hidden" asp-for="Content" id="contentHiddenInput" />
+                            <input type="hidden" asp-for="Content" id="contentHiddenInput"/>
 
-                                <span asp-validation-for="Content" class="text-danger"></span>
-                            </div>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
 
                         <div class="card bg-light mb-4">
                             <div class="card-body">
                                 <h5 class="card-title text-secondary">
                                     <i class="fas fa-paperclip"></i> Додаткові матеріали до лекції
                                 </h5>
-                                <p class="small text-muted">Сюди можна завантажити PDF, конспекти або архіви з вихідними кодами.</p>
+                                <p class="small text-muted">Сюди можна завантажити PDF, конспекти або архіви з вихідними
+                                    кодами.</p>
 
                                 <div class="mb-3">
-                                    <label asp-for="ResourceFiles" class="form-label font-weight-bold">Додаткові матеріали (можна вибрати кілька)</label>
+                                    <label asp-for="ResourceFiles" class="form-label font-weight-bold">Додаткові
+                                        матеріали (можна вибрати кілька)</label>
 
-                                    <input asp-for="ResourceFiles" type="file" class="form-control" multiple />
+                                    <input asp-for="ResourceFiles" type="file" class="form-control" multiple/>
 
                                     <span asp-validation-for="ResourceFiles" class="text-danger"></span>
-                                    <small class="text-muted">Використовуйте Ctrl або Shift, щоб вибрати кілька файлів одночасно.</small>
+                                    <small class="text-muted">Використовуйте Ctrl або Shift, щоб вибрати кілька файлів
+                                        одночасно.</small>
                                 </div>
                             </div>
                         </div>
-                        <hr />
+                        <hr/>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="GetLessons" class="btn btn-secondary me-md-2">Скасувати</a>
+                            <a asp-action="Index" class="btn btn-secondary me-md-2">Скасувати</a>
                             <button type="submit" class="btn btn-primary px-5">Зберегти лекцію</button>
                         </div>
                     </form>
@@ -198,22 +202,22 @@
     <script>
         // 1. Створюємо конфігурацію інструментів окремо
         const editorTools = {
-           
+
             header: {
                 class: Header,
-              
+
             },
-          
+
             list: List,
             quote: Quote,
             image: {
                 class: ImageTool,
                 config: {
                     field: 'file',
-                    endpoints: { byFile: '/AdminLesson/UploadImage' },
+                    endpoints: {byFile: '/AdminLesson/UploadImage'},
                     actions: [
-                        { name: 'size_small', icon: 'S', title: 'Маленька (30%)', toggle: true },
-                        { name: 'size_medium', icon: 'M', title: 'Середня (60%)', toggle: true }
+                        {name: 'size_small', icon: 'S', title: 'Маленька (30%)', toggle: true},
+                        {name: 'size_medium', icon: 'M', title: 'Середня (60%)', toggle: true}
                     ]
                 }
             }
@@ -224,7 +228,7 @@
             editorTools.audio = {
                 class: AudioTool,
                 config: {
-                    endpoints: { byFile: '/AdminLesson/UploadAudio' },
+                    endpoints: {byFile: '/AdminLesson/UploadAudio'},
                     field: 'audio'
                 }
             };
@@ -232,7 +236,7 @@
             editorTools.audio = {
                 class: Audio,
                 config: {
-                    endpoints: { byFile: '/AdminLesson/UploadAudio' },
+                    endpoints: {byFile: '/AdminLesson/UploadAudio'},
                     field: 'audio'
                 }
             };
@@ -243,7 +247,7 @@
 
         // Якщо раптом у базу потрапив не JSON, а текст (HTML), ініціалізуємо порожнім
         if (typeof initialData !== 'object') {
-            initialData = { "blocks": [] };
+            initialData = {"blocks": []};
         }
 
         const editor = new EditorJS({
@@ -321,6 +325,7 @@
     .card-header {
         border-radius: 12px 12px 0 0 !important;
     }
+
     /* Стилі для контенту лекції */
     .lecture-content img {
         max-width: 100%; /* Картинка не буде ширшою за текст */
@@ -328,7 +333,7 @@
         display: block; /* Прибираємо зайві відступи знизу */
         margin: 20px auto; /* Центруємо картинку та додаємо відступи зверху/знизу */
         border-radius: 8px; /* Робимо кути трохи закругленими (як у твоїх карток) */
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Додаємо легку тінь для об'єму */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Додаємо легку тінь для об'єму */
     }
 
     /* Якщо ти хочеш, щоб у самому редакторі CKEditor вони теж не були величезними */

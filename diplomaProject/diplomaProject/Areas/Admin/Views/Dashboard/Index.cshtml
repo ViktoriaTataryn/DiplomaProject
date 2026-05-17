@@ -1,85 +1,87 @@
 ﻿@{
-    Layout = "_AdminLayout"; // Теперь эта страница использует правильный макет
     ViewData["Title"] = "Панель управління";
 }
 
-<style>
-    /* Базовые настройки для дашборда */
-    .admin-dashboard {
-        background-color: #F3F3FB; /* Фон как в Figma */
-        padding: 40px;
-        min-height: calc(100vh - 108px);
-        font-family: 'Gilroy', sans-serif;
-    }
+@section Head
+{
+    <style>
+        /* Базовые настройки для дашборда */
+        .admin-dashboard {
+            background-color: #F3F3FB; /* Фон как в Figma */
+            padding: 40px;
+            min-height: calc(100vh - 108px);
+            font-family: 'Gilroy', sans-serif;
+        }
 
-    /* Стили для карточек статистики */
-    .stat-card {
-        border-radius: 20px; /* Скругление по Figma */
-        padding: 30px;
-        height: 180px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.02);
-    }
+        /* Стили для карточек статистики */
+        .stat-card {
+            border-radius: 20px; /* Скругление по Figma */
+            padding: 30px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.02);
+        }
 
-    .stat-card-blue {
-        background-color: #2B31B4;
-        color: #FFFFFF;
-    }
+        .stat-card-blue {
+            background-color: #2B31B4;
+            color: #FFFFFF;
+        }
 
-    .stat-card-white {
-        background-color: #FFFFFF;
-        color: #2B31B4;
-    }
+        .stat-card-white {
+            background-color: #FFFFFF;
+            color: #2B31B4;
+        }
 
-    .stat-title {
-        font-family: 'Accia Piano', serif; /* Твой заголовочный шрифт */
-        font-size: 20px;
-        text-transform: uppercase;
-        font-weight: 350;
-        margin: 0;
-        line-height: 1.2;
-    }
+        .stat-title {
+            font-family: 'Accia Piano', serif; /* Твой заголовочный шрифт */
+            font-size: 20px;
+            text-transform: uppercase;
+            font-weight: 350;
+            margin: 0;
+            line-height: 1.2;
+        }
 
-    .stat-number {
-        font-family: 'Gilroy', sans-serif;
-        font-size: 64px; /* Огромные цифры как на макете */
-        font-weight: 700;
-        margin: 0;
-        line-height: 1;
-    }
+        .stat-number {
+            font-family: 'Gilroy', sans-serif;
+            font-size: 64px; /* Огромные цифры как на макете */
+            font-weight: 700;
+            margin: 0;
+            line-height: 1;
+        }
 
-    /* Блоки с графиком и активностью */
-    .content-block {
-        background: #FFFFFF;
-        border-radius: 20px;
-        padding: 35px;
-        height: 450px;
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.02);
-    }
+        /* Блоки с графиком и активностью */
+        .content-block {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 35px;
+            height: 450px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.02);
+        }
 
-    .block-title {
-        font-family: 'Accia Piano', serif;
-        font-size: 36px;
-        color: #2B31B4;
-        text-transform: uppercase;
-        font-weight: 350;
-        margin-bottom: 30px;
-    }
+        .block-title {
+            font-family: 'Accia Piano', serif;
+            font-size: 36px;
+            color: #2B31B4;
+            text-transform: uppercase;
+            font-weight: 350;
+            margin-bottom: 30px;
+        }
 
-    .activity-item {
-        font-family: 'Gilroy', sans-serif;
-        font-size: 20px;
-        color: #2B31B4;
-        padding: 15px 0;
-        border-bottom: 1px solid rgba(43, 49, 180, 0.1);
-    }
+        .activity-item {
+            font-family: 'Gilroy', sans-serif;
+            font-size: 20px;
+            color: #2B31B4;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(43, 49, 180, 0.1);
+        }
 
-    .activity-item:last-child {
-        border-bottom: none;
-    }
-</style>
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+}
 
 <div class="admin-dashboard">
     <div class="row mb-5">
@@ -92,7 +94,7 @@
         <div class="col-md-4">
             <div class="stat-card stat-card-white">
                 <p class="stat-title">Активні<br>користувачі</p>
-                <p class="stat-number">@ViewBag.TotalStudents</p> 
+                <p class="stat-number">@ViewBag.TotalStudents</p>
             </div>
         </div>
         <div class="col-md-4">
@@ -108,7 +110,8 @@
             <div class="content-block">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="block-title m-0">Середній бал студентів</h2>
-                    <select class="form-select w-auto" style="border: none; color: #2B31B4; font-family: 'Gilroy'; font-size: 18px;">
+                    <select class="form-select w-auto"
+                            style="border: none; color: #2B31B4; font-family: 'Gilroy'; font-size: 18px;">
                         <option>весь час</option>
                         <option>за місяць</option>
                     </select>
@@ -150,7 +153,7 @@
             labels: ['Модуль 1', 'Модуль 2', 'Модуль 3', 'Модуль 4', 'Модуль 5'],
             datasets: [{
                 label: 'Бал',
-                data: [4.2, 4.5, 3.8, 4.9, 4.7], 
+                data: [4.2, 4.5, 3.8, 4.9, 4.7],
                 borderColor: '#2B31B4',
                 backgroundColor: 'rgba(43, 49, 180, 0.1)',
                 borderWidth: 4,
@@ -165,17 +168,17 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            plugins: {legend: {display: false}},
             scales: {
-                y: { 
-                    beginAtZero: true, 
+                y: {
+                    beginAtZero: true,
                     max: 5,
-                    grid: { borderDash: [5, 5], color: '#E0E0E0' },
-                    ticks: { font: { family: 'Gilroy', size: 14 }, color: '#999' }
+                    grid: {borderDash: [5, 5], color: '#E0E0E0'},
+                    ticks: {font: {family: 'Gilroy', size: 14}, color: '#999'}
                 },
-                x: { 
-                    grid: { display: false },
-                    ticks: { font: { family: 'Gilroy', size: 14 }, color: '#999' }
+                x: {
+                    grid: {display: false},
+                    ticks: {font: {family: 'Gilroy', size: 14}, color: '#999'}
                 }
             }
         }

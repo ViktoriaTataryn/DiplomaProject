@@ -1,4 +1,4 @@
-﻿@model diplomaProject.DTOs.UpdateLessonDTO
+﻿@model diplomaProject.DTOs.UpdateLessonDto
 
 <div class="container mt-4">
     <div class="card shadow">
@@ -8,13 +8,13 @@
         </div>
         <div class="card-body">
             @* Форма редагування: enctype обов'язковий для завантаження файлів (NewResources) *@
-            <form asp-action="UpdateLesson" id="editLessonForm" method="post" enctype="multipart/form-data">
-                <input type="hidden" asp-for="Id" />
+            <form asp-action="Update" id="editLessonForm" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id"/>
 
                 @* Основні поля лекції *@
                 <div class="mb-3">
                     <label asp-for="Title" class="form-control-label">Назва лекції</label>
-                    <input asp-for="Title" class="form-control" placeholder="Введіть назву..." />
+                    <input asp-for="Title" class="form-control" placeholder="Введіть назву..."/>
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
 
@@ -28,20 +28,20 @@
 
                 <div class="mb-3">
                     <label asp-for="Description" class="form-control-label">Опис лекції</label>
-                    <input asp-for="Description" class="form-control" placeholder="Введіть опис..." />
+                    <input asp-for="Description" class="form-control" placeholder="Введіть опис..."/>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
                 @* Контейнер для візуального редактора Editor.js *@
                 <div id="editorjs" class="border rounded bg-white p-3" style="min-height: 400px;"></div>
                 @* Приховане поле, куди JS запише фінальний JSON перед відправкою *@
-                <input type="hidden" asp-for="Content" id="contentHiddenInput" />
+                <input type="hidden" asp-for="Content" id="contentHiddenInput"/>
 
                 @* Блок управління існуючими додатковими матеріалами *@
                 <div class="mb-4 mt-4">
                     <label class="form-control-label"><strong>Поточні додаткові матеріали:</strong></label>
 
-                    @if (Model.ExistingResources != null && Model.ExistingResources.Any())
+                    @if (Model.ExistingResources.Any())
                     {
                         <div class="list-group mt-2">
                             @foreach (var resource in Model.ExistingResources)
@@ -71,13 +71,13 @@
                 @* Поле для завантаження нових файлів *@
                 <div class="mb-4">
                     <label class="form-control-label">Додати нові матеріали (Зображення/PDF)</label>
-                    <input type="file" name="NewResources" class="form-control" multiple />
+                    <input type="file" name="NewResources" class="form-control" multiple/>
                     <small class="text-muted">Ви можете обрати кілька файлів одночасно.</small>
                 </div>
 
                 @* Навігаційні кнопки *@
                 <div class="d-flex justify-content-between">
-                    <a asp-action="GetLessons" class="btn btn-secondary">Назад до списку</a>
+                    <a asp-action="Index" class="btn btn-secondary">Назад до списку</a>
                     <button type="submit" class="btn btn-success">Зберегти зміни</button>
                 </div>
             </form>

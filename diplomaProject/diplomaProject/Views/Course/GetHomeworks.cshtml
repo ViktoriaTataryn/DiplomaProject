@@ -1,9 +1,8 @@
-﻿@using diplomaProject.DTOs
-@model HomeworkDashboardDTO
+﻿@model diplomaProject.DTOs.HomeworkDashboardDto
 
-<link rel="stylesheet" href="~/css/userProfile.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/getHomeworks.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/userProfile.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/getHomeworks.css" asp-append-version="true"/>
 @* <link rel="stylesheet" href="~/css/moduleList.css" asp-append-version="true" /> *@
 
 <div class="m-3">
@@ -14,29 +13,33 @@
             <div id="personal-view">
                 <span class="title mb-3 mt-4 ">ПОТОЧНЕ ЗАВДАННЯ </span>
 
-                 @if (Model.CurrentHomework != null)
+                @if (Model.CurrentHomework != null)
                 {
-                <div class="current-hw mt-3 py-1">
+                    <div class="current-hw mt-3 py-1">
                         <span class="cur-homework d-block py-2">
-                            <span class="module-part">Модуль @(Model.CurrentHomework.Lesson?.Module?.OrderIndex ?? 1)</span>
-                            <span >Тема @(Model.CurrentHomework.Lesson?.LessonIndex ?? 1)</span>
+                            <span
+                                class="module-part">Модуль @(Model.CurrentHomework.Lesson?.Module?.OrderIndex ?? 1)</span>
+                            <span>Тема @(Model.CurrentHomework.Lesson?.LessonIndex ?? 1)</span>
                         </span>
                         <span class="hometask-text">@Model.CurrentHomework?.Lesson?.Title</span>
-                    <div>
+                        <div>
                             <div class="mini-container d-flex align-items-center gap-2">
-                    <div class="comp-icon"> 
-                       <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1777141224/task_bi4ky8.svg" />
-                    </div>
-                    <div class="py-3">
-                            <span class="hometask-text"> Запитань: @(Model.CurrentHomework?.Questions?.Count ?? 0)</span>
-                       </div>
-                    </div>
-                    </div>
-                        <a asp-action="Lesson" asp-controller="Course" asp-route-id="@Model.CurrentHomework.LessonId" class="task-btn mt-4">
+                                <div class="comp-icon">
+                                    <img
+                                        src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1777141224/task_bi4ky8.svg"/>
+                                </div>
+                                <div class="py-3">
+                                    <span
+                                        class="hometask-text"> Запитань: @(Model.CurrentHomework?.Questions.Count ?? 0)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a asp-action="Lesson" asp-controller="Course" asp-route-id="@Model.CurrentHomework?.LessonId"
+                           class="task-btn mt-4">
                             <span class="task-btn-text ">ВИКОНАТИ ЗАВДАННЯ</span>
                         </a>
-                    
-                </div>
+
+                    </div>
                 }
                 else
                 {
@@ -46,10 +49,12 @@
                     </div>
                 }
             </div>
-               
+
         </div>
-        <div class="hw-image" >
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1777141204/Materials_and_Homework_Page_z2f2el.webp"  alt="backgroung-image" />
+        <div class="hw-image">
+            <img
+                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1777141204/Materials_and_Homework_Page_z2f2el.webp"
+                alt="backgroung-image"/>
         </div>
     </div>
     <div class=" d-flex justify-content-between mb-1 mt-1 py-4 " id="conteiner2">
@@ -58,40 +63,44 @@
             <span class="title">ВАШ ПРОГРЕС</span>
 
             <div class=" d-flex  justify-content-sm-evenly align-content-center gap-0 px-3 mt-4 py-4 gap-xxl-5">
-                <div class="d-flex flex-column py-2 px-4 hometask-box" style="border-right: 2px solid #8588D1; flex: 1;">
-                @* <div class="d-flex flex-column py-2 px-4 hometask-box" style="border-right: 2px solid #8588D1; "> *@
-                    <span class="hometask-text ">Доступних <br /> завдань:</span>
-                    <span class="hometask-num">@Model.Stats.AvailableWork</span>
+                <div class="d-flex flex-column py-2 px-4 hometask-box"
+                     style="border-right: 2px solid #8588D1; flex: 1;">
+                    @* <div class="d-flex flex-column py-2 px-4 hometask-box" style="border-right: 2px solid #8588D1; "> *@
+                    <span class="hometask-text ">Доступних <br/> завдань:</span>
+                    <span class="hometask-num">@Model.Stats?.AvailableWork</span>
                 </div>
 
-               @*  <div class="d-flex flex-column py-2  px-4 hometask-box " style="border-right: 2px solid #8588D1"> *@
-                        <div class="d-flex flex-column py-2 px-4 hometask-box " style="border-right: 2px solid #8588D1; flex: 1;">
-                    <span class="hometask-text ">Завдань <br /> виконано:</span>
-                    <span class="hometask-num">@Model.Stats.Completed</span>
+                @*  <div class="d-flex flex-column py-2  px-4 hometask-box " style="border-right: 2px solid #8588D1"> *@
+                <div class="d-flex flex-column py-2 px-4 hometask-box "
+                     style="border-right: 2px solid #8588D1; flex: 1;">
+                    <span class="hometask-text ">Завдань <br/> виконано:</span>
+                    <span class="hometask-num">@Model.Stats?.Completed</span>
                 </div>
 
-              @*   <div class="d-flex flex-column py-2 px-4 hometask-box " style="border-right: 2px solid #8588D1"> *@
-                            <div class="d-flex flex-column py-2 px-4 hometask-box " style="border-right: 2px solid #8588D1; flex: 1;">
-                    <span class="hometask-text ">Завдань <br /> залишилось:</span>
-                    <span class="hometask-num">@Model.Stats.Remaining</span>
+                @*   <div class="d-flex flex-column py-2 px-4 hometask-box " style="border-right: 2px solid #8588D1"> *@
+                <div class="d-flex flex-column py-2 px-4 hometask-box "
+                     style="border-right: 2px solid #8588D1; flex: 1;">
+                    <span class="hometask-text ">Завдань <br/> залишилось:</span>
+                    <span class="hometask-num">@Model.Stats?.Remaining</span>
                 </div>
 
                 @* <div class="d-flex flex-column py-2  px-4 hometask-box "> *@
-                                <div class="d-flex flex-column py-2 px-4 hometask-box " style=" flex: 1;">
+                <div class="d-flex flex-column py-2 px-4 hometask-box " style=" flex: 1;">
                     <span class="hometask-text mt-2">Середній бал:</span>
                     <span class="hometask-num">@Model.AverageScore</span>
                 </div>
             </div>
         </div>
-</div>
-     
+    </div>
+
     <div class="completed-block py-4 px-3">
         <div class="d-flex align-items-center gap-4 mb-4">
-        <span class="title  d-block ">ВИКОНАНІ ЗАВДАННЯ </span>
-     
+            <span class="title  d-block ">ВИКОНАНІ ЗАВДАННЯ </span>
+
 
             <div class="position-relative top-0">
-                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="color:#9799C4;"></i>
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+                   style="color:#9799C4;"></i>
                 <input type="text" id="homeworkSearch" class="form-control ps-5 custom-input"
                        placeholder="Шукати..."
                        style=" background-color: #FFFFFF; border: 1px solid #2B31B4; height: 37px; max-width: 351px; border-radius: 0;color:#9799C4; font-family:Gilroy;">
@@ -103,7 +112,7 @@
                     <option value="">Модуль</option>
                     @if (Model.AllModules != null)
                     {
-                        @foreach (var mod in (Model.AllModules ))
+                        @foreach (var mod in Model.AllModules)
                         {
                             <option value="@mod.OrderIndex">Модуль @mod.OrderIndex</option>
                         }
@@ -111,69 +120,73 @@
                 </select>
             </div>
         </div>
-   
+
         <div class="homework-scroll-container">
-            @if(Model.ExecutedHomeworks !=null && Model.ExecutedHomeworks.Any()){
-            @foreach (var item in Model.ExecutedHomeworks)
+            @if (Model.ExecutedHomeworks != null && Model.ExecutedHomeworks.Any())
             {
-               @*  <div class="homework-card d-flex align-items-center py-3 border-bottom">
+                @foreach (var item in Model.ExecutedHomeworks)
+                {
+                    @*  <div class="homework-card d-flex align-items-center py-3 border-bottom">
                 </div> *@
-               
-                <div class="homework-card d-flex align-items-center py-4  border-bottom border-2" style="border-color: #9799C4 !important;">
 
-                    <div class="art-frame-wrapper-mini me-3 "style="margin-right:0px !important;">
-                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655858/Frame_available_stjkiv.png" class="frame-overlay-mini" />
-                        @{
-                            // Отримуємо посилання на модуль для зручності
-                            var currentModule = item.Homework?.Lesson?.Module;
-                        }
+                    <div class="homework-card d-flex align-items-center py-4  border-bottom border-2"
+                         style="border-color: #9799C4 !important;">
 
-                        <div class="module-image-inner-mini">
-                            @if (!string.IsNullOrEmpty(currentModule?.ImageUrl))
-                            {
-                                <img src="@currentModule.ImageUrl" style="width: 100%; height: 100%; object-fit: cover; " />
+                        <div class="art-frame-wrapper-mini me-3 " style="margin-right:0px !important;">
+                            <img
+                                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655858/Frame_available_stjkiv.png"
+                                class="frame-overlay-mini"/>
+                            @{
+                                // Отримуємо посилання на модуль для зручності
+                                var currentModule = item.Homework?.Lesson?.Module;
                             }
-                        </div>
-                    </div>
-                
 
-                   
-
-                    <div class="ms-4 flex-grow-1 ">
-
-                        <div class="d-flex align-items-center hw-text mb-1" >
-                            <span class="hw-small-text">Модуль @(item.Homework?.Lesson?.Module?.OrderIndex ?? 0)</span>
-                                <span class="mx-2 class=" hw-small-text"">&bull;</span>
-                                <span class="hw-small-text">Тема @(item.Homework?.Lesson?.LessonIndex ?? 0)</span>
-                                <span class="mx-2 class=" hw-small-text"">&bull;</span>
-                            @* Дата здачі роботи *@
-                                <span class="hw-small-text">Виконано @item.SubmissionDate.ToString("dd.MM")</span>
-                        </div>
-
-                        <div class="d-flex align-items-center mb-1">
-                            @* Назва береться з Homework, який пов'язаний з Lesson *@
-                            <span class=" hw-title" >
-                                @(item.Homework?.Lesson?.Title ?? "Назва відсутня")
-                            </span>
-                        </div>
-
-                    </div>
-
-                    <div class="d-flex align-items-center ms-auto">
-                        <div class="text-end me-4">
-                            @* Оцінка Grade (якщо null, виводимо 0 або "—") *@
-                            <div class="hw-grade">
-                                @(item.Grade?.ToString() ?? "0")/12
+                            <div class="module-image-inner-mini">
+                                @if (!string.IsNullOrEmpty(currentModule?.ImageUrl))
+                                {
+                                    <img src="@currentModule.ImageUrl"
+                                         style="width: 100%; height: 100%; object-fit: cover; "/>
+                                }
                             </div>
                         </div>
 
-                        @* Перехід до деталей зданої роботи *@
-                        <a asp-action="ViewSubmission" asp-controller="Course" asp-route-id="@item.Id"
-                           class="btn-detail d-flex align-items-center justify-content-center text-decoration-none p-2">
-                            <span class="btn-detail-text ">ПЕРЕГЛЯНУТИ</span>
-                        </a>
+
+                        <div class="ms-4 flex-grow-1 ">
+
+                            <div class="d-flex align-items-center hw-text mb-1">
+                                <span
+                                    class="hw-small-text">Модуль @(item.Homework?.Lesson?.Module?.OrderIndex ?? 0)</span>
+                                <span class="mx-2 class=" hw-small-text="">&bull;</span>
+                                <span class="hw-small-text">Тема @(item.Homework?.Lesson?.LessonIndex ?? 0)</span>
+                                <span class="mx-2 class=" hw-small-text="">&bull;</span>
+                                @* Дата здачі роботи *@
+                                <span class="hw-small-text">Виконано @item.SubmissionDate.ToString("dd.MM")</span>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-1">
+                                @* Назва береться з Homework, який пов'язаний з Lesson *@
+                                <span class=" hw-title">
+                                @(item.Homework?.Lesson?.Title ?? "Назва відсутня")
+                            </span>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex align-items-center ms-auto">
+                            <div class="text-end me-4">
+                                @* Оцінка Grade (якщо null, виводимо 0 або "—") *@
+                                <div class="hw-grade">
+                                    @(item.Grade?.ToString() ?? "0")/12
+                                </div>
+                            </div>
+
+                            @* Перехід до деталей зданої роботи *@
+                            <a asp-action="ViewSubmission" asp-controller="Course" asp-route-id="@item.Id"
+                               class="btn-detail d-flex align-items-center justify-content-center text-decoration-none p-2">
+                                <span class="btn-detail-text ">ПЕРЕГЛЯНУТИ</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
                 }
             }
             else
@@ -186,6 +199,7 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -241,6 +255,7 @@
         });
     </script>
 }
+
 @* <script>
     document.addEventListener("DOMContentLoaded", function () {
         // 1. Отримуємо елементи управління та всі картки
