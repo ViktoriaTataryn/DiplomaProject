@@ -163,34 +163,38 @@
         <div class="py-4 px-3 " id="grades">
             <span class="title">ОЦІНКИ</span>
 
-            <div class=" d-flex  justify-content-between align-content-center gap-3 p-2 mt-3">
+             <div class=" d-flex  justify-content-between align-content-center gap-3 p-2 mt-3">
 
-                <div class="px-1 flex-grow-1 " style="border-right: 2px solid #8588D1 !important; min-width: 150px;">
+                <div class="px-1 flex-grow-1" style="border-right: 2px solid #8588D1 !important; min-width: 150px;">
 
                     @if (!Model.Grades.Any())
                     {
-                        <span class="small-text" style=" display: block;">Поки немає оцінок</span>
+                        <span class="small-text" style="display: block;">Поки немає оцінок</span>
                     }
                     else
                     {
-                        var groupedGrades = Model.Grades
-                            .GroupBy(g => g.Date.ToString("MMMM", new CultureInfo("uk-UA")))
-                            .ToList();
-                        foreach (var group in groupedGrades)
-                        {
-                            <div class="grade-item-container">
-                                <span>@group.Key</span>
-                                @* <div class="d-flex flex-wrap gap-2"> *@
-                                <div class="grades-grid">
-                                    @foreach (var grade in group)
-                                    {
-                                        <div class="grade-square">@grade.Value</div>
-                                    }
-                                </div>
-                            </div>
-                        }
-                    }
+                        <div class="grade-list-scroll">
+                            @* Початок контейнера з прокруткою *@
+                            @{
+                                var groupedGrades = Model.Grades
+                                .GroupBy(g => g.Date.ToString("MMMM", new System.Globalization.CultureInfo("uk-UA")))
+                                .ToList();
+                            }
 
+                            @foreach (var group in groupedGrades)
+                            {
+                                <div class="grade-item-container">
+                                    <span>@group.Key</span>
+                                    <div class="grades-grid">
+                                        @foreach (var grade in group)
+                                        {
+                                            <div class="grade-square">@grade.Value</div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div> @* Кінець контейнера з прокруткою *@
+                    }
                 </div>
                 <div class="d-flex flex-column px-4  hometask-box">
                     <span class="hometask-text">Середній бал:</span>
