@@ -53,7 +53,8 @@
         #admin-content {
             margin-left: var(--sidebar-width);
             margin-top: var(--header-height);
-            padding: 40px;
+            min-height: calc(100dvh - var(--header-height));
+            padding: 20px;
         }
 
         /* Ссылки навигации админа */
@@ -122,7 +123,7 @@
     </div>
 </aside>
 
-<main id="admin-content">
+<main id="admin-content" class="d-flex flex-column">
     @RenderBody()
 </main>
 

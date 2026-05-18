@@ -639,3 +639,174 @@ Figma Module List Styles (Новое добавление)
 #sidebar.user-theme {
     background-color: #FFFFFF; /* Оставляем чистый белый для студента */
 }
+
+/* =========================================
+   Form Controls Styling (Inputs, Buttons)
+   ========================================= */
+:is(.form-control, .form-select, #editorjs).figma-styled {
+    border: 1px solid var(--primary-blue);
+    border-radius: 0;
+    color: var(--primary-blue);
+}
+
+.btn.figma-styled {
+    border-radius: 0;
+    text-transform: uppercase;
+    padding: 12px;
+    font-weight: 350;
+    font-family: 'Accia Piano', serif;
+    font-size: 1.25rem;
+    border: none;
+
+    &.btn-primary {
+        background-color: var(--primary-blue);
+
+        &:hover {
+            background-color: color-mix(in oklab, var(--primary-blue), white 10%);
+        }
+    }
+
+    &.btn-secondary {
+        background-color: color-mix(in oklab, var(--primary-blue), white 50%);
+
+        &:hover {
+            background-color: color-mix(in oklab, var(--primary-blue), white 60%);
+        }
+    }
+}
+
+.table.figma-styled {
+    color: var(--primary-blue);
+
+    &.table-bordered {
+        border-color: var(--primary-blue);
+
+        & > :not(caption):first-child > *:first-child {
+            border-top: 0;
+        }
+
+        & > :not(caption):last-child > *:last-child {
+            border-bottom: 0;
+        }
+
+        & > :not(caption) > * > *:first-child {
+            border-left: 0;
+        }
+
+        & > :not(caption) > * > *:last-child {
+            border-right: 0;
+        }
+    }
+}
+
+.square {
+    aspect-ratio: 1 / 1;
+}
+
+/*Landing Header*/
+.landing-btn1 {
+    width: 200px;
+    height: 40px;
+    border: 1px solid #2B31B4;
+    font-size: 1rem;
+    font-family: 'Accia Piano';
+    text-align: center;
+    background-color: #2B31B4;
+    color: #FFFFFF;
+    margin-right: 10px;
+}
+
+.landing-btn2 {
+    width: 180px;
+    background-color: #FFFFFF;
+    color: #2B31B4;
+    font-size: 1rem;
+    font-family: 'Accia Piano';
+    text-align: center;
+    height: 40px;
+    border: 1px solid #2B31B4;
+}
+
+.landing-btn1:hover {
+    background-color: #1a1f8c; /* Трохи темніший синій */
+    transform: translateY(-3px); /* Піднімається вгору */
+    /* box-shadow: 0 10px 20px rgba(43, 49, 180, 0.3);*/
+    box-shadow: 0 6px 15px rgba(43, 49, 180, 0.4);
+}
+
+.landing-btn2:hover {
+    background-color: #F8F9FF; /* Легкий блакитний відтінок фону */
+    transform: translateY(-3px);
+
+    box-shadow: 0 6px 15px rgba(43, 49, 180, 0.4);
+}
+
+.landing-btn1:active, .landing-btn2:active {
+    transform: scale(0.96);
+}
+
+#landing-header {
+    height: 88px;
+    background: #fff;
+    border-bottom: 2px solid #2B31B4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    width: 100%;
+    /*   position: sticky;  */
+    top: 0;
+}
+
+.nav-link-landing {
+    color: #2B31B4;
+    margin-bottom: 10px;
+    /*   margin-left: 6px;*/
+    position: relative;
+    display: flex;
+    padding: 10px 10px 10px 15px;
+    align-items: center;
+    text-decoration: none;
+    top: 5px;
+    cursor: pointer;
+}
+
+.nav-link-landing::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%; /* Поява з центру */
+    background-color: #2B31B4;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-50%);
+}
+
+.nav-link-landing:hover::after {
+    width: 100%;
+}
+
+.nav-link-landing:hover {
+    color: #1a1f8c;
+}
+
+#content-landing {
+    padding: 20px;
+    padding-left: 17px;
+    flex: 1;
+    background-color: #FFFFFF;
+    overflow: hidden;
+    max-width: 1920px;
+    flex-grow: 1;
+    min-width: 0;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
+#landing-header img {
+    order: 2 !important;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}

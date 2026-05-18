@@ -183,7 +183,7 @@ public class CourseController(
                     .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
                     .Select(ulp => ulp.LessonId)
                     .FirstOrDefault(),
-                Lessons = m.Lessons.Select(l => new LessonShortDto
+                Lessons = m.Lessons.OrderBy(l => l.LessonIndex).Select(l => new LessonShortDto
                 {
                     Id = l.Id,
                     Title = l.Title,

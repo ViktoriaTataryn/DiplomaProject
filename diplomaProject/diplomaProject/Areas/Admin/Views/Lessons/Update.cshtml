@@ -1,89 +1,100 @@
 ﻿@model diplomaProject.DTOs.UpdateLessonDto
 
-<div class="container mt-4">
-    <div class="card shadow">
-        @* Заголовок картки з динамічною назвою лекції *@
-        <div class="card-header bg-primary text-white">
-            <h4>Редагування лекції: @Model.Title</h4>
+<form asp-action="Update" id="editLessonForm" method="post" enctype="multipart/form-data"
+      class="d-flex flex-column bg-white p-4 flex-grow-1 figma-text-blue">
+    <h1 class="text-uppercase mb-3">Редагування лекції</h1>
+    <div class="p-2 flex-grow-1">
+        <input type="hidden" asp-for="Id"/>
+
+        <div class="row mb-3">
+            <label asp-for="Title" class="col-1">Назва лекції</label>
+            <div class="col-11">
+                <input asp-for="Title" class="form-control figma-styled" placeholder="Введіть назву..."/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
         </div>
-        <div class="card-body">
-            @* Форма редагування: enctype обов'язковий для завантаження файлів (NewResources) *@
-            <form asp-action="Update" id="editLessonForm" method="post" enctype="multipart/form-data">
-                <input type="hidden" asp-for="Id"/>
 
-                @* Основні поля лекції *@
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-control-label">Назва лекції</label>
-                    <input asp-for="Title" class="form-control" placeholder="Введіть назву..."/>
-                    <span asp-validation-for="Title" class="text-danger"></span>
-                </div>
+        <div class="row mb-3">
+            <label asp-for="ModuleId" class="col-1">Оберіть модуль</label>
+            <div class="col-11">
+                <select asp-for="ModuleId" class="form-control figma-styled" asp-items="ViewBag.Modules">
+                    <option value="">-- Оберіть модуль --</option>
+                </select>
+                <span asp-validation-for="ModuleId" class="text-danger"></span>
+            </div>
+        </div>
 
-                <div class="form-group mb-3">
-                    <label>Оберіть модуль</label>
-                    <select asp-for="ModuleId" class="form-control" asp-items="ViewBag.Modules">
-                        <option value="">-- Оберіть модуль --</option>
-                    </select>
-                    <span asp-validation-for="ModuleId" class="text-danger"></span>
-                </div>
+        <div class="row mb-3">
+            <label asp-for="Description" class="col-1">Опис лекції</label>
+            <div class="col-11">
+                <input asp-for="Description" class="form-control figma-styled" placeholder="Введіть опис..."/>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-control-label">Опис лекції</label>
-                    <input asp-for="Description" class="form-control" placeholder="Введіть опис..."/>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
+        <div class="row mb-3">
+            <label asp-for="Content" class="col-1">Зміст лекції (текст та ілюстрації)</label>
+            <div class="col-11">
+                <div id="editorjs" class="figma-styled"
+                     style="min-height: 400px; cursor: text;"></div>
 
-                @* Контейнер для візуального редактора Editor.js *@
-                <div id="editorjs" class="border rounded bg-white p-3" style="min-height: 400px;"></div>
-                @* Приховане поле, куди JS запише фінальний JSON перед відправкою *@
                 <input type="hidden" asp-for="Content" id="contentHiddenInput"/>
 
-                @* Блок управління існуючими додатковими матеріалами *@
-                <div class="mb-4 mt-4">
-                    <label class="form-control-label"><strong>Поточні додаткові матеріали:</strong></label>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+        </div>
 
-                    @if (Model.ExistingResources.Any())
-                    {
-                        <div class="list-group mt-2">
-                            @foreach (var resource in Model.ExistingResources)
-                            {
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <i class="fas fa-file-alt text-primary me-2"></i>
-                                        <a href="@resource.FilePath" target="_blank" class="text-decoration-none">
-                                            @resource.FileName
-                                        </a>
-                                    </div>
-                                    @* Кнопка видалення ресурсу (викликає JS функцію) *@
-                                    <button type="button" class="btn btn-outline-danger btn-sm"
-                                            onclick="deleteResource(@resource.Id, this)">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+        @* Блок управління існуючими додатковими матеріалами *@
+        <div class="row mb-3">
+            <label class="col-1">Поточні додаткові матеріали</label>
+
+            <div class="col-11">
+                @if (Model.ExistingResources.Any())
+                {
+                    <div class="list-group mt-2">
+                        @foreach (var resource in Model.ExistingResources)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-file-earmark"></i>
+                                    <a href="@resource.FilePath" target="_blank" class="text-decoration-none">
+                                        @resource.FileName
+                                    </a>
                                 </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted small">Додаткових матеріалів поки немає.</p>
-                    }
-                </div>
+                                @* Кнопка видалення ресурсу (викликає JS функцію) *@
+                                <button type="button" class="btn btn-outline-danger figma-styled btn-sm"
+                                        onclick="deleteResource(@resource.Id, this)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted small">Додаткових матеріалів поки немає.</p>
+                }
+            </div>
+        </div>
 
-                @* Поле для завантаження нових файлів *@
-                <div class="mb-4">
-                    <label class="form-control-label">Додати нові матеріали (Зображення/PDF)</label>
-                    <input type="file" name="NewResources" class="form-control" multiple/>
-                    <small class="text-muted">Ви можете обрати кілька файлів одночасно.</small>
-                </div>
-
-                @* Навігаційні кнопки *@
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-secondary">Назад до списку</a>
-                    <button type="submit" class="btn btn-success">Зберегти зміни</button>
-                </div>
-            </form>
+        <div class="row mb-3">
+            <label class="col-1">Додати нові матеріали (Зображення/PDF)</label>
+            <div class="col-11">
+                <input type="file" name="NewResources" class="form-control figma-styled" multiple/>
+                <small class="text-muted">Ви можете обрати кілька файлів одночасно.</small>
+            </div>
         </div>
     </div>
-</div>
+
+    <div class="row">
+        <div class="col-2">
+            <button type="submit" class="btn btn-primary figma-styled w-100">Зберегти зміни</button>
+        </div>
+        <div class="col-2">
+            <a asp-action="Index" class="btn btn-secondary figma-styled w-100">Назад до списку</a>
+        </div>
+    </div>
+</form>
 
 @section Scripts {
     @* Підключення скриптів редактора та його інструментів *@
@@ -123,7 +134,7 @@
                     class: ImageTool,
                     config: {
                         endpoints: {
-                            byFile: '/AdminLesson/UploadImage' // Метод контролера для обробки зображень
+                            byFile: '@Url.Action("UploadImage", "Lessons", new { area = "Admin" })' // Метод контролера для обробки зображень
                         },
                         field: 'file',
                         actions: [

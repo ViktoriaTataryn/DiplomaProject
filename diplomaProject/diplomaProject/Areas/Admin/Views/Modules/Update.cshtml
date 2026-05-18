@@ -1,4 +1,5 @@
-﻿@model diplomaProject.DTOs.UpdateModuleDto
+﻿@using System.Text.Encodings.Web
+@model diplomaProject.DTOs.UpdateModuleDto
 @{
     ViewData["Title"] = "Редагування модуля";
 }
@@ -25,83 +26,94 @@
     </style>
 }
 
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h4>Редагування модуля: @Model.Title</h4>
+<form asp-action="Update" id="editModuleForm" method="post" enctype="multipart/form-data"
+      class="d-flex flex-column bg-white p-4 flex-grow-1 figma-text-blue">
+    <h1 class="text-uppercase mb-3">Редагувати модуль</h1>
+    <div class="p-2 flex-grow-1">
+        <input type="hidden" asp-for="Id"/>
+
+        <div class="row mb-3">
+            <label asp-for="Title" class="col-1">Назва модуля</label>
+            <div class="col-11">
+                <input asp-for="Title" class="form-control figma-styled" placeholder="Введіть назву..."/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
         </div>
-        <div class="card-body">
-            <form asp-action="Update" id="editModuleForm" method="post" enctype="multipart/form-data">
-                <input type="hidden" asp-for="Id"/>
 
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-control-label">Назва модуля</label>
-                    <input asp-for="Title" class="form-control" placeholder="Введіть назву..."/>
-                    <span asp-validation-for="Title" class="text-danger"></span>
-                </div>
+        <div class="row mb-3">
+            <label asp-for="OrderIndex" class="col-1">Номер модуля</label>
+            <div class="col-11">
+                <input asp-for="OrderIndex" class="form-control figma-styled"/>
+                <span asp-validation-for="OrderIndex" class="text-danger"></span>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label asp-for="OrderIndex">Номер модуля</label>
-                    <input asp-for="OrderIndex" class="form-control"/>
-                    <span asp-validation-for="OrderIndex" class="text-danger"></span>
-                </div>
+        <div class="row mb-3">
+            <label asp-for="Description" class="col-1">Опис модуля</label>
+            <div class="col-11">
+                <input asp-for="Description" class="form-control figma-styled" placeholder="Введіть опис..."/>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-control-label">Опис модуля</label>
-                    <input asp-for="Description" class="form-control" placeholder="Введіть опис..."/>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="ImageFile">Обкладинка модуля</label>
-                    <div x-data="fileSelector" data-initial-image="@System.Text.Encodings.Web.HtmlEncoder.Default.Encode(Model.ImageForUser ?? string.Empty)">
-                        <input type="file" asp-for="ImageFile" x-bind="fileInput" x-ref="fileInput" class="form-control"
-                               accept="image/*"/>
-                        <img x-show="imageForUser" :src="imageForUser" alt="Preview"/>
-                        <div x-show.important="!imageForUser"
-                             class="d-flex align-content-center justify-content-center">
-                            <i class="bi bi-plus-lg fs-icon"></i>
-                        </div>
-                        <button x-bind="selector" type="button">
-                            <i class="bi bi-plus-lg fs-icon"></i>
-                        </button>
+        <div class="row mb-3">
+            <label asp-for="ImageFile" class="col-1">Обкладинка модуля</label>
+            <div class="col-11">
+                <div x-data="fileSelector"
+                     data-initial-image="@HtmlEncoder.Default.Encode(Model.ImageForUser ?? string.Empty)">
+                    <input type="file" asp-for="ImageFile" x-bind="fileInput" x-ref="fileInput" class="form-control"
+                           accept="image/*"/>
+                    <img x-show="imageForUser" :src="imageForUser" alt="Preview"/>
+                    <div x-show.important="!imageForUser"
+                         class="d-flex align-content-center justify-content-center">
+                        <i class="bi bi-plus-lg fs-icon"></i>
                     </div>
-                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                    <button x-bind="selector" type="button">
+                        <i class="bi bi-plus-lg fs-icon"></i>
+                    </button>
                 </div>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label asp-for="LessonNames">Порядок лекцій</label>
-                    <div x-data="lessons">
-                        <template x-for="(lesson, index) in lessonNames" :key="index">
-                            <div>
-                                <hr x-show="index" class="mx-0 my-2 opacity-75"/>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <input type="hidden" asp-for="LessonNames" x-model="lesson"/>
-                                    <h4 x-text="lesson" class="mb-0"></h4>
-                                    <div class="d-flex flex-column">
-                                        <button type="button" @@click="moveUp(index)" :disabled="!index">
-                                            <i class="bi" :class="index ? 'bi-caret-up-fill' : 'bi-caret-up'"></i>
-                                        </button>
-                                        <button type="button" @@click="moveDown(index)"
-                                                :disabled="index === lessonNames.length - 1">
-                                            <i class="bi"
-                                               :class="index === lessonNames.length - 1 ? 'bi-caret-down' : 'bi-caret-down-fill'"></i>
-                                        </button>
-                                    </div>
+        <div class="row mb-3">
+            <label asp-for="LessonNames" class="col-1">Порядок лекцій</label>
+            <div class="col-11">
+                <div x-data="lessons">
+                    <template x-for="(lesson, index) in lessonNames" :key="index">
+                        <div>
+                            <hr x-show="index" class="mx-0 my-2 opacity-75"/>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <input type="hidden" asp-for="LessonNames" x-model="lesson"/>
+                                <h4 x-text="lesson" class="mb-0"></h4>
+                                <div class="d-flex flex-column">
+                                    <button type="button" @@click="moveUp(index)" :disabled="!index">
+                                        <i class="bi" :class="index ? 'bi-caret-up-fill' : 'bi-caret-up'"></i>
+                                    </button>
+                                    <button type="button" @@click="moveDown(index)"
+                                            :disabled="index === lessonNames.length - 1">
+                                        <i class="bi"
+                                           :class="index === lessonNames.length - 1 ? 'bi-caret-down' : 'bi-caret-down-fill'"></i>
+                                    </button>
                                 </div>
                             </div>
-                        </template>
-                    </div>
+                        </div>
+                    </template>
                 </div>
-
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-secondary">Назад до списку</a>
-                    <button type="submit" class="btn btn-success">Зберегти зміни</button>
-                </div>
-            </form>
+                <span asp-validation-for="LessonNames" class="text-danger"></span>
+            </div>
         </div>
     </div>
-</div>
+
+    <div class="row">
+        <div class="col-2">
+            <button type="submit" class="btn btn-primary figma-styled w-100">Зберегти зміни</button>
+        </div>
+        <div class="col-2">
+            <a asp-action="Index" class="btn btn-secondary figma-styled w-100">Скасувати</a>
+        </div>
+    </div>
+</form>
 
 @section Scripts {
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.11/dist/cdn.min.js"></script>

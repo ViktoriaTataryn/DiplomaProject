@@ -3,10 +3,10 @@
     ViewData["Title"] = "Керування модулями";
 }
 
-<div class="container mt-5">
+<div class="d-flex flex-column bg-white p-4 flex-grow-1 figma-text-blue">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Керування модулями</h2>
-        <a asp-action="Add" class="btn btn-success">
+        <h1 class="text-uppercase">Керування модулями</h1>
+        <a asp-action="Add" class="btn btn-primary figma-styled">
             <i class="fas fa-plus"></i> Додати новий модуль
         </a>
     </div>
@@ -19,44 +19,38 @@
         </div>
     }
 
-    <div class="card shadow-sm">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+    <div class="table-responsive">
+        <table class="table table-bordered figma-styled mb-0">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Назва модуля</th>
+                <th>Студентів завершило</th>
+                <th>К-сть лекцій</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var module in Model)
+            {
                 <tr>
-                    <th>ID</th>
-                    <th>Назва модуля</th>
-                    <th>Студентів завершило</th>
-                    <th>К-сть лекцій</th>
-                    <th class="text-end">Дії</th>
+                    <td>@module.Id</td>
+                    <td><strong>@module.Title</strong></td>
+                    <td>@module.UserCompletedNum</td> @* Добавлено в Module.cs *@
+                    <td>@module.LessonsNum</td> @* Добавлено в Module.cs *@
+                    <td class="text-end">
+                        <a asp-action="Update" asp-route-id="@module.Id"
+                           class="btn btn-primary btn-sm figma-styled p-0 square" style="height: 30px">
+                            <i class="bi bi-pen"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@module.Id"
+                           class="btn btn-secondary btn-sm figma-styled p-0 square" style="height: 30px">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
-                @foreach (var module in Model)
-                {
-                    <tr>
-                        <td>@module.Id</td>
-                        <td><strong>@module.Title</strong></td>
-                        <td>@module.UserCompletedNum</td> @* Добавлено в Module.cs *@
-                        <td>@module.LessonsNum</td> @* Добавлено в Module.cs *@
-                        <td>@module.UserCompletedNum</td>
-                        <td>@module.LessonsNum</td>
-                        <td class="text-end">
-                            <div class="btn-group">
-                                <a asp-action="Update" asp-route-id="@module.Id"
-                                   class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-edit"></i> Редагувати
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@module.Id" class="btn btn-outline-danger btn-sm">
-                                    <i class="fas fa-trash"></i> Видалити
-                                </a>
-
-                            </div>
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </div>
+            }
+            </tbody>
+        </table>
     </div>
 </div>

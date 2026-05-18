@@ -100,16 +100,29 @@ public class ModulesController(AppDbContext context, ICloudinaryService cloudina
             await cloudinaryService.DeleteFromCloudinary(publicId);
         }
 
+        await using var transaction = await context.Database.BeginTransactionAsync();
         foreach (var lesson in module.Lessons!)
-        foreach (var resource in lesson.Resources)
         {
-            var resPublicId = cloudinaryService.GetPublicIdFromUrl(resource.FilePath);
-            await cloudinaryService.DeleteFromCloudinary(resPublicId);
+            foreach (var resource in lesson.Resources)
+            {
+                var resPublicId = cloudinaryService.GetPublicIdFromUrl(resource.FilePath);
+                await cloudinaryService.DeleteFromCloudinary(resPublicId);
+                context.Resources.Remove(resource);
+            }
+
+            foreach (var userProgress in await context.UserProgresses.Where(up => up.LessonId == lesson.Id)
+                         .ToListAsync())
+                context.UserProgresses.Remove(userProgress);
+
+            context.Lessons.Remove(lesson);
         }
+
+        foreach (var userProgress in await context.UserProgresses.Where(up => up.ModuleId == module.Id).ToListAsync())
+            context.UserProgresses.Remove(userProgress);
 
         context.Modules.Remove(module);
         await context.SaveChangesAsync();
-
+        await transaction.CommitAsync();
         return RedirectToAction("Index");
     }
 

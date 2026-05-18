@@ -3,6 +3,7 @@ using diplomaProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace diplomaProject.Controllers;
 
@@ -38,10 +39,12 @@ public class AuthController(
 
         if (result.Succeeded)
         {
+            var course = await context.Courses.FirstOrDefaultAsync();
+            var courseId = course?.Id ?? 0;
             var registration = new CourseRegistration
             {
                 UserId = user.Id,
-                CourseId = model.CourseId,
+                CourseId = courseId,
                 RegisterAt = DateTime.Now
             };
             context.CourseRegistrations.Add(registration);

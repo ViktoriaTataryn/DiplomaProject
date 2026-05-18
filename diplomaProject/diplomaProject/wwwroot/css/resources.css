@@ -44,7 +44,8 @@
 
 /* Buttons */
 .btn-brand {
-    background-color: var(--brand-blue);
+    /*background-color: var(--brand-blue);*/
+    background-color: #2B31B4;
     color: white;
     border: none;
     border-radius: 2px; /* Sharp corners like in Figma */
