@@ -422,4 +422,15 @@ public class CourseController(
 
         return View(viewModel);
     }
+    
+    public static string GetStatusDisplayName(ProgressStatus? status)
+    {
+      return status switch
+      {
+          ProgressStatus.InProgress => "В процесі",
+          ProgressStatus.Completed => "Завершено",
+          ProgressStatus.Open => "Відкрито",
+          _ => "В процесі" // Значення за замовчуванням
+      };
+    }
 }

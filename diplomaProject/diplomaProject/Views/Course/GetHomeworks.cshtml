@@ -87,7 +87,7 @@
                 @* <div class="d-flex flex-column py-2  px-4 hometask-box "> *@
                 <div class="d-flex flex-column py-2 px-4 hometask-box " style=" flex: 1;">
                     <span class="hometask-text mt-2">Середній бал:</span>
-                    <span class="hometask-num">@Model.AverageScore</span>
+                    <span class="hometask-num">@(Model.AverageScore.ToString("F1") ?? "0.0")</span>
                 </div>
             </div>
         </div>

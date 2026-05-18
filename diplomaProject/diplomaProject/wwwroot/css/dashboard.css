@@ -444,6 +444,17 @@ div#modulesSlider::-webkit-scrollbar {
 }
 
 
+#buyButton {
+    background-color: #2B31B4;
+    max-width: 755px;
+    width: 46%;
+    height: 55px;
+    /* width: 450px;*/
+    /*height: 43px;*/
+    align-content: center;
+    margin-top: 40px !important;
+}
+
 @media (max-width: 767px) {
     .welcome-section {
 
