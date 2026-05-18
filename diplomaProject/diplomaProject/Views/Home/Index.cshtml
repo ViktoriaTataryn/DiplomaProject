@@ -638,8 +638,13 @@
         transform: translateY(-15px); 
     }
     
-    .author-img img{
+  /*   .author-img img{
         width:407px;
+        filter: brightness(0.9) contrast(1.1);
+    } */
+    .author-img img {
+        width: 100%; /* Робимо картинку адаптивною всередині блоку */
+        height: auto;
         filter: brightness(0.9) contrast(1.1);
     }
 
@@ -1597,6 +1602,298 @@
             font-size: 1.2rem;
         }
 
+        .container7 {
+            padding-bottom: 20px;
+        }
+
+        .container7 .landing-title{
+            margin-bottom:10px ;
+            padding-left:10px;
+        }
+   
+        .authors-slider {
+            scrollbar-width: none; 
+            overflow-x: auto; 
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 15px !important;
+        }
+            .authors-slider::-webkit-scrollbar {
+                display: none;
+            }
+   
+        .container7 .mini-container {
+            width: 85vw !important; 
+            max-width: 340px;
+            flex: 0 0 auto; 
+            margin-right: 25px;
+        }
+
+        .review-arrow {
+            width: 100%;
+            display: flex !important;
+        }
+
+        .slider-arrow-img {
+            width: 55px; 
+            height: auto;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+            .slider-arrow-img:active {
+                opacity: 0.6; 
+            }
+
+        .author-text {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            line-height: 1.4rem;
+        }
+       .container7 .review-arrow{
+           margin-top:40px !important;
+       }
+
+        .container8 .ordinary-text {
+            line-height:1.4rem;
+        }
+        .blue-tint {
+            width:45px;
+            height:45px;
+        }
+
+        .container8 .header-row {
+            margin: 10px !important;
+            padding: 0 !important;
+        }
+
+        .container8 .px-4 {
+            padding-right: 1rem !important;
+            padding-left: 1rem !important;
+        }
+
+        .review-card-container {
+            flex: 0 0 80vw !important;
+            width: 80vw !important;
+        }
+         .container8 .landing-title{
+             margin-top:40px;
+         }
+        .container8 .ordinary-text {
+            width: 100% ; 
+            min-height: 280px ; 
+            line-height: 1.4rem ;
+            padding: 20px ;
+        }
+     
+        .review-arrow-mobile {
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .slider-arrow-img-mob {
+            width: 80px ; 
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+            .slider-arrow-img-mob:active {
+                transform: scale(0.9); /* Ефект натискання */
+            }
+      
+        .container8 .btn-wrapper {
+            text-align: center !important; 
+            margin-top: 25px !important;
+            margin-bottom: 25px !important;
+        }
+
+        .container8 .submit-btn-text {
+            font-size: 1.2rem ;
+        }
+        
+  
+        .review-img {
+            width: 100vw !important; 
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw !important;
+            margin-right: -50vw !important;
+           
+        }
+
+            .review-img img {
+                width: 100% !important; 
+                height: auto !important; 
+                display: block; 
+                animation:none;
+            }
+       
+
+        .container8 .header-row .review-arrow {
+            display: none !important;
+        }
+
+        .container9 {
+            display: none !important;
+        }
+
+        .container10 {
+            height: 438px;
+       
+        }
+
+            .container10 .landing-title {
+            
+                margin-top: 30px !important;
+                margin-bottom: 30px !important;
+            }
+
+
+            .container10 .landing-subtitle {
+           
+                font-size: 1.6rem;
+                margin-bottom: 30px !important;
+            }
+
+            .container10 .ordinary-text {
+                color: #FFFFFF;
+                width: 100%;
+                line-height:1.5rem;
+            }
+
+        .bird-img2 {
+            position: absolute;
+            top: 97%;
+            left: 5%;
+        }
+
+            .bird-img2 img {
+                width: 75px;
+                animation: float 6s ease-in-out infinite;
+            }
+
+        .container10 .mini-container {
+            padding: 20px;
+            margin: 10px;
+            
+        }
+        .container12 {
+            padding-left:15px;
+            padding-bottom:40px;
+            height:752px;
+        }
+        .container12-mini {
+           
+            flex-direction:column;
+            margin-left:10px;
+        }
+        .container12-mini .ordinary-text{
+            font-size:1.4rem;
+            margin-top:10px !important;
+            font-weight:400;
+        }
+        .last-container{
+            flex-direction: column !important
+        }
+
+      
+        .container12 .nav-link-landing {
+           
+            font-size: 1.2rem;
+            margin-top:5px !important;
+            margin-bottom: 5px !important;
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
+        .container12 .nav{
+            border-bottom:2px solid #ffffff;
+            margin-top:10px !important;
+           
+        }
+
+        .container12 .nav-link-landing:last-child {
+          
+            padding-bottom:10px !important;
+        }
+        
+
+        .email-form {
+        
+            gap: 10px;
+            width: 95vw;
+            padding-left:5px;
+        }
+
+        .email-form .ordinary-text{
+            line-height:2.5rem;
+                font-size: 2rem;
+        }
+
+            .email-form .form-group input {
+          
+                width: 95vw;
+              
+                font-size: 1.3rem;
+               
+            }
+
+    
+            .email-form .register-btn {
+             
+                font-size: 1.1rem;
+               
+                width: 90vw !important;
+             
+                margin-bottom:10px;
+                padding:10px !important;
+            }
+
+        .registration-container {
+            flex-direction: column; 
+            gap: 35px;
+            padding: 10px; 
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .registration-info {
+            width: 100% !important;
+            height: auto !important;
+            padding: 20px 10px !important;
+        }
+    
+        .info-title {
+            font-size: 1.3rem !important;
+            margin-top: 10px !important;
+            margin-bottom: 15px !important;
+            line-height: 1.3;
+        }
+      
+        .main-cta {
+            font-size: 1.8rem !important;
+            line-height: 1.1;
+        }
+       
+        .registration-form {
+            width: 100% !important;
+            gap: 20px !important; 
+        }
+   
+        .form-group input {
+            width: 100% !important;
+            font-size: 1.4rem !important; 
+            padding: 12px 0 !important;
+        }
+     
+        .register-btn {
+            width: 100% !important;
+            max-width: 100% !important;
+            font-size: 1.2rem !important;
+            padding: 15px !important;
+            margin-top: 15px !important;
+        }
 }
 
 
@@ -1892,51 +2189,67 @@
         </div>
 </div>
 
-    <div class="container7" id="container7">
-        <div class="p-3 m-3 mb-0 pb-0">
-            <div class="landing-title mt-4">АВТОРИ КУРСУ</div>
-        </div>
-        
-        <div class="d-flex row justify-content-around m-2 p-2 g-4">
-            <div class="col-4 p-4 mini-container">
-                <div class="author-img">
-                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602608/5617d5bdffda33041a60e594663344de576b7e69_yddurt.png"  />
-                </div>
-                <div class="landing-subtitle mb-2 mt-4">Олена Кравчук</div>
-                <div class="ordinary-text ">
-                     Кандидатка мистецтвознавства<br />
-                    <span class="author-text" > Викладачка історії мистецтва, дослідниця європейського модернізму                           10+ років викладання у вищих навчальних закладах </span>
+        <div class="container7" id="container7">
+            <div class="p-3 m-3 mb-0 pb-0 header-container">
+                <div class="landing-title mt-4">АВТОРИ КУРСУ</div>
+            </div>
+
+            <div class="authors-slider-wrapper">
+                <div class="d-flex row flex-nowrap flex-lg-wrap justify-content-start justify-content-lg-around m-2 p-2 g-4 authors-slider" id="authorsSlider">
+
+                    <div class="col-lg-4 col-12 p-4 mini-container">
+                        <div class="author-img">
+                            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602608/5617d5bdffda33041a60e594663344de576b7e69_yddurt.png" alt="Олена Кравчук" />
+                        </div>
+                        <div class="landing-subtitle mb-2 mt-4">Олена Кравчук</div>
+                        <div class="ordinary-text">
+                            Кандидатка мистецтвознавства<br />
+                            <span class="author-text">Викладачка історії мистецтва, дослідниця європейського модернізму<br />10+ років викладання у вищих навчальних закладах</span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-12 p-4 mini-container">
+                        <div class="author-img">
+                            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602618/1a5e31c3d5963856f9b153d57b37c27fe3b9d11c_ai6ito.png" alt="Андрій Мельник" />
+                        </div>
+                        <div class="landing-subtitle mb-2 mt-4">Андрій Мельник</div>
+                        <div class="ordinary-text">
+                            Мистецтвознавець, cultural аналітик<br />
+                            <span class="author-text">Спеціалізація — мистецтво ХХ століття та кіно<br />Лектор публічних освітніх програм і курсів</span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-12 p-4 mini-container">
+                        <div class="author-img">
+                            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602628/d17b0fe32d85353492c2fa66165aac0ff4dbbff4_1_ysvjbr.png" alt="Марія Романюк" />
+                        </div>
+                        <div class="landing-subtitle mb-2 mt-4">Марія Романюк</div>
+                        <div class="ordinary-text mb-2">
+                            Історикиня архітектури<br />
+                            <span class="author-text">Досвід роботи з музейними та освітніми проєктами 10 років</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div class="col-4 p-4 mini-container ">
-                <div class="author-img">
-                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602618/1a5e31c3d5963856f9b153d57b37c27fe3b9d11c_ai6ito.png" />
-                </div>
-                <div class="landing-subtitle mb-2 mt-4" >Андрій Мельник</div>
-                <div class="ordinary-text ">
-                    Мистецтвознавець, культурний аналітик<br />
-                    <span class="author-text"> Спеціалізація — мистецтво ХХ століття та кіно                         Лектор публічних освітніх програм і курсів</span>
-                </div>
+
+            <div class="review-arrow d-flex d-lg-none justify-content-between align-items-center px-4 mt-1">
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
+                     class="slider-arrow-img"
+                     onclick="scrollAuthorsSlider(-1)"
+                     alt="scrollLeft" />
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
+                     class="slider-arrow-img"
+                     onclick="scrollAuthorsSlider(1)"
+                     alt="scrollRight" />
             </div>
-            <div class="col-4 p-4 mini-container ">
-                <div class="author-img">
-                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602628/d17b0fe32d85353492c2fa66165aac0ff4dbbff4_1_ysvjbr.png" />
-                </div>
-                <div class="landing-subtitle mb-2 mt-4">Марія Романюк</div>
-                <div class="ordinary-text mb-2">
-                    Історикиня архітектури<br />
-                    <span class="author-text">Досвід роботи з музейними та освітніми проєктами 10 років</span>
-                </div>
-            </div>
-       
         </div>
 
-    </div>
     <div class="container8" id="container8">
-        <div class="p-3 m-3 mb-0 pb-0 d-flex justify-content-between align-baseline">
+        <div class="p-3 m-3 mb-0 pb-0 d-flex justify-content-between align-baseline header-row">
             <div class="landing-title mt-4">ВІДГУКИ</div>
 
-            <div class="review-arrow  align-items-center px-3 ">
+            <div class="review-arrow  d-none d-lg-flex align-items-center px-3 ">
                 <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
                      class="slider-arrow-img px-3"
                      onclick="scrollSlider(-1)"
@@ -1947,31 +2260,6 @@
                      alt="scrollRight" />
             </div>
         </div>
-
-     @*    <div class="d-flex row justify-content-around m-2 p-2 g-4 mt-0"> *@
-          @*   @if (Model.Reviews != null && Model.Reviews.Any())
-            {
-            
-                <div id="reviewsSlider" class="d-flex overflow-hidden" style="scroll-behavior: smooth;">
-                @foreach (var review in Model.Reviews)
-                {
-                    <div class="col-4 p-2 container review-card">
-                        
-                            <div class="d-flex align-items-center mb-0">
-                         
-                            <div class="blue-tint" style="background-image: url('https://res.cloudinary.com/daxjj6p5c/image/upload/v1778668767/a8e13e3251a9bf9bde246e4b297ea74f4e09684f_xerdly.png')"></div>
-                       
-
-                          
-                            </div>
-
-                        <div class="ordinary-text ">
-                       @review.Content
-                        </div>
-                   </div>
-                }
-                </div> *@
-   @*   </div> *@
 
         @if (Model.Reviews != null && Model.Reviews.Any())
         {
@@ -2002,12 +2290,18 @@
             }
 
 
-     @*    </div> *@
+        <div class="review-arrow-mobile d-flex d-lg-none justify-content-between align-items-center px-4 mt-1">
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
+                 class="slider-arrow-img-mob"
+                 onclick="scrollSlider(-1)"
+                 alt="scrollLeft" />
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
+                 class="slider-arrow-img-mob"
+                 onclick="scrollSlider(1)"
+                 alt="scrollRight" />
+        </div>
 
-
-        <div class="text-end m-3 px-2 mb-4">
-           
-              
+        <div class="text-end m-3 px-2 mb-4 btn-wrapper">
                 <button type="button"
                         class="submit-btn-text"
                         data-bs-toggle="modal"
@@ -2094,7 +2388,7 @@
         <div class="plants-img d-flex justify-content-end ">
             <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407367/decor_plants_xwx659.webp" />
         </div>
-        <div class="d-flex justify-content-around p-2 m-2" style="border-bottom:2px solid #FFFFFF">
+        <div class="d-flex justify-content-around p-2 m-2 container12-mini" style="border-bottom:2px solid #FFFFFF">
         <div class="landing-title mt-0 ">ARTLINE</div>
             <div class="ordinary-text mt-4">info@artline.com</div>
             <div class="ordinary-text mt-4">+38 068 000 00 00</div>
@@ -2102,7 +2396,7 @@
         <div>
 
         </div>
-        <div class="d-flex flex-row justify-content-around ">
+        <div class="d-flex flex-row justify-content-around last-container">
             <nav class="nav flex-column mt-4">
                 <a href="#container2" class="nav-link-landing ">
                     ПРО КУРС
@@ -2256,6 +2550,22 @@
         } else {
             console.error("Картки .review-card-container не знайдені всередині слайдера!");
         }
+    }
+    function scrollAuthorsSlider(direction) {
+        const slider = document.getElementById('authorsSlider');
+        if (!slider) return;
+
+        // Визначаємо ширину однієї картки разом із її зовнішніми відступами
+        const card = slider.querySelector('.mini-container');
+        if (!card) return;
+
+        const cardWidth = card.getBoundingClientRect().width + 20; // 20 — це margin-right
+
+    
+        slider.scrollBy({
+            left: direction * cardWidth,
+            behavior: 'smooth'
+        });
     }
 </script>
 
