@@ -1,4 +1,4 @@
-﻿@model diplomaProject.Models.Module
+﻿@model Module
 
 <div class="container mt-5">
     <div class="card border-danger shadow">
@@ -7,7 +7,7 @@
         </div>
         <div class="card-body">
             <p class="lead">Ви впевнені, що хочете видалити модуль <strong>"@Model.Title"</strong>?</p>
-            
+
             <div class="alert alert-warning">
                 <strong>Увага:</strong> Це призведе до видалення:
                 <ul>
@@ -16,13 +16,13 @@
                 </ul>
             </div>
 
-            <form asp-action="DeleteModule" method="post">
-                <input type="hidden" asp-for="Id" />
-                
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id"/>
+
                 <button type="submit" class="btn btn-danger">
                     <i class="fas fa-trash"></i> Так, видалити все
                 </button>
-                <a asp-action="GetModules" class="btn btn-secondary">Скасувати</a>
+                <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
             </form>
         </div>
     </div>

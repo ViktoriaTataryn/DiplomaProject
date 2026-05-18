@@ -1,13 +1,12 @@
 ﻿using diplomaProject.DTOs;
 
-namespace diplomaProject.Interfaces
-{
-    public interface IDashboardService
-    {
-        Task<DashboardProgressDTO> GetUserStatistic(string userId, int courseId);
+namespace diplomaProject.Interfaces;
 
-        Task <List<GradeDTO>> GetGrades(string userId);
-        Task <DashboardViewDTO> GetDashboardView(string userId, int courseId);
-        Task<HomeworkStatsDTO> GetHomeworkStats(string userId);
-    }
+public interface IDashboardService
+{
+    Task<DashboardProgressDto> GetUserStatistic(string userId, int courseId);
+
+    Task<List<GradeDto>> GetGrades(string userId);
+    Task<DashboardViewDto> GetDashboardView(string userId, int courseId);
+    Task<HomeworkStatsDto> GetHomeworkStats(string userId);
 }

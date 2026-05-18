@@ -1,10 +1,9 @@
-﻿namespace diplomaProject.DTOs
+﻿namespace diplomaProject.DTOs;
+
+public class ModuleDto
 {
-    public class ModuleDTO
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public int LessonsNum { get; set; }
-        public int UserCompletedNum { get; set; }
-    }
+    public int Id { get; set; }
+    public string? Title { get; set; }
+    public int LessonsNum { get; set; }
+    public int UserCompletedNum { get; set; }
 }

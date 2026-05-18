@@ -1,60 +1,52 @@
+using System.Diagnostics;
 using diplomaProject.Data;
 using diplomaProject.DTOs;
 using diplomaProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
-namespace diplomaProject.Controllers
+namespace diplomaProject.Controllers;
+
+public class HomeController(AppDbContext context) : Controller
 {
-    public class HomeController : Controller
+    public async Task<IActionResult> Index()
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly AppDbContext _context;
+        if (User.Identity?.IsAuthenticated == true)
+            return User.IsInRole("Admin")
+                ? RedirectToAction("Index", "Dashboard", new { area = "Admin" })
+                : RedirectToAction("Dashboard", "User", new { area = "" });
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext context)
+        var model = new LandingDto
         {
-            _logger = logger;
-            _context = context;
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var model = new LandingDTO();
-
-      
-            model.Modules = await _context.Modules.Select(m => new ModuleProgressDTO
+            Modules = await context.Modules.Select(m => new ModuleProgressDto
             {
                 ModuleNumber = m.OrderIndex,
                 Name = m.Title
-
-            }).ToListAsync();
-
-           
-            model.Reviews = await _context.Reviews
-                .Include(r => r.User) 
-    .OrderByDescending(r => r.Id)
+            }).ToListAsync(),
+            Reviews = await context.Reviews
+                .Include(r => r.User)
+                .OrderByDescending(r => r.Id)
                 .Take(20)
-                .Select(r => new ReviewDTO
+                .Select(r => new ReviewDto
                 {
                     Id = r.Id,
-                    UserName = r.User.FirstName, 
-                    Content = r.Content,
+                    UserName = r.User!.FirstName,
+                    Content = r.Content
                 })
-                .ToListAsync();
+                .ToListAsync()
+        };
 
-            return View(model);
-        }
+        return View(model);
+    }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

@@ -1,0 +1,186 @@
+﻿@{
+    ViewData["Title"] = "Панель управління";
+}
+
+@section Head
+{
+    <style>
+        /* Базовые настройки для дашборда */
+        .admin-dashboard {
+            background-color: #F3F3FB; /* Фон как в Figma */
+            padding: 40px;
+            min-height: calc(100vh - 108px);
+            font-family: 'Gilroy', sans-serif;
+        }
+
+        /* Стили для карточек статистики */
+        .stat-card {
+            border-radius: 20px; /* Скругление по Figma */
+            padding: 30px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-card-blue {
+            background-color: #2B31B4;
+            color: #FFFFFF;
+        }
+
+        .stat-card-white {
+            background-color: #FFFFFF;
+            color: #2B31B4;
+        }
+
+        .stat-title {
+            font-family: 'Accia Piano', serif; /* Твой заголовочный шрифт */
+            font-size: 20px;
+            text-transform: uppercase;
+            font-weight: 350;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .stat-number {
+            font-family: 'Gilroy', sans-serif;
+            font-size: 64px; /* Огромные цифры как на макете */
+            font-weight: 700;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* Блоки с графиком и активностью */
+        .content-block {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 35px;
+            height: 450px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .block-title {
+            font-family: 'Accia Piano', serif;
+            font-size: 36px;
+            color: #2B31B4;
+            text-transform: uppercase;
+            font-weight: 350;
+            margin-bottom: 30px;
+        }
+
+        .activity-item {
+            font-family: 'Gilroy', sans-serif;
+            font-size: 20px;
+            color: #2B31B4;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(43, 49, 180, 0.1);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+}
+
+<div class="admin-dashboard">
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="stat-card stat-card-blue">
+                <p class="stat-title">Загальна кількість<br>користувачів</p>
+                <p class="stat-number">@ViewBag.TotalStudents</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card-white">
+                <p class="stat-title">Активні<br>користувачі</p>
+                <p class="stat-number">@ViewBag.TotalStudents</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card-white">
+                <p class="stat-title">Успішність виконання<br>ДЗ</p>
+                <p class="stat-number">@ViewBag.HomeworkSuccessRate%</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7 mb-4">
+            <div class="content-block">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="block-title m-0">Середній бал студентів</h2>
+                    <select class="form-select w-auto"
+                            style="border: none; color: #2B31B4; font-family: 'Gilroy'; font-size: 18px;">
+                        <option>весь час</option>
+                        <option>за місяць</option>
+                    </select>
+                </div>
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="averageScoreChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5 mb-4">
+            <div class="content-block" style="overflow-y: auto;">
+                <h2 class="block-title">Останні події</h2>
+                <div class="activity-list">
+                    @if (ViewBag.RecentActivity != null)
+                    {
+                        foreach (var activity in ViewBag.RecentActivity)
+                        {
+                            <div class="activity-item">
+                                <strong>@activity.UserName</strong> @activity.Message
+                                <span style="display:block; font-size: 14px; opacity: 0.6; margin-top: 5px;">
+                                    @activity.Date.ToString("dd.MM.yyyy HH:mm")
+                                </span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('averageScoreChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Модуль 1', 'Модуль 2', 'Модуль 3', 'Модуль 4', 'Модуль 5'],
+            datasets: [{
+                label: 'Бал',
+                data: [4.2, 4.5, 3.8, 4.9, 4.7],
+                borderColor: '#2B31B4',
+                backgroundColor: 'rgba(43, 49, 180, 0.1)',
+                borderWidth: 4,
+                pointBackgroundColor: '#FFFFFF',
+                pointBorderColor: '#2B31B4',
+                pointBorderWidth: 3,
+                pointRadius: 6,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {legend: {display: false}},
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5,
+                    grid: {borderDash: [5, 5], color: '#E0E0E0'},
+                    ticks: {font: {family: 'Gilroy', size: 14}, color: '#999'}
+                },
+                x: {
+                    grid: {display: false},
+                    ticks: {font: {family: 'Gilroy', size: 14}, color: '#999'}
+                }
+            }
+        }
+    });
+</script>

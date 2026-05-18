@@ -20,12 +20,12 @@
     flex-shrink: 0;
 }
 
-    .bg-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Фото заповнює блок, не втрачаючи пропорцій */
-        display: block;
-    }
+.bg-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Фото заповнює блок, не втрачаючи пропорцій */
+    display: block;
+}
 
 .userName {
     font-size: 2rem;
@@ -96,7 +96,6 @@ hometask-text {
 }
 
 
-
 .btn-replace-pass {
     background: transparent;
     border: 1.5px solid #2B31B4;
@@ -112,10 +111,10 @@ hometask-text {
     font-family: "Accia Piano", serif;
 }
 
-    .btn-replace-pass:hover {
-        background: #3b42a8;
-        color: white;
-    }
+.btn-replace-pass:hover {
+    background: #3b42a8;
+    color: white;
+}
 
 .custom-line-input::placeholder {
     color: #9799C4;
@@ -134,9 +133,9 @@ hometask-text {
     transition: color 0.3s;
 }
 
-    .eye-icon:hover {
-        color: #5a62d1; /* легкий ефект при наведенні */
-    }
+.eye-icon:hover {
+    color: #5a62d1; /* легкий ефект при наведенні */
+}
 
 .end-img {
     max-width: 1580px;
@@ -146,9 +145,9 @@ hometask-text {
     top: -160px;
 }
 
-    .end-img img {
-        width: 100%;
-    }
+.end-img img {
+    width: 100%;
+}
 
 .end-info {
     position: relative;
@@ -163,9 +162,10 @@ hometask-text {
 .final-block {
     /* position: relative; */
     height: 375px;
-    
+
     /*  z-index: 1; */
 }
+
 .subtitle-end {
     font-size: 1.8rem;
     font-weight: 300;
@@ -174,23 +174,22 @@ hometask-text {
 }
 
 
-
 @media (max-width: 767px) {
     #profileData {
         max-width: 351px;
-       
+
     }
 
     .bg-image {
         width: 100px;
         height: 50px;
-        
+
     }
 
 
     .update-btn {
         max-width: 326px;
-      /*  width: 47%;*/
+        /*  width: 47%;*/
         height: 48px;
 
     }
@@ -209,6 +208,7 @@ hometask-text {
     .userName {
         font-size: 1.25rem;
     }
+
     .userData {
         font-size: 1rem;
     }
@@ -231,45 +231,54 @@ hometask-text {
         margin-top: 50px;
         flex-direction: row;
     }
-    .hometask-box{
-        padding:2px !important;
+
+    .hometask-box {
+        padding: 2px !important;
     }
+
     hometask-text {
         padding-top: 4px;
         font-size: 0.9rem;
     }
+
     .hometask-num {
         font-size: 1rem;
-        padding:3px;
-        padding-top:0px !important;
+        padding: 3px;
+        padding-top: 0px !important;
     }
+
     #payment {
         max-width: 351px;
         width: 100% !important;
         margin-bottom: 20px;
         flex-direction: row;
     }
+
     .subtitle-end {
         font-size: 1.1rem;
         font-weight: 500;
     }
+
     .btn-replace-pass {
         max-width: 351px;
-        width:100%;
+        width: 100%;
         font-size: 1rem;
-        height:48px;
+        height: 48px;
     }
+
     .title {
         font-size: 1.8rem;
-        margin-bottom:8px;
+        margin-bottom: 8px;
     }
+
     .end-img {
         top: -20px;
     }
+
     .custom-line-input::placeholder {
-     
+
         font-size: 1rem;
-    
+
     }
 }
 

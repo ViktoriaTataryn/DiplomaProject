@@ -1,8 +1,7 @@
-﻿namespace diplomaProject.DTOs
+namespace diplomaProject.DTOs;
+
+public class LandingDto
 {
-    public class LandingDTO
-    {
-        public List<ModuleProgressDTO> Modules { get; set; }
-        public List<ReviewDTO> Reviews { get; set; }
-    }
+    public required List<ModuleProgressDto> Modules { get; set; }
+    public required List<ReviewDto> Reviews { get; set; }
 }

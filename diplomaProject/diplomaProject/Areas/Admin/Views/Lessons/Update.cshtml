@@ -1,0 +1,187 @@
+﻿@model diplomaProject.DTOs.UpdateLessonDto
+
+<form asp-action="Update" id="editLessonForm" method="post" enctype="multipart/form-data"
+      class="d-flex flex-column bg-white p-4 flex-grow-1 figma-text-blue">
+    <h1 class="text-uppercase mb-3">Редагування лекції</h1>
+    <div class="p-2 flex-grow-1">
+        <input type="hidden" asp-for="Id"/>
+
+        <div class="row mb-3">
+            <label asp-for="Title" class="col-1">Назва лекції</label>
+            <div class="col-11">
+                <input asp-for="Title" class="form-control figma-styled" placeholder="Введіть назву..."/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="ModuleId" class="col-1">Оберіть модуль</label>
+            <div class="col-11">
+                <select asp-for="ModuleId" class="form-control figma-styled" asp-items="ViewBag.Modules">
+                    <option value="">-- Оберіть модуль --</option>
+                </select>
+                <span asp-validation-for="ModuleId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Description" class="col-1">Опис лекції</label>
+            <div class="col-11">
+                <input asp-for="Description" class="form-control figma-styled" placeholder="Введіть опис..."/>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label asp-for="Content" class="col-1">Зміст лекції (текст та ілюстрації)</label>
+            <div class="col-11">
+                <div id="editorjs" class="figma-styled"
+                     style="min-height: 400px; cursor: text;"></div>
+
+                <input type="hidden" asp-for="Content" id="contentHiddenInput"/>
+
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+        </div>
+
+        @* Блок управління існуючими додатковими матеріалами *@
+        <div class="row mb-3">
+            <label class="col-1">Поточні додаткові матеріали</label>
+
+            <div class="col-11">
+                @if (Model.ExistingResources.Any())
+                {
+                    <div class="list-group mt-2">
+                        @foreach (var resource in Model.ExistingResources)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-file-earmark"></i>
+                                    <a href="@resource.FilePath" target="_blank" class="text-decoration-none">
+                                        @resource.FileName
+                                    </a>
+                                </div>
+                                @* Кнопка видалення ресурсу (викликає JS функцію) *@
+                                <button type="button" class="btn btn-outline-danger figma-styled btn-sm"
+                                        onclick="deleteResource(@resource.Id, this)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted small">Додаткових матеріалів поки немає.</p>
+                }
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label class="col-1">Додати нові матеріали (Зображення/PDF)</label>
+            <div class="col-11">
+                <input type="file" name="NewResources" class="form-control figma-styled" multiple/>
+                <small class="text-muted">Ви можете обрати кілька файлів одночасно.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-2">
+            <button type="submit" class="btn btn-primary figma-styled w-100">Зберегти зміни</button>
+        </div>
+        <div class="col-2">
+            <a asp-action="Index" class="btn btn-secondary figma-styled w-100">Назад до списку</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @* Підключення скриптів редактора та його інструментів *@
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/list@@1.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/image@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@editorjs/quote@latest"></script>
+
+    <script>
+        // 1. Отримуємо початкові дані з моделі для Editor.js
+        const initialData = @Html.Raw(string.IsNullOrEmpty(Model.Content) ? "{\"blocks\":[]}" : Model.Content);
+
+        // 2. Ініціалізація редактора
+        const editor = new EditorJS({
+            holder: 'editorjs',
+            placeholder: 'Продовжуйте редагування лекції...',
+            data: initialData,
+            tools: {
+                header: {
+                    class: Header,
+                    inlineToolbar: ['link'],
+                },
+                quote: {
+                    class: Quote,
+                    inlineToolbar: true,
+                    config: {
+                        quotePlaceholder: 'Введіть цитату',
+                        captionPlaceholder: 'Автор цитати',
+                    },
+                },
+                list: {
+                    class: List,
+                    inlineToolbar: true
+                },
+                image: {
+                    class: ImageTool,
+                    config: {
+                        endpoints: {
+                            byFile: '@Url.Action("UploadImage", "Lessons", new { area = "Admin" })' // Метод контролера для обробки зображень
+                        },
+                        field: 'file',
+                        actions: [
+                            {
+                                name: 'size_small',
+                                icon: 'S',
+                                title: 'Маленька (30%)',
+                                toggle: true,
+                            },
+                            {
+                                name: 'size_medium',
+                                icon: 'M',
+                                title: 'Середня (60%)',
+                                toggle: true,
+                            }
+                        ]
+                    }
+                }
+            },
+            onReady: () => {
+                console.log('Editor.js готовий до роботи!');
+            }
+        });
+
+        // 3. Скрипт передвідправки форми
+        const editForm = document.getElementById('editLessonForm');
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Зупиняємо, щоб встигнути витягнути дані з Editor.js
+
+            try {
+                const savedData = await editor.save();
+                const contentInput = document.getElementById('contentHiddenInput');
+                contentInput.value = JSON.stringify(savedData); // Конвертуємо JSON об'єкт у рядок
+                editForm.submit();
+            } catch (error) {
+                console.error('Помилка при збереженні:', error);
+                alert('Сталася помилка при спробі зберегти контент лекції.');
+            }
+        });
+
+        // 4. Функція видалення ресурсу (імітація або AJAX запит)
+        function deleteResource(id, element) {
+            if (confirm("Ви впевнені, що хочете видалити цей файл?")) {
+                // Тут можна додати AJAX запит до сервера. 
+                // Поки що просто видаляємо елемент зі списку на сторінці.
+                element.closest('.list-group-item').remove();
+            }
+        }
+    </script>
+}

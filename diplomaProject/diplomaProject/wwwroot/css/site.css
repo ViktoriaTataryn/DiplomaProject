@@ -24,6 +24,7 @@ body {
 #header img {
     max-width: 200px;
 }
+
 /*Layout styles*/
 
 #layout-body {
@@ -116,21 +117,21 @@ body {
     top: 10px;
 }
 
-    .nav-link.active {
-        background-color: #F3F3FB;
-        /*   border-left: 2px solid #2B31B4; */
-        /* color: #fff; */
-    }
+.nav-link.active {
+    background-color: #F3F3FB;
+    /*   border-left: 2px solid #2B31B4; */
+    /* color: #fff; */
+}
 
-        .nav-link.active::before {
-            content: "";
-            position: absolute;
-            left: 20px;
-            top: 27%;
-            height: 50%;
-            width: 1.5px;
-            background-color: #2B31B4;
-        }
+.nav-link.active::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 27%;
+    height: 50%;
+    width: 1.5px;
+    background-color: #2B31B4;
+}
 
 /* =========================================
    Figma Auth Styles (Login & Register)
@@ -150,6 +151,7 @@ body {
     font-weight: 300;
     font-style: normal;
 }
+
 /* 2. Import Gilroy font (Regular & Medium) */
 @font-face {
     font-family: 'Gilroy';
@@ -205,10 +207,10 @@ h1, h2, h3, .figma-bg-blue, .figma-btn-primary {
     text-transform: uppercase;
 }
 
-    .figma-bg-blue:hover {
-        background-color: #1e2285;
-        color: white;
-    }
+.figma-bg-blue:hover {
+    background-color: #1e2285;
+    color: white;
+}
 
 /* Seamless input wrapper */
 .figma-input-wrapper {
@@ -218,9 +220,9 @@ h1, h2, h3, .figma-bg-blue, .figma-btn-primary {
     transition: border-bottom 0.3s ease;
 }
 
-    .figma-input-wrapper:focus-within {
-        border-bottom: 2px solid #2B31B4; /* Точный цвет из Figma */
-    }
+.figma-input-wrapper:focus-within {
+    border-bottom: 2px solid #2B31B4; /* Точный цвет из Figma */
+}
 
 /* Transparent input inside wrapper */
 .figma-input {
@@ -236,10 +238,10 @@ h1, h2, h3, .figma-bg-blue, .figma-btn-primary {
     font-family: 'Gilroy', sans-serif;
 }
 
-    .figma-input::placeholder {
-        color: #9BA1D2;
-        font-weight: 400;
-    }
+.figma-input::placeholder {
+    color: #9BA1D2;
+    font-weight: 400;
+}
 
 /* Transparent eye button */
 .figma-eye-btn {
@@ -278,17 +280,17 @@ h2.figma-title {
         left: -284px;
         height: 100vh;
         z-index: 1050; /* Bring it above other content */
-        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
         min-width: 230px;
         position: absolute;
         top: 60px;
     }
 
 
-        /* Class to show the sidebar when the button is clicked */
-        #sidebar.show {
-            left: 0;
-        }
+    /* Class to show the sidebar when the button is clicked */
+    #sidebar.show {
+        left: 0;
+    }
 
     /* Adjust header padding for mobile */
     #header {
@@ -301,14 +303,14 @@ h2.figma-title {
         max-height: 55px;
     }
 
-        #header img {
-            order: 2 !important; /* Робимо його другим елементом */
-            position: absolute !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important; /* Ідеальне центрування */
-            max-width: 140px !important; /* Налаштуй висоту під свій логотип */
-            width: auto !important;
-        }
+    #header img {
+        order: 2 !important; /* Робимо його другим елементом */
+        position: absolute !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important; /* Ідеальне центрування */
+        max-width: 140px !important; /* Налаштуй висоту під свій логотип */
+        width: auto !important;
+    }
 
     #content {
         padding-top: 10px;
@@ -334,15 +336,15 @@ h2.figma-title {
         z-index: 10;
     }
 
-        /* 3. Прибираємо зайві відступи в іконки, щоб вона не тиснула на край екрана */
-        .ms-auto i.bi-person-circle {
-            margin-right: 10px !important;
-            font-size: 1.5rem !important; /* Можна трохи підправити розмір */
-        }
+    /* 3. Прибираємо зайві відступи в іконки, щоб вона не тиснула на край екрана */
+    .ms-auto i.bi-person-circle {
+        margin-right: 10px !important;
+        font-size: 1.5rem !important; /* Можна трохи підправити розмір */
+    }
+
     /*  #header img{
        align-content:center;
     }*/
-
     .archive-header {
         min-height: auto !important;
         padding: 24px 15px !important;
@@ -354,12 +356,10 @@ h2.figma-title {
     }
 
 
-
     /*LANDING HEADER*/
-
     #landing-header {
         display: flex !important;
-        flex-direction: row-reverse; 
+        flex-direction: row-reverse;
         justify-content: space-between;
         align-items: center;
         padding: 15px 20px;
@@ -367,64 +367,65 @@ h2.figma-title {
     }
 
 
-        #landing-header img {
-            margin-right: auto;
-            width: 130px !important;
-            height: 35px;
-            order: 1 !important;
-            left: 25% !important;
-        }
+    #landing-header img {
+        margin-right: auto;
+        width: 130px !important;
+        height: 35px;
+        order: 1 !important;
+        left: 25% !important;
+    }
 
-      
-        #landing-header .header-buttons {
-            display: none !important;
-        }
 
-        #landing-header .navbar-collapse.show,
-        #landing-header .navbar-collapse.collapsing {
-            display: flex !important;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background-color: #ffffff;
-            padding: 20px;
-            box-shadow: 0 15px 30px rgba(43, 49, 180, 0.1);
-            z-index: 999;
-            gap: 15px;
-        }
+    #landing-header .header-buttons {
+        display: none !important;
+    }
+
+    #landing-header .navbar-collapse.show,
+    #landing-header .navbar-collapse.collapsing {
+        display: flex !important;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        padding: 20px;
+        box-shadow: 0 15px 30px rgba(43, 49, 180, 0.1);
+        z-index: 999;
+        gap: 15px;
+    }
 
     .nav-link-landing {
         width: 100%;
         padding: 10px 0;
         border-bottom: 1px solid rgba(43, 49, 180, 0.05);
     }
-    
+
 }
+
 .custom-toggler {
     border: none !important;
     background: transparent;
     padding: 0;
 }
 
-    .custom-toggler:focus {
-        box-shadow: none !important;
-    }
+.custom-toggler:focus {
+    box-shadow: none !important;
+}
 
-    .custom-toggler .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%232B31B4' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
-        display: block;
-        width: 30px;
-        height: 25px;
-    }
+.custom-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%232B31B4' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+    display: block;
+    width: 30px;
+    height: 25px;
+}
 
 
-        /* =========================================
-   Figma Module List Styles (Новое добавление)
-   ========================================= */
+/* =========================================
+Figma Module List Styles (Новое добавление)
+========================================= */
 
-     .figma-modules-container {
+.figma-modules-container {
     padding-bottom: 50px;
 }
 
@@ -445,7 +446,7 @@ h2.figma-title {
     background-color: #FFFFFF;
     border-radius: 8px; /* Скругление углов белых плашек */
     padding: 25px 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02); /* Легкая тень */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); /* Легкая тень */
     transition: all 0.3s ease;
 }
 
@@ -555,10 +556,10 @@ h2.figma-title {
     font-weight: 500;
 }
 
-    .figma-btn-primary:hover {
-        background-color: #1e2285;
-        color: #FFFFFF;
-    }
+.figma-btn-primary:hover {
+    background-color: #1e2285;
+    color: #FFFFFF;
+}
 
 /* =========================================
    Archive & Course Resources (MERGED)
@@ -598,10 +599,10 @@ h2.figma-title {
     gap: 24px;
 }
 
-    .lesson-material-card:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
+.lesson-material-card:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
 
 /* Figma style blue frame for lesson thumbnail */
 .lesson-thumbnail-frame {
@@ -627,7 +628,80 @@ h2.figma-title {
     font-weight: 400;
 }
 
+/* =========================================
+   Sidebar Roles Styling (Admin vs User)
+   ========================================= */
+#sidebar.admin-theme {
+    background-color: #FAFAFF; /* Легкий фиолетовый оттенок из твоей палитры Figma */
+    border-right: 2px solid #8588D1; /* Акцентная линия для админа */
+}
 
+#sidebar.user-theme {
+    background-color: #FFFFFF; /* Оставляем чистый белый для студента */
+}
+
+/* =========================================
+   Form Controls Styling (Inputs, Buttons)
+   ========================================= */
+:is(.form-control, .form-select, #editorjs).figma-styled {
+    border: 1px solid var(--primary-blue);
+    border-radius: 0;
+    color: var(--primary-blue);
+}
+
+.btn.figma-styled {
+    border-radius: 0;
+    text-transform: uppercase;
+    padding: 12px;
+    font-weight: 350;
+    font-family: 'Accia Piano', serif;
+    font-size: 1.25rem;
+    border: none;
+
+    &.btn-primary {
+        background-color: var(--primary-blue);
+
+        &:hover {
+            background-color: color-mix(in oklab, var(--primary-blue), white 10%);
+        }
+    }
+
+    &.btn-secondary {
+        background-color: color-mix(in oklab, var(--primary-blue), white 50%);
+
+        &:hover {
+            background-color: color-mix(in oklab, var(--primary-blue), white 60%);
+        }
+    }
+}
+
+.table.figma-styled {
+    color: var(--primary-blue);
+
+    &.table-bordered {
+        border-color: var(--primary-blue);
+
+        & > :not(caption):first-child > *:first-child {
+            border-top: 0;
+        }
+
+        & > :not(caption):last-child > *:last-child {
+            border-bottom: 0;
+        }
+
+        & > :not(caption) > * > *:first-child {
+            border-left: 0;
+        }
+
+        & > :not(caption) > * > *:last-child {
+            border-right: 0;
+        }
+    }
+}
+
+.square {
+    aspect-ratio: 1 / 1;
+}
 
 /*Landing Header*/
 .landing-btn1 {
@@ -641,6 +715,7 @@ h2.figma-title {
     color: #FFFFFF;
     margin-right: 10px;
 }
+
 .landing-btn2 {
     width: 180px;
     background-color: #FFFFFF;
@@ -663,12 +738,11 @@ h2.figma-title {
     background-color: #F8F9FF; /* Легкий блакитний відтінок фону */
     transform: translateY(-3px);
 
-      box-shadow: 0 6px 15px rgba(43, 49, 180, 0.4);
-   
+    box-shadow: 0 6px 15px rgba(43, 49, 180, 0.4);
 }
 
 .landing-btn1:active, .landing-btn2:active {
-    transform: scale(0.96); 
+    transform: scale(0.96);
 }
 
 #landing-header {
@@ -677,23 +751,24 @@ h2.figma-title {
     border-bottom: 2px solid #2B31B4;
     display: flex;
     align-items: center;
-    justify-content:space-between;
+    justify-content: space-between;
     padding: 0 30px;
     width: 100%;
     /*   position: sticky;  */
     top: 0;
 }
+
 .nav-link-landing {
     color: #2B31B4;
     margin-bottom: 10px;
- /*   margin-left: 6px;*/
+    /*   margin-left: 6px;*/
     position: relative;
     display: flex;
     padding: 10px 10px 10px 15px;
     align-items: center;
     text-decoration: none;
     top: 5px;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .nav-link-landing::after {
@@ -709,14 +784,14 @@ h2.figma-title {
 }
 
 .nav-link-landing:hover::after {
-    width: 100%; 
+    width: 100%;
 }
 
 .nav-link-landing:hover {
     color: #1a1f8c;
 }
+
 #content-landing {
-  
     padding: 20px;
     padding-left: 17px;
     flex: 1;
@@ -725,14 +800,13 @@ h2.figma-title {
     max-width: 1920px;
     flex-grow: 1;
     min-width: 0;
-    margin-bottom:0px;
-    padding-bottom:0px;
- 
+    margin-bottom: 0px;
+    padding-bottom: 0px;
 }
+
 #landing-header img {
     order: 2 !important;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
 }
-   

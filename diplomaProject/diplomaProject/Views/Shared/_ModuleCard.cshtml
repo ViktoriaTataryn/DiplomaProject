@@ -1,14 +1,14 @@
-﻿@model diplomaProject.DTOs.ModuleProgressDTO
+﻿@model diplomaProject.DTOs.ModuleProgressDto
 
 @{
-    string openFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655858/Frame_available_stjkiv.png";
-    string lockedFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655701/Frame_blocked_w4cquk.png";
-    string currentFrame = (Model.Status == "Close") ? lockedFrame : openFrame;
+    var openFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655858/Frame_available_stjkiv.png";
+    var lockedFrame = "https://res.cloudinary.com/daxjj6p5c/image/upload/v1775655701/Frame_blocked_w4cquk.png";
+    var currentFrame = Model.Status == "Close" ? lockedFrame : openFrame;
 }
 
 <div class="module-card ">
     <div class="art-frame-wrapper">
-        <img src="@currentFrame" class="frame-overlay" alt="frame" />
+        <img src="@currentFrame" class="frame-overlay" alt="frame"/>
 
         <div class="module-image-inner">
             @if (!string.IsNullOrEmpty(Model.ImageForUser))
@@ -16,12 +16,13 @@
             {
                 if (Model.Status == "Close")
                 {
-                    <img src="@Model.ImageForUser"  style="object-fit: cover; opacity:0.5; width: 100%; height: 90%;" alt="@Model.Name" />
+                    <img src="@Model.ImageForUser" style="object-fit: cover; opacity:0.5; width: 100%; height: 90%;"
+                         alt="@Model.Name"/>
                 }
                 else
                 {
-                    <img src="@Model.ImageForUser"  style="object-fit: cover; width: 100%; height: 90%;" alt="@Model.Name" />
-
+                    <img src="@Model.ImageForUser" style="object-fit: cover; width: 100%; height: 90%;"
+                         alt="@Model.Name"/>
                 }
             }
             else

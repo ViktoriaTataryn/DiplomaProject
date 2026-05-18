@@ -1,640 +1,425 @@
-﻿using diplomaProject.Data;
+﻿using System.IO.Compression;
+using System.Security.Claims;
+using diplomaProject.Data;
 using diplomaProject.DTOs;
 using diplomaProject.Interfaces;
 using diplomaProject.Models;
-using diplomaProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IO.Compression;
-using System.Security.Claims;
-using System.Net.Http; // Added for Cloudinary downloads
 
-namespace diplomaProject.Controllers
+// Added for Cloudinary downloads
+
+namespace diplomaProject.Controllers;
+
+[Authorize(Roles = "Student,Admin")]
+public class CourseController(
+    AppDbContext context,
+    UserManager<ApplicationUser> userManager,
+    IProgressService progressService,
+    IDashboardService dashboardService,
+    IHttpClientFactory httpClientFactory)
+    : Controller
 {
-    [Authorize]
-    public class CourseController : Controller
+    // --- Action for the Additional Materials page ---
+    [HttpGet]
+    public async Task<IActionResult> AdditionalMaterials()
     {
-        private readonly AppDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IProgressService _progressService;
-        public readonly IDashboardService _dashboardService;
-        private readonly IHttpClientFactory _httpClientFactory; // New dependency
+        // Fetching all modules with their lessons and associated resources
+        var modules = await context.Modules
+            .Include(m => m.Lessons)!
+            .ThenInclude(l => l.Resources)
+            .OrderBy(m => m.OrderIndex)
+            .ToListAsync();
 
-        public CourseController(AppDbContext context, UserManager<ApplicationUser> userManager, IProgressService progressService, IDashboardService dashboardService, IHttpClientFactory httpClientFactory)
+        return View(modules);
+    }
+
+    // --- Method for downloading a single resource file ---
+    [HttpGet]
+    public async Task<IActionResult> DownloadResource(int resourceId)
+    {
+        var resource = await context.Resources.FirstOrDefaultAsync(r => r.Id == resourceId);
+        if (resource == null) return NotFound();
+
+        var client = httpClientFactory.CreateClient();
+        byte[]? fileBytes = null;
+
+        if (resource.FilePath.StartsWith("http"))
         {
-            _context = context;
-            _userManager = userManager;
-            _progressService = progressService;
-            _dashboardService = dashboardService;
-            _httpClientFactory = httpClientFactory;
-        }
-
-        // --- Action for the Additional Materials page ---
-        [HttpGet]
-        public async Task<IActionResult> AdditionalMaterials()
-        {
-            // Fetching all modules with their lessons and associated resources
-            var modules = await _context.Modules
-                .Include(m => m.Lessons)
-                    .ThenInclude(l => l.Resources)
-                .OrderBy(m => m.OrderIndex)
-                .ToListAsync();
-
-            return View(modules);
-        }
-
-        // --- Method for downloading a single resource file ---
-        [HttpGet]
-        public async Task<IActionResult> DownloadResource(int resourceId)
-        {
-            var resource = await _context.Resources.FirstOrDefaultAsync(r => r.Id == resourceId);
-            if (resource == null) return NotFound();
-
-            var client = _httpClientFactory.CreateClient();
-            byte[] fileBytes = null;
-
-            if (resource.FilePath.StartsWith("http"))
-            {
-                try { fileBytes = await client.GetByteArrayAsync(resource.FilePath); }
-                catch { return BadRequest("Could not download file from cloud."); }
-            }
-            else
-            {
-                var localPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
-                if (System.IO.File.Exists(localPath)) fileBytes = await System.IO.File.ReadAllBytesAsync(localPath);
-            }
-
-            if (fileBytes == null) return NotFound("File not found on server.");
-
-            return File(fileBytes, "application/octet-stream", resource.FileName);
-        }
-
-        // --- Existing Methods (Index, Lesson, etc.) remain unchanged ---
-
-        [HttpGet]
-        public IActionResult AddQuestion(int lectureId)
-        {
-            ViewBag.LectureId = lectureId;
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddQuestion(int LessonId, List<QuestionDTO> Questions)
-        {
-            if (Questions == null || !Questions.Any())
-            {
-                return BadRequest("Тести не заповнені.");
-            }
-
-            var homework = await _context.Homeworks.FirstOrDefaultAsync(h => h.LessonId == LessonId);
-
-            if (homework == null)
-            {
-                homework = new Homework
-                {
-                    LessonId = LessonId,
-                    Description = "Тест до лекції",
-                    DueDate = DateTime.Now.AddDays(7)
-                };
-                _context.Homeworks.Add(homework);
-                await _context.SaveChangesAsync();
-            }
-
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             try
             {
-                foreach (var qDto in Questions)
+                fileBytes = await client.GetByteArrayAsync(resource.FilePath);
+            }
+            catch
+            {
+                return BadRequest("Could not download file from cloud.");
+            }
+        }
+        else
+        {
+            var localPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials",
+                resource.FilePath.TrimStart('/'));
+            if (System.IO.File.Exists(localPath)) fileBytes = await System.IO.File.ReadAllBytesAsync(localPath);
+        }
+
+        if (fileBytes == null) return NotFound("File not found on server.");
+
+        return File(fileBytes, "application/octet-stream", resource.FileName);
+    }
+
+    // --- Existing Methods (Index, Lesson, etc.) remain unchanged ---
+
+    [HttpGet]
+    public IActionResult AddQuestion(int lectureId)
+    {
+        ViewBag.LectureId = lectureId;
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddQuestion(int lessonId, List<QuestionDto> questions)
+    {
+        if (questions.Count == 0) return BadRequest("Тести не заповнені.");
+
+        var homework = await context.Homeworks.FirstOrDefaultAsync(h => h.LessonId == lessonId);
+
+        if (homework == null)
+        {
+            homework = new Homework
+            {
+                LessonId = lessonId,
+                Description = "Тест до лекції",
+                DueDate = DateTime.Now.AddDays(7)
+            };
+            context.Homeworks.Add(homework);
+            await context.SaveChangesAsync();
+        }
+
+        await using var transaction = await context.Database.BeginTransactionAsync();
+
+        try
+        {
+            foreach (var qDto in questions)
+            {
+                var question = new Question
                 {
-                    var question = new Question
+                    Text = qDto.Text,
+                    HomeworkId = homework.Id,
+                    IsMultipleChoice = false
+                };
+                context.Questions.Add(question);
+                await context.SaveChangesAsync();
+
+                for (var i = 0; i < qDto.Answers.Count; i++)
+                {
+                    var option = new AnswerOption
                     {
-                        Text = qDto.Text,
-                        HomeworkId = homework.Id,
-                        IsMultipleChoice = false
+                        Text = qDto.Answers[i].Text,
+                        IsCorrect = i == qDto.CorrectAnswerIndex,
+                        QuestionId = question.Id
                     };
-                    _context.Questions.Add(question);
-                    await _context.SaveChangesAsync();
-
-                    for (int i = 0; i < qDto.Answers.Count; i++)
-                    {
-                        var option = new AnswerOption
-                        {
-                            Text = qDto.Answers[i].Text,
-                            IsCorrect = (i == qDto.CorrectAnswerIndex),
-                            QuestionId = question.Id
-                        };
-                        _context.AnswerOptions.Add(option);
-                    }
-                }
-
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-
-                return RedirectToAction("GetLessons", "AdminLesson");
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                ModelState.AddModelError("", "Помилка при збереженні тестів: " + ex.Message);
-                ViewBag.LectureId = LessonId;
-                return View(Questions);
-            }
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var totalModules = await _context.Modules.CountAsync();
-            var completedModules = await _context.UserProgresses
-                .Where(up => up.UserId == userId && up.Status == ProgressStatus.Completed && up.ModuleId != 0)
-                .Select(up => up.ModuleId)
-                .Distinct()
-                .CountAsync();
-
-            var modulesWithProgress = await _context.Modules
-                .Include(m => m.Lessons)
-                .OrderBy(m => m.OrderIndex)
-                .Select(m => new ModuleProgressDTO
-                {
-                    ModuleId = m.Id,
-                    ModuleNumber = m.OrderIndex,
-                    Name = m.Title,
-                    ImageForUser = m.ImageUrl,
-                    Description = m.Description,
-                    TotalModule = totalModules,
-                    CompletedModule = completedModules,
-                    Status = _context.UserProgresses
-                        .Where(up => up.ModuleId == m.Id && up.UserId == userId && up.ModuleId != 0)
-                        .Select(up => up.Status.ToString())
-                        .FirstOrDefault() ?? "Close",
-
-                    Percent = m.Lessons.Any()
-                        ? (int)((double)_context.UserProgresses
-                            .Count(up => up.UserId == userId && up.ModuleId == m.Id && up.Status == ProgressStatus.Completed && up.LessonId != 0)
-                            / m.Lessons.Count * 100)
-                        : 0,
-
-                    TotalLesson = m.Lessons.Count,
-                    CurrentLessonId = _context.UserProgresses
-                        .Where(ulp => ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId != 0 && ulp.LessonId != null)
-                        .OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
-                        .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
-                        .Select(ulp => (int?)ulp.LessonId)
-                        .FirstOrDefault(),
-                    Lessons = m.Lessons.Select(l => new LessonShortDTO
-                    {
-                        Id = l.Id,
-                        Title = l.Title,
-                        Status = _context.UserProgresses
-                            .Where(ulp => ulp.LessonId == l.Id && ulp.UserId == userId && ulp.LessonId != 0)
-                            .Select(ulp => ulp.Status.ToString())
-                            .FirstOrDefault() ?? "Close"
-                    }).ToList()
-                })
-                .ToListAsync();
-
-            return View(modulesWithProgress);
-        }
-
-        public async Task<IActionResult> Lesson(int id)
-        {
-            var userId = _userManager.GetUserId(User);
-
-            var lesson = await _context.Lessons
-                .Include(l => l.Resources)
-                .Include(l => l.Module)
-                    .ThenInclude(m => m.Lessons)
-                .FirstOrDefaultAsync(l => l.Id == id);
-
-            if (lesson == null) return NotFound();
-
-            var progress = await _context.UserProgresses
-                .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
-
-            if (progress == null || progress.Status == ProgressStatus.Close)
-            {
-                TempData["Error"] = "Lecture is not available. Please complete previous materials.";
-                return RedirectToAction("Index");
-            }
-
-            if (progress.Status == ProgressStatus.Open)
-            {
-                await _progressService.LessonInProgressAsync(userId, lesson.Id);
-            }
-
-            var currentProgress = await _context.UserProgresses
-        .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
-
-            ViewBag.LessonStatusDisplayName = GetStatusDisplayName(currentProgress?.Status);
-
-            var homework = await _context.Homeworks
-                .FirstOrDefaultAsync(h => h.LessonId == id);
-
-            bool isCompleted = false;
-            if (homework != null)
-            {
-                ViewBag.HomeworkId = homework.Id;
-                isCompleted = await _context.HomeworkSubmissions
-            .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
-                ViewBag.IsTestCompleted = await _context.HomeworkSubmissions
-                    .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
-                ViewBag.Questions = await _context.Questions
-                    .Include(q => q.Options)
-                    .Where(q => q.HomeworkId == homework.Id)
-                    .ToListAsync();
-
-                if (isCompleted)
-                {
-                    var submission = await _context.HomeworkSubmissions
-                        .FirstOrDefaultAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
-                    ViewBag.CurrentGrade = submission?.Grade ?? 0;
+                    context.AnswerOptions.Add(option);
                 }
             }
-            else
+
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            ModelState.AddModelError("", "Помилка при збереженні тестів: " + ex.Message);
+            ViewBag.LectureId = lessonId;
+            return View(questions);
+        }
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var totalModules = await context.Modules.CountAsync();
+        var completedModules = await context.UserProgresses
+            .Where(up => up.UserId == userId && up.Status == ProgressStatus.Completed && up.ModuleId != 0)
+            .Select(up => up.ModuleId)
+            .Distinct()
+            .CountAsync();
+
+        var modulesWithProgress = await context.Modules
+            .Include(m => m.Lessons)
+            .OrderBy(m => m.OrderIndex)
+            .Select(m => new ModuleProgressDto
             {
-                ViewBag.HomeworkId = 0;
-               
-                ViewBag.Questions = new List<Question>();
-                ViewBag.CurrentGrade = 0;
-                isCompleted = true;
-            }
+                ModuleId = m.Id,
+                ModuleNumber = m.OrderIndex,
+                Name = m.Title,
+                ImageForUser = m.ImageUrl,
+                Description = m.Description,
+                TotalModule = totalModules,
+                CompletedModule = completedModules,
+                Status = context.UserProgresses
+                    .Where(up => up.ModuleId == m.Id && up.UserId == userId && up.ModuleId != 0)
+                    .Select(up => up.Status.ToString())
+                    .FirstOrDefault() ?? "Close",
 
-            ViewBag.IsTestCompleted = isCompleted || TempData["IsTestJustFinished"] != null;
+                Percent = m.Lessons!.Any()
+                    ? (int)((double)context.UserProgresses
+                            .Count(up =>
+                                up.UserId == userId && up.ModuleId == m.Id && up.Status == ProgressStatus.Completed &&
+                                up.LessonId != 0)
+                        / m.Lessons!.Count * 100)
+                    : 0,
 
-            var nextLessonId = lesson.Module.Lessons
-         .Where(l => l.LessonIndex > lesson.LessonIndex)
-         .OrderBy(l => l.LessonIndex)
-         .FirstOrDefault()?.Id;
-
-            if (nextLessonId == null)
-            {
-                var nextModule = await _context.Modules
-             .Where(m => m.OrderIndex > lesson.Module.OrderIndex)
-             .OrderBy(m => m.OrderIndex)
-             .FirstOrDefaultAsync();
-
-                if (nextModule != null)
+                TotalLesson = m.Lessons!.Count,
+                CurrentLessonId = context.UserProgresses
+                    .Where(ulp =>
+                        ulp.UserId == userId && ulp.ModuleId == m.Id && ulp.LessonId != 0 && ulp.LessonId != null)
+                    .OrderByDescending(ulp => ulp.Status == ProgressStatus.InProgress)
+                    .ThenByDescending(ulp => ulp.Status == ProgressStatus.Open)
+                    .Select(ulp => ulp.LessonId)
+                    .FirstOrDefault(),
+                Lessons = m.Lessons.OrderBy(l => l.LessonIndex).Select(l => new LessonShortDto
                 {
-                    nextLessonId = await _context.Lessons
-                 .Where(l => l.ModuleId == nextModule.Id)
-                 .OrderBy(l => l.LessonIndex)
-                 .Select(l => l.Id)
-                 .FirstOrDefaultAsync();
-                }
-            }
-            ViewBag.NextLessonId = nextLessonId;
+                    Id = l.Id,
+                    Title = l.Title,
+                    Status = context.UserProgresses
+                        .Where(ulp => ulp.LessonId == l.Id && ulp.UserId == userId && ulp.LessonId != 0)
+                        .Select(ulp => ulp.Status.ToString())
+                        .FirstOrDefault() ?? "Close"
+                }).ToList()
+            })
+            .ToListAsync();
 
-            // 4. ПОШУК ПОПЕРЕДНЬОЇ ЛЕКЦІЇ (Логіка всередині модуля + перехід на попередній)
-            var prevLessonId = lesson.Module.Lessons
-                .Where(l => l.LessonIndex < lesson.LessonIndex)
-                .OrderByDescending(l => l.LessonIndex)
-                .FirstOrDefault()?.Id;
+        return View(modulesWithProgress);
+    }
 
-            if (prevLessonId == null) // Шукаємо в попередньому модулі
-            {
-                var prevModule = await _context.Modules
-                    .Where(m => m.OrderIndex < lesson.Module.OrderIndex)
-                    .OrderByDescending(m => m.OrderIndex)
-                    .FirstOrDefaultAsync();
+    public async Task<IActionResult> Lesson(int id)
+    {
+        var userId = userManager.GetUserId(User);
 
-                if (prevModule != null)
-                {
-                    prevLessonId = await _context.Lessons
-                        .Where(l => l.ModuleId == prevModule.Id)
-                        .OrderByDescending(l => l.LessonIndex)
-                        .Select(l => l.Id)
-                        .FirstOrDefaultAsync();
-                }
-            }
-            ViewBag.PreviousLessonId = prevLessonId;
+        var lesson = await context.Lessons
+            .Include(l => l.Resources)
+            .Include(l => l.Module)
+            .ThenInclude(m => m!.Lessons)
+            .FirstOrDefaultAsync(l => l.Id == id);
 
-            ViewBag.ModuleProgress = await _context.UserProgresses
-                .Where(p => p.UserId == userId && p.ModuleId == lesson.ModuleId)
-                .ToListAsync();
+        if (lesson == null) return NotFound();
 
+        var progress = await context.UserProgresses
+            .FirstOrDefaultAsync(p => p.LessonId == id && p.UserId == userId);
 
-            if (string.IsNullOrEmpty(lesson.Content))
-            {
-                lesson.Content = "{\"blocks\":[]}";
-            }
-
-            return View(lesson);
+        if (progress == null || progress.Status == ProgressStatus.Close)
+        {
+            TempData["Error"] = "Lecture is not available. Please complete previous materials.";
+            return RedirectToAction("Index");
         }
 
-        // --- FIXED DOWNLOAD LOGIC FOR CLOUDINARY ---
-
-     
-
-        // 4. Отправка домашнего задания (File based)
-        [HttpPost]
-        public async Task<IActionResult> SubmitHomework(int homeworkId, string homeworkText)
+        if (userId is null)
         {
-            if (string.IsNullOrWhiteSpace(homeworkText))
-            {
-                ModelState.AddModelError("", "Homework text cannot be empty.");
-                return RedirectToAction("Lesson", new { id = homeworkId });
-            }
-
-            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "submissions");
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            var fileName = $"homework_{homeworkId}_{Guid.NewGuid()}.txt";
-            var fullPath = Path.Combine(folderPath, fileName);
-
-            await System.IO.File.WriteAllTextAsync(fullPath, homeworkText);
-
-            var userId = _userManager.GetUserId(User);
-            var submission = new HomeworkSubmission
-            {
-                HomeworkId = homeworkId,
-                StudentId = userId,
-                FilePath = "/submissions/" + fileName,
-                SubmissionDate = DateTime.Now,
-                Status = HomeworkStatus.Pending
-            };
-
-            _context.HomeworkSubmissions.Add(submission);
-            await _context.SaveChangesAsync();
-
-            TempData["Message"] = "Homework submitted successfully!";
-            return RedirectToAction("Lesson", new { id = homeworkId });
+            TempData["Error"] = "User not defined.";
+            return RedirectToAction("Index");
         }
 
-        // 5. Автоматическая проверка теста
-        [HttpPost]
-        public async Task<IActionResult> CheckHomework(int lessonId, int homeworkId, Dictionary<int, List<int>> answers)
+        if (progress.Status == ProgressStatus.Open) await progressService.LessonInProgressAsync(userId, lesson.Id);
+
+        var homework = await context.Homeworks
+            .FirstOrDefaultAsync(h => h.LessonId == id);
+
+        if (homework != null)
         {
-            if (answers == null || !answers.Any())
-            {
-                TempData["Error"] = "Будь ласка, оберіть хоча б одну відповідь.";
-                return RedirectToAction("Lesson", new { id = lessonId });
-            }
-
-            var userId = _userManager.GetUserId(User);
-            bool alreadySubmitted = await _context.HomeworkSubmissions
-                .AnyAsync(s => s.HomeworkId == homeworkId && s.StudentId == userId);
-
-            if (alreadySubmitted)
-            {
-                return BadRequest("Ви вже здали цей тест.");
-            }
-
-            var questions = await _context.Questions
+            ViewBag.HomeworkId = homework.Id;
+            ViewBag.IsTestCompleted = await context.HomeworkSubmissions
+                .AnyAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
+            ViewBag.Questions = await context.Questions
                 .Include(q => q.Options)
-                .Where(q => q.HomeworkId == homeworkId)
+                .Where(q => q.HomeworkId == homework.Id)
                 .ToListAsync();
 
-            int score = 0;
-            int maxScore = questions.Count;
-            var selectedOptionIds = answers.Values.SelectMany(x => x).ToList();
-
-            foreach (var question in questions)
+            if (ViewBag.IsTestCompleted)
             {
-                var correctOptionIds = question.Options.Where(o => o.IsCorrect).Select(o => o.Id).ToList();
-                var studentIdsForThisQuestion = selectedOptionIds.Intersect(question.Options.Select(o => o.Id)).ToList();
-
-                bool isAnswerPerfect = correctOptionIds.Count == studentIdsForThisQuestion.Count &&
-                                       !correctOptionIds.Except(studentIdsForThisQuestion).Any();
-
-                if (isAnswerPerfect) score++;
+                var submission = await context.HomeworkSubmissions
+                    .FirstOrDefaultAsync(s => s.HomeworkId == homework.Id && s.StudentId == userId);
+                ViewBag.CurrentGrade = submission?.Grade ?? 0;
             }
-
-            var submission = new HomeworkSubmission
-            {
-                HomeworkId = homeworkId,
-                StudentId = userId,
-                SubmissionDate = DateTime.Now,
-                FilePath = "Quiz Result",
-                Status = HomeworkStatus.Approved,
-                Grade = score
-            };
-
-            foreach (var answer in answers)
-            {
-                foreach (var optionId in answer.Value)
-                {
-                    submission.StudentAnswers.Add(new StudentAnswer
-                    {
-                        QuestionId = answer.Key,
-                        SelectedOptionId = optionId
-                    });
-                }
-            }
-
-            _context.HomeworkSubmissions.Add(submission);
-            await _context.SaveChangesAsync();
-
-            
-
-            // Unlock next lesson after successful quiz
-            await _progressService.UnlockNextLessonAsync(userId, lessonId);
-
-          
-            TempData["IsTestJustFinished"] = true;
-
-            // Або якщо ви робите Redirect:
-            TempData["TestJustFinished"] = true;
-            return RedirectToAction("Lesson", new { id = lessonId });
+        }
+        else
+        {
+            ViewBag.HomeworkId = 0;
+            ViewBag.IsTestCompleted = false;
+            ViewBag.Questions = new List<Question>();
+            ViewBag.CurrentGrade = 0;
         }
 
-        // 6-12. Admin methods & Downloads (Keep original logic)
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddHomework(Homework model)
+        var nextLessonId = lesson.Module!.Lessons!
+            .OrderBy(l => l.LessonIndex)
+            .FirstOrDefault(l => l.LessonIndex > lesson.LessonIndex)?.Id;
+
+        if (nextLessonId == null)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Homeworks.Add(model);
-                await _context.SaveChangesAsync();
-                TempData["Message"] = "Homework added successfully!";
-            }
-            return RedirectToAction("Lesson", new { id = model.LessonId });
+            var nextModule = await context.Modules
+                .OrderBy(m => m.OrderIndex)
+                .FirstOrDefaultAsync(m => m.OrderIndex > lesson.Module.OrderIndex);
+
+            if (nextModule != null)
+                nextLessonId = await context.Lessons
+                    .Where(l => l.ModuleId == nextModule.Id)
+                    .OrderBy(l => l.LessonIndex)
+                    .Select(l => l.Id)
+                    .FirstOrDefaultAsync();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> CompletedHomeworks()
-        {
-            var userId = _userManager.GetUserId(User);
-            var completedTasks = await _context.HomeworkSubmissions
-                .Include(s => s.Homework)
-                .Where(s => s.StudentId == userId && s.Status == HomeworkStatus.Approved)
-                .ToListAsync();
+        ViewBag.NextLessonId = nextLessonId;
 
-            return View(completedTasks);
+        ViewBag.ModuleProgress = await context.UserProgresses
+            .Where(p => p.UserId == userId && p.ModuleId == lesson.ModuleId)
+            .ToListAsync();
+
+        var isCompleted = await context.HomeworkSubmissions
+            .AnyAsync(s => s.StudentId == userId && s.Homework!.LessonId == id);
+
+        ViewBag.IsTestCompleted = isCompleted || TempData["IsTestJustFinished"] != null;
+
+        if (string.IsNullOrEmpty(lesson.Content)) lesson.Content = "{\"blocks\":[]}";
+
+        return View(lesson);
+    }
+
+    // --- FIXED DOWNLOAD LOGIC FOR CLOUDINARY ---
+
+    [HttpGet]
+    public async Task<IActionResult> DownloadModuleMaterials(int moduleId)
+    {
+        var resources = await context.Resources
+            .Include(r => r.Lesson)
+            .Where(r => r.Lesson!.ModuleId == moduleId)
+            .ToListAsync();
+
+        if (!resources.Any()) return BadRequest("No materials found for this module.");
+
+        var client = httpClientFactory.CreateClient();
+
+        using var memoryStream = new MemoryStream();
+        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+        {
+            foreach (var resource in resources) await AddResourceToArchive(archive, resource, client, "");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> DownloadModuleMaterials(int moduleId)
+        return File(memoryStream.ToArray(), "application/zip", $"Module_{moduleId}_Materials.zip");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DownloadFullArchive()
+    {
+        var resources = await context.Resources
+            .Include(r => r.Lesson)
+            .ThenInclude(l => l!.Module)
+            .ToListAsync();
+
+        if (!resources.Any()) return BadRequest("No materials found in the course.");
+
+        var client = httpClientFactory.CreateClient();
+
+        using var memoryStream = new MemoryStream();
+        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
         {
-            var resources = await _context.Resources
-                .Include(r => r.Lesson)
-                .Where(r => r.Lesson.ModuleId == moduleId)
-                .ToListAsync();
-
-            if (!resources.Any()) return BadRequest("No materials found for this module.");
-
-            var client = _httpClientFactory.CreateClient();
-
-            using (var memoryStream = new MemoryStream())
+            foreach (var resource in resources)
             {
-                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                {
-                    foreach (var resource in resources)
-                    {
-                        await AddResourceToArchive(archive, resource, client, "");
-                    }
-                }
-                return File(memoryStream.ToArray(), "application/zip", $"Module_{moduleId}_Materials.zip");
+                var folderPath =
+                    $"Module_{resource.Lesson!.Module!.OrderIndex}/Lesson_{resource.Lesson.LessonIndex}/";
+                await AddResourceToArchive(archive, resource, client, folderPath);
             }
         }
 
+        return File(memoryStream.ToArray(), "application/zip", "Full_Course_Archive.zip");
+    }
 
+    private async Task AddResourceToArchive(ZipArchive archive, Resource resource, HttpClient client,
+        string folderPrefix)
+    {
+        byte[]? fileBytes = null;
+        var entryName = folderPrefix + resource.FileName;
 
-        [HttpGet]
-        public async Task<IActionResult> DownloadFullArchive()
+        if (resource.FilePath.StartsWith("http"))
         {
-            var resources = await _context.Resources
-                .Include(r => r.Lesson)
-                    .ThenInclude(l => l.Module)
-                .ToListAsync();
-
-            if (!resources.Any()) return BadRequest("No materials found in the course.");
-
-            var client = _httpClientFactory.CreateClient();
-
-            using (var memoryStream = new MemoryStream())
+            try
             {
-                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                {
-                    foreach (var resource in resources)
-                    {
-                        string folderPath = $"Module_{resource.Lesson.Module.OrderIndex}/Lesson_{resource.Lesson.LessonIndex}/";
-                        await AddResourceToArchive(archive, resource, client, folderPath);
-                    }
-                }
-                return File(memoryStream.ToArray(), "application/zip", "Full_Course_Archive.zip");
+                fileBytes = await client.GetByteArrayAsync(resource.FilePath);
+            }
+            catch
+            {
+                // ignored
             }
         }
-
-        private async Task AddResourceToArchive(ZipArchive archive, Resource resource, HttpClient client, string folderPrefix)
+        else
         {
-            byte[] fileBytes = null;
-            string entryName = folderPrefix + resource.FileName;
-
-            if (resource.FilePath.StartsWith("http"))
-            {
-                try { fileBytes = await client.GetByteArrayAsync(resource.FilePath); }
-                catch { }
-            }
-            else
-            {
-                var localPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials", resource.FilePath.TrimStart('/'));
-                if (System.IO.File.Exists(localPath)) fileBytes = await System.IO.File.ReadAllBytesAsync(localPath);
-            }
-
-            if (fileBytes != null)
-            {
-                var entry = archive.CreateEntry(entryName);
-                using (var entryStream = entry.Open())
-                {
-                    await entryStream.WriteAsync(fileBytes, 0, fileBytes.Length);
-                }
-            }
+            var localPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials",
+                resource.FilePath.TrimStart('/'));
+            if (System.IO.File.Exists(localPath)) fileBytes = await System.IO.File.ReadAllBytesAsync(localPath);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetHomeworks()
+        if (fileBytes != null)
         {
-            var userId = _userManager.GetUserId(User);
-            var stats = await _dashboardService.GetHomeworkStats(userId);
+            var entry = archive.CreateEntry(entryName);
+            await using var entryStream = entry.Open();
+            await entryStream.WriteAsync(fileBytes);
+        }
+    }
 
-            var executedHomeworks = await _context.HomeworkSubmissions
-                .Include(s => s.Homework)
-                    .ThenInclude(h => h.Lesson)
-                        .ThenInclude(l => l.Module)
-                .Where(s => s.StudentId == userId)
-                .OrderByDescending(s => s.SubmissionDate)
-                .ToListAsync();
+    [HttpGet]
+    public async Task<IActionResult> GetHomeworks()
+    {
+        var userId = userManager.GetUserId(User);
+        var stats = await dashboardService.GetHomeworkStats(userId!);
 
-            var course = await _context.Courses.FirstOrDefaultAsync();
-            int courseId = course?.Id ?? 0;
+        var executedHomeworks = await context.HomeworkSubmissions
+            .Include(s => s.Homework)
+            .ThenInclude(h => h!.Lesson)
+            .ThenInclude(l => l!.Module)
+            .Where(s => s.StudentId == userId)
+            .OrderByDescending(s => s.SubmissionDate)
+            .ToListAsync();
 
-            if (courseId == 0)
+        var course = await context.Courses.FirstOrDefaultAsync();
+        var courseId = course?.Id ?? 0;
+
+        if (courseId == 0)
+            return View(new HomeworkDashboardDto
             {
-                return View(new HomeworkDashboardDTO
-                {
-                    Stats = stats ?? new HomeworkStatsDTO(),
-                    CurrentHomework = null,
-                    ExecutedHomeworks = executedHomeworks ?? new List<HomeworkSubmission>(),
-                    AllModules = new List<Module>(),
-                    AverageScore = executedHomeworks != null && executedHomeworks.Any()
-                        ? executedHomeworks.Average(s => (double)s.Grade)
-                        : 0.0
-                });
-            }
-
-            var activeLesson = await _progressService.GetActiveLessonAsync(userId, courseId);
-            ViewBag.DebugLessonId = activeLesson?.Id.ToString() ?? "null";
-            var modules = await _context.Modules.OrderBy(m => m.OrderIndex).ToListAsync();
-
-            Homework currentHomework = null;
-            if (activeLesson != null)
-            {
-                currentHomework = await _context.Homeworks
-                    .Include(h => h.Questions)
-                    .Include(h => h.Lesson)
-                    .FirstOrDefaultAsync(h => h.LessonId == activeLesson.Id);
-            }
-
-            var viewModel = new HomeworkDashboardDTO
-            {
-                Stats = stats ?? new HomeworkStatsDTO(),
-                CurrentHomework = currentHomework,
+                Stats = stats,
                 ExecutedHomeworks = executedHomeworks,
-                AllModules = modules,
-                AverageScore = executedHomeworks.Any()
-                    ? executedHomeworks.Average(s => (double)s.Grade)
+                AllModules = [],
+                AverageScore = executedHomeworks.Count != 0
+                    ? executedHomeworks.Average(s => (double)(s.Grade ?? 0))
                     : 0.0
-            };
+            });
 
-            return View(viewModel);
-        }
+        var activeLesson = await progressService.GetActiveLessonAsync(userId!, courseId);
+        ViewBag.DebugLessonId = activeLesson?.Id.ToString() ?? "null";
+        var modules = await context.Modules.OrderBy(m => m.OrderIndex).ToListAsync();
 
-        [HttpGet]
-        public async Task<IActionResult> ViewSubmission(int id)
+        Homework? currentHomework = null;
+        if (activeLesson != null)
+            currentHomework = await context.Homeworks
+                .Include(h => h.Questions)
+                .Include(h => h.Lesson)
+                .FirstOrDefaultAsync(h => h.LessonId == activeLesson.Id);
+
+        var viewModel = new HomeworkDashboardDto
         {
-            var submission = await _context.HomeworkSubmissions
-                .Include(s => s.Homework)
-                    .ThenInclude(h => h.Questions)
-                        .ThenInclude(q => q.Options)
-                .Include(s => s.StudentAnswers)
-                .FirstOrDefaultAsync(s => s.Id == id);
+            Stats = stats,
+            CurrentHomework = currentHomework,
+            ExecutedHomeworks = executedHomeworks,
+            AllModules = modules,
+            AverageScore = executedHomeworks.Count != 0
+                ? executedHomeworks.Average(s => (double)(s.Grade ?? 0))
+                : 0.0
+        };
 
-            if (submission == null) return NotFound();
-
-            ViewBag.LessonTitle = submission.Homework?.Lesson?.Title;
-            return View(submission);
-        }
-
-
-        public static string GetStatusDisplayName(ProgressStatus? status)
-        {
-            return status switch
-            {
-                ProgressStatus.InProgress => "В процесі",
-                ProgressStatus.Completed => "Завершено",
-                ProgressStatus.Open => "Відкрито",
-                _ => "В процесі" // Значення за замовчуванням
-            };
-        }
-
-    
+        return View(viewModel);
     }
 }

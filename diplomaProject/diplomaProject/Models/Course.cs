@@ -1,21 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace diplomaProject.Models
+namespace diplomaProject.Models;
+
+public class Course
 {
-    public class Course
-    {
-        //у каждого курса должен быть уникальный номер (ID)
-        [Key]
-        public int Id { get; set; }
+    //у каждого курса должен быть уникальный номер (ID)
+    [Key] public int Id { get; set; }
 
-        // Название курса
-        [Required] //название обязательно должно быть
-        public string Title { get; set; }
-        // Описание курса
-        public string Description { get; set; }
+    // Название курса
+    [Required] //название обязательно должно быть
+    public required string Title { get; set; }
 
-        // Дата создания (чтобы знать, когда курс добавили)
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public ICollection<Module> Modules { get; set; }
-    }
+    // Описание курса
+    public required string Description { get; set; }
+
+    // Дата создания (чтобы знать, когда курс добавили)
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public ICollection<Module>? Modules { get; set; }
 }

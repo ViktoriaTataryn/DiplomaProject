@@ -1,0 +1,104 @@
+﻿@* Изменение 1: Заменили Models.User на Models.ApplicationUser *@
+@model IEnumerable<ApplicationUser>
+@{
+    ViewData["Title"] = "Список студентів";
+}
+
+<div class="d-flex flex-column flex-grow-1 figma-text-blue">
+    <div class="row mb-4 g-4">
+        <div class="col-8">
+            <div class="d-flex justify-content-between align-items-center bg-white ps-4 pe-3 py-2">
+                <h2 class="text-uppercase m-0">Статистика студентів</h2>
+                <span class="figma-bg-blue text-white opacity-50 px-4 py-1">@Model.Count() студентів</span>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <form asp-action="Index" method="get" class="d-flex h-100">
+                <input type="text" name="searchTerm" class="form-control figma-styled border-0 flex-grow-1"
+                       placeholder="Пошук"
+                       value="@ViewBag.CurrentSearch">
+            </form>
+        </div>
+    </div>
+
+    <div class="d-flex flex-column bg-white p-4 flex-grow-1">
+        <div class="d-flex align-items-center mb-4">
+            <h1 class="text-uppercase">Список студентів</h1>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered figma-styled mb-0">
+                <thead>
+                <tr>
+                    <th>Студент</th>
+                    <th>Електронна пошта</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var student in Model)
+                    {
+                        <tr>
+                            <td><strong>@student.LastName @student.FirstName</strong></td>
+                            @* Изменение 2: Заменили student.UserEmail на встроенное свойство IdentityUser -> student.Email *@
+                            <td>@student.Email</td>
+                            <td>Активний</td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-secondary btn-sm figma-styled p-0 square"
+                                        style="height: 30px"
+                                        onclick="confirmDelete('@student.Id', '@student.FirstName @student.LastName')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-4">Студентів не знайдено</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@* Модальное окно удаления *@
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Підтвердження видалення</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="userIdToDelete"/>
+                <div class="modal-body">
+                    Ви справді хочете видалити користувача <strong id="userNameText"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="btn btn-danger">Видалити</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(id, name) {
+            document.getElementById('userIdToDelete').value = id;
+            document.getElementById('userNameText').innerText = name;
+            var myModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            myModal.show();
+        }
+    </script>
+}

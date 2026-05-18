@@ -1,21 +1,19 @@
-﻿using diplomaProject.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace diplomaProject.DTOs
+namespace diplomaProject.DTOs;
+
+public class CreateLessonDto
 {
-    public class CreateLessonDTO
-    {
-        [Required]
-        public string Title { get; set; }
+    [Required] public required string Title { get; set; }
 
-        [Required]
-        public string Content { get; set; }
-        public string? Description { get; set; }
-        //public string HomeworkDescription { get; set; }
-        public int LessonIndex { get; set; }
-        public int ModuleId { get; set; }
+    [Required] public required string Content { get; set; }
 
-        // Файли (зображення до лекції)
-        public List<IFormFile>? ResourceFiles { get; set; } = new List<IFormFile>();
-    }
+    public string Description { get; set; } = "";
+
+    //public string HomeworkDescription { get; set; }
+    public int LessonIndex { get; set; }
+    public int ModuleId { get; set; }
+
+    // Файли (зображення до лекції)
+    public List<IFormFile>? ResourceFiles { get; set; } = [];
 }

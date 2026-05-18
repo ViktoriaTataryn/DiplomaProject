@@ -1,0 +1,65 @@
+﻿@model diplomaProject.DTOs.CreateModuleDto
+
+@section Head
+{
+    <link rel="stylesheet" href="~/css/admin-module-file-selector.css" asp-append-version="true"/>
+}
+
+<form asp-action="Add" method="post" enctype="multipart/form-data"
+      class="d-flex flex-column bg-white p-4 flex-grow-1 figma-text-blue">
+    <h1 class="text-uppercase mb-3">Додати модуль</h1>
+    <div class="p-2 flex-grow-1">
+        <div class="row mb-3">
+            <label asp-for="Title" class="col-1">Назва модуля</label>
+            <div class="col-11">
+                <input asp-for="Title" class="form-control figma-styled"/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label asp-for="OrderIndex" class="col-1">Номер модуля</label>
+            <div class="col-11">
+                <input asp-for="OrderIndex" class="form-control figma-styled"/>
+                <span asp-validation-for="OrderIndex" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label asp-for="Description" class="col-1">Опис модуля</label>
+            <div class="col-11">
+                <input asp-for="Description" class="form-control figma-styled"/>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label asp-for="ImageFile" class="col-1">Обкладинка модуля</label>
+            <div class="col-11">
+                <div x-data="fileSelector">
+                    <input type="file" asp-for="ImageFile" x-bind="fileInput" x-ref="fileInput" class="form-control"
+                           accept="image/*"/>
+                    <img x-show="imageForUser" :src="imageForUser" alt="Preview"/>
+                    <div x-show.important="!imageForUser"
+                         class="d-flex align-content-center justify-content-center">
+                        <i class="bi bi-plus-lg fs-icon"></i>
+                    </div>
+                    <button x-bind="selector" type="button">
+                        <i class="bi bi-plus-lg fs-icon"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <button type="submit" class="btn btn-primary figma-styled w-100">Опублікувати</button>
+        </div>
+        <div class="col-2">
+            <a asp-action="Index" class="btn btn-secondary figma-styled w-100">Скасувати</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.11/dist/cdn.min.js"></script>
+    <script src="~/js/admin-module-file-selector.js" asp-append-version="true"></script>
+}

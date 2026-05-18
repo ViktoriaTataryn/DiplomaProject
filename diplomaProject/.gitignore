@@ -49,7 +49,7 @@ Thumbs.db
 # Visual Studio caches
 *.dtbcache.v2
 
-# Ігноруємо всі файли в папці ресурсів
+# Р†РіРЅРѕСЂСѓС”РјРѕ РІСЃС– С„Р°Р№Р»Рё РІ РїР°РїС†С– СЂРµСЃСѓСЂСЃС–РІ
 #wwwroot/resources/
 
 /[Ww]wwroot/[Rr]esources/

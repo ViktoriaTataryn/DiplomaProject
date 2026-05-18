@@ -1,36 +1,34 @@
-﻿@using diplomaProject.DTOs
-@model LandingDTO
+﻿@model diplomaProject.DTOs.LandingDto
 @{
     Layout = "_LandingLayout";
-    var allModules = Model.Modules ?? new List<diplomaProject.DTOs.ModuleProgressDTO>();
+    var allModules = Model.Modules;
 
     var visibleModules = allModules.Take(3).ToList();
     var hiddenModules = allModules.Skip(3).ToList();
 }
-<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Monsieur+La+Doulaise&display=swap" rel="stylesheet">
 <style>
-    html{
-        margin:0px;
-      margin-bottom:0px;
-      padding-bottom:0px;
-    
+    html {
+        margin: 0px;
+        margin-bottom: 0px;
+        padding-bottom: 0px;
+
     }
 
     .main-title {
-    /*     font-family: 'ShellyAllegroC';
-    text-align:center;
-        font-size: 220px; 
-    
-        font-style: italic; 
-        color: #2B31B4; 
-        letter-spacing: -0.02em; 
-        line-height: 1;
-        display: inline-block; */
-        user-select: none; 
+        /*     font-family: 'ShellyAllegroC';
+        text-align:center;
+            font-size: 220px; 
+        
+            font-style: italic; 
+            color: #2B31B4; 
+            letter-spacing: -0.02em; 
+            line-height: 1;
+            display: inline-block; */
+        user-select: none;
         display: inline-block;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -40,68 +38,69 @@
         font-size: 250px; /* Для цього шрифту розмір треба більше */
         font-weight: 400; /* Це стандарт для цього шрифту */
         font-style: normal;
-   margin-top:-70px;
+        margin-top: -70px;
         text-decoration: none !important;
     }
 
 
+    /* Опціонально: перша літера може бути трохи більшою */
+    .main-title::first-letter {
+        font-size: 1.1em;
+    }
 
-        /* Опціонально: перша літера може бути трохи більшою */
-        .main-title::first-letter {
-            font-size: 1.1em;
-        }
-
-        .up-img img{
-            width:100%;
-            max-width:1920px;
-            height:280px;
-            margin-top:-120px;
+    .up-img img {
+        width: 100%;
+        max-width: 1920px;
+        height: 280px;
+        margin-top: -120px;
         animation: float 6s ease-in-out infinite;
-        }
+    }
 
-    .down-img img{
+    .down-img img {
         width: 100%;
         max-width: 1920px;
         height: 410px;
         animation: float 6s ease-in-out infinite;
-  
-    }
-    .down-img{
-        z-index:5;
-        position:relative;
 
     }
 
-    .sub-title{
-        font-family:'Accia Piano';
-        font-size:1.7rem;
-        color: #2B31B4;
-        line-height:1.8rem;
-        margin-top:-130px;
-        margin-left:-230px;
-    }
-
-    .container1{
-        margin:0px -20px !important;
-        border-bottom: 2px solid #2B31B4;
-        max-height:976px;
+    .down-img {
+        z-index: 5;
         position: relative;
-     /*    background-color: #FFFFFF; */
-       /*  padding:0px !important; */
+
     }
 
-    .mermaid-img{
-        position:absolute;
-        left:93%;
-        transform: translateX(-50%);
-        top:-4%;
-        
+    .sub-title {
+        font-family: 'Accia Piano';
+        font-size: 1.7rem;
+        color: #2B31B4;
+        line-height: 1.8rem;
+        margin-top: -130px;
+        margin-left: -230px;
     }
-    .mermaid-img img{
-        width:280px;
-        height:280px;
-            transform-origin: center center;
-            animation: sway 6s ease-in-out infinite;
+
+    .container1 {
+        margin: 0px -20px !important;
+        border-bottom: 2px solid #2B31B4;
+        max-height: 976px;
+        position: relative;
+        /*    background-color: #FFFFFF; */
+        /*  padding:0px !important; */
+    }
+
+    .mermaid-img {
+        position: absolute;
+        left: 93%;
+        transform: translateX(-50%);
+        top: -4%;
+
+    }
+
+    .mermaid-img img {
+        width: 280px;
+        height: 280px;
+        transform-origin: center center;
+        animation: sway 6s ease-in-out infinite;
     }
 
     .column-img {
@@ -109,14 +108,14 @@
         left: 86%;
         transform: translateX(-50%);
         top: 50%;
-        z-index:1;
+        z-index: 1;
     }
 
-        .column-img img {
-            width: 170px;
-            animation: float 6s ease-in-out infinite;
-           /*  height: 300px; */
-        }
+    .column-img img {
+        width: 170px;
+        animation: float 6s ease-in-out infinite;
+        /*  height: 300px; */
+    }
 
     .circle-img {
         position: absolute;
@@ -126,37 +125,39 @@
         z-index: 1;
     }
 
-        .circle-img img {
-            width: 80px;
-            transform-origin: center center;
-            animation: sway 4s ease-in-out infinite;
-            /*  height: 300px; */
-        }
-        .avatar-img img{
-       width:110px;
+    .circle-img img {
+        width: 80px;
         transform-origin: center center;
         animation: sway 4s ease-in-out infinite;
-      
-        }
+        /*  height: 300px; */
+    }
 
-    .avatar-img{
-      position:absolute;
+    .avatar-img img {
+        width: 110px;
+        transform-origin: center center;
+        animation: sway 4s ease-in-out infinite;
+
+    }
+
+    .avatar-img {
+        position: absolute;
         left: 36%;
         transform: translateX(-50%);
         top: 18%;
         z-index: 1;
     }
 
-    .bird-img{
+    .bird-img {
         position: absolute;
         left: 15%;
         transform: translateX(-50%);
         top: 30%;
- 
+
     }
-    .bird-img img{
-        width:115px;
-            animation: float 6s ease-in-out infinite;
+
+    .bird-img img {
+        width: 115px;
+        animation: float 6s ease-in-out infinite;
     }
 
     .plane-img {
@@ -166,53 +167,53 @@
         top: 22%;
     }
 
-        .plane-img img {
-            width: 115px;
-            animation: float 6s ease-in-out infinite;
-        }
+    .plane-img img {
+        width: 115px;
+        animation: float 6s ease-in-out infinite;
+    }
 
-  /*   .container2 {
-        
-        border-bottom: 2px solid #2B31B4;
-        max-height: 976px;
-     
-    } */
-    .text{
-        width:38%;
-        
+    /*   .container2 {
+          
+          border-bottom: 2px solid #2B31B4;
+          max-height: 976px;
+       
+      } */
+    .text {
+        width: 38%;
+
 
     }
-    .landing-title{
+
+    .landing-title {
         color: #2B31B4;
-        font-size:5.2rem;
-        font-family:"Accia Piano";
+        font-size: 5.2rem;
+        font-family: "Accia Piano";
         margin-bottom: 60px;
     }
-    .landing-subtitle{
+
+    .landing-subtitle {
         font-family: 'Gilroy';
         font-weight: 500;
         font-size: 2.2rem;
         color: #2B31B4;
         line-height: 120%;
-        margin-bottom:50px;
+        margin-bottom: 50px;
 
     }
-    .ordinary-text{
+
+    .ordinary-text {
         font-family: 'Gilroy';
         font-weight: 300;
         font-size: 1.8rem;
         line-height: 100%;
         color: #2B31B4;
         margin-bottom: 50px;
-        line-height:2.1rem;
+        line-height: 2.1rem;
     }
-    .text-content{
-        margin-top:100px;
+
+    .text-content {
+        margin-top: 100px;
     }
- 
-
-
-  
 
 
     /* Стилі для галереї в колонці */
@@ -223,10 +224,10 @@
         padding-left: 60px;
     }
 
- 
+
     .container2 {
         position: relative;
-        padding-top: 0; 
+        padding-top: 0;
         overflow: visible;
         border-bottom: 2px solid #2B31B4;
         max-height: 976px;
@@ -234,7 +235,7 @@
 
     /* Кожен елемент з картиною */
     .gallery-item {
-        position: relative; 
+        position: relative;
         animation: float 4s ease-in-out infinite;
     }
 
@@ -243,7 +244,7 @@
         position: absolute;
         width: 2px;
         background-color: #2B31B4;
-        z-index: 10; 
+        z-index: 10;
 
         bottom: 100%;
     }
@@ -261,215 +262,217 @@
         margin-top: 150px;
     }
 
-        .item-high .wire {
-            height: 150px;
-        }
+    .item-high .wire {
+        height: 150px;
+    }
 
     /* --- Довжина для НИЖЧОЇ картини (Гічкок) --- */
     .item-low {
         margin-top: 600px;
-     
+
     }
 
-        .item-low .wire {
-           
-            height: 600px;
-        }
+    .item-low .wire {
 
-
-        .picture-frame img {
-            width: 270px;
-          /*   display: block; */
-        }
-
-    .picture-frame{
-        margin-top:-20px;
+        height: 600px;
     }
-    
-   
+
+
+    .picture-frame img {
+        width: 270px;
+        /*   display: block; */
+    }
+
+    .picture-frame {
+        margin-top: -20px;
+    }
+
+
     .picture-frame:hover {
-            transform: rotate(2deg); 
-        }
+        transform: rotate(2deg);
+    }
 
     .picture-caption {
-        margin-top: 2px; 
+        margin-top: 2px;
         text-align: center;
         display: flex;
         flex-direction: column;
-        gap: 4px; 
-        width: 270px; 
-     
+        gap: 4px;
+        width: 270px;
+
     }
 
-      
+    .picture-caption .title {
+        color: #2B31B4;
+        /* font-family: 'Pinyon Script'; */
+        font-family: 'ShellyAllegroC';
+        font-size: 1.1rem;
+        font-weight: 400;
+        font-style: italic;
+        opacity: 0.47;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        letter-spacing: 0.5px;
+    }
 
-        .picture-caption .title {
-            color: #2B31B4;
-            /* font-family: 'Pinyon Script'; */
-            font-family: 'ShellyAllegroC';
-            font-size: 1.1rem;
-            font-weight: 400; 
-            font-style: italic;
-            opacity: 0.47;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-            letter-spacing: 0.5px;
-        }
-        .container3{
+    .container3 {
         position: relative;
-        padding-top: 0; 
+        padding-top: 0;
         overflow: visible;
-    
+
         max-height: 976px;
         z-index: 10;
-        }
+    }
 
-    .container3 .plane-img 
-    {
-         position: absolute;
+    .container3 .plane-img {
+        position: absolute;
         left: 83%;
         transform: translateX(-50%);
         top: 15%;
     }
 
-        .container3 .landing-subtitle {
-            width:70%;
-            padding-left: 15px;
-        }
+    .container3 .landing-subtitle {
+        width: 70%;
+        padding-left: 15px;
+    }
 
-        .container3 .ordinary-text {
-            width: 75%;
-            padding-left:15px;
-        }
-        .mini-container{
+    .container3 .ordinary-text {
+        width: 75%;
+        padding-left: 15px;
+    }
+
+    .mini-container {
         border-left: 2px solid #2B31B4;
-        margin-top:20px;
+        margin-top: 20px;
         transition: background-color 0.4s ease, color 0.4s ease;
-        }
-
-    .mini-container:first-child{
-        border-left:none;
     }
 
-        .mini-container:hover {
-            background-color: #2B31B4;
-            transition: all 0.3s ease;
-  
-        }
-        .container5 .text-content{
-            width:70%;
-        }
-
-    .container5 .gallery-item{
-        animation:none;
+    .mini-container:first-child {
+        border-left: none;
     }
 
- 
+    .mini-container:hover {
+        background-color: #2B31B4;
+        transition: all 0.3s ease;
+
+    }
+
+    .container5 .text-content {
+        width: 70%;
+    }
+
+    .container5 .gallery-item {
+        animation: none;
+    }
+
+
     .container5 {
         position: relative;
-        padding-top: 0; 
+        padding-top: 0;
         overflow: visible;
         border-bottom: 2px solid #2B31B4;
         max-height: 976px;
     }
 
     /* --- Довжина для ВИЩОЇ картини (Дівчина з перловою сережкою) --- */
-        .container5 .item-high {
+    .container5 .item-high {
         margin-top: 430px;
     }
 
-            .container5 .item-high .wire {
-     
-            height: 430px;
-        }
+    .container5 .item-high .wire {
+
+        height: 430px;
+    }
 
     /* --- Довжина для НИЖЧОЇ картини (Гічкок) --- */
-       .item-cats {
+    .item-cats {
         margin-top: 200px;
     }
 
-        .item-cats .wire {
-   
-            height: 200px;
-        }
+    .item-cats .wire {
 
-        .item-cats .wire-left {
+        height: 200px;
+    }
+
+    .item-cats .wire-left {
         left: 80px;
     }
 
-        .item-cats .wire-right {
+    .item-cats .wire-right {
         right: 200px;
     }
 
 
-        .item-cats .picture-frame {
+    .item-cats .picture-frame {
         margin-top: -60px;
     }
 
-   .container5 .gallery-grid {
+    .container5 .gallery-grid {
 
         gap: 70px;
-        padding-left:60px;
+        padding-left: 60px;
 
     }
-    .tree-img{
-        position:absolute;
-        left:77%;
+
+    .tree-img {
+        position: absolute;
+        left: 77%;
         top: 60%;
     }
-    .tree-img img{
-        width:450px;
-            transform-origin: center center;
-            animation: sway 6s ease-in-out infinite;
-     
+
+    .tree-img img {
+        width: 450px;
+        transform-origin: center center;
+        animation: sway 6s ease-in-out infinite;
     }
 
     .container9 {
         position: relative;
-        padding-top: 0; 
+        padding-top: 0;
         overflow: visible;
-     
+
         max-height: 976px;
     }
 
     .container9 .landing-subtitle {
         width: 70%;
         padding-left: 20px;
-        padding-top:85px;
-      
+        padding-top: 85px;
     }
 
     .container9 .ordinary-text {
         width: 85%;
         padding-left: 20px;
-        padding-bottom:75px;
-    }
-    .container4{
-        position: relative;
-        padding-top: 0; 
-  
-        border-bottom: 2px solid #2B31B4;
-        max-height: 1550px;
-        background-color:#2B31B4;
-        color: #FFFFFF;
-        overflow: hidden;
-     
-    }
-    .plants-img img{
-        width:710px;
-     
- /*        z-index: 1; */
-        animation: float 6s ease-in-out infinite;
-    }
-    .basket-img img{
-        width:250px;
+        padding-bottom: 75px;
     }
 
-    .basket-img  {
-       margin-left:30px;
+    .container4 {
+        position: relative;
+        padding-top: 0;
+
+        border-bottom: 2px solid #2B31B4;
+        max-height: 1550px;
+        background-color: #2B31B4;
+        color: #FFFFFF;
+        overflow: hidden;
+    }
+
+    .plants-img img {
+        width: 710px;
+
+        /*        z-index: 1; */
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .basket-img img {
+        width: 250px;
+    }
+
+    .basket-img {
+        margin-left: 30px;
         visibility: visible;
-  
+
     }
 
     .img-hidden {
@@ -477,37 +480,32 @@
         visibility: hidden;
     }
 
-    .plants-img{
-        margin-right:35px;
-
-       
+    .plants-img {
+        margin-right: 35px;
     }
-
-
 
 
     .program-grid {
         border-top: 2px solid #FFFFFF;
-     
+
     }
 
     .program-grid:first-child {
-            border-top: none;
+        border-top: none;
     }
 
     .module-row {
         display: flex;
         border-bottom: 2px solid #FFFFFF;
-      margin-left:30px;
+        margin-left: 30px;
         align-items: center;
         transition: background 0.3s ease;
-       
     }
 
 
     .module-number {
         padding: 35px;
-        
+
         font-size: 4rem;
         width: 30%;
         border-right: 2px solid #FFFFFF;
@@ -516,26 +514,25 @@
 
     .module-name {
         padding: 35px;
-        padding-left:40px;
+        padding-left: 40px;
         font-size: 2rem;
         font-family: 'Gilroy', serif;
-        letter-spacing:1px;
+        letter-spacing: 1px;
         font-weight: 700;
-        text-transform: none; 
+        text-transform: none;
     }
 
     .show-more-btn {
         color: white;
         text-decoration: none;
         font-size: 2rem;
-   
- 
+
+
         transition: opacity 0.3s;
         font-family: 'Accia Piano', serif;
-   
     }
 
-    .text-end{
+    .text-end {
         margin-top: 70px;
         margin-right: 5px;
     }
@@ -544,102 +541,106 @@
         color: #ffffff;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(43, 49, 180, 0.5);
         letter-spacing: 2px;
-        }
-    
+    }
 
-   .container4 .landing-title{
-       color:#FFFFFF;
-       padding-left:70px;
-   }
-   .container4 .container{
-       margin:10px !important;
+
+    .container4 .landing-title {
+        color: #FFFFFF;
+        padding-left: 70px;
+    }
+
+    .container4 .container {
+        margin: 10px !important;
         max-width: 1760px;
-       
-   }
 
-    .container4  {
+    }
+
+    .container4 {
         margin-left: -20px !important;
-        margin-right:-20px !important;
+        margin-right: -20px !important;
     }
 
     .container6 {
         position: relative;
-        padding-top: 0; 
+        padding-top: 0;
         overflow: visible;
         border-bottom: 2px solid #2B31B4;
         max-height: 976px;
     }
 
 
-        .container6 .landing-subtitle {
-            width: 70%;
-            padding-left: 20px;
-            padding-top: 25px;
-        }
-
-        .container6 .ordinary-text {
-            width: 85%;
-            padding-left: 20px;
-            padding-bottom: 75px;
-        }
-        .mini-num{
-        color: #2B31B4;
-        font-family:'Accia Piano';
-        font-size:3rem;
-        padding-right: 40px;
+    .container6 .landing-subtitle {
+        width: 70%;
+        padding-left: 20px;
         padding-top: 25px;
-        }
-
-        .submit-btn{
-            margin-left:10px;
-        margin-right: 10px;
-            width:98.5%;
-            text-align:center;
-            padding:20px;
-        transition: background-color 0.4s ease, color 0.4s ease;
-       
-        }
-
-    .submit-btn:hover {
-            background-color: #2B31B4;
-            color: #FFFFFF;
-            cursor:pointer;
-          
     }
 
-        .submit-btn-text:hover {
-          
-            color: #FFFFFF;
-        }
+    .container6 .ordinary-text {
+        width: 85%;
+        padding-left: 20px;
+        padding-bottom: 75px;
+    }
 
-    .submit-btn-text{
-        text-decoration:none;
-        color:#2B31B4;
-        font-family:"Accia Piano";
-        font-size:2.2rem;
+    .mini-num {
+        color: #2B31B4;
+        font-family: 'Accia Piano';
+        font-size: 3rem;
+        padding-right: 40px;
+        padding-top: 25px;
+    }
 
+    .submit-btn {
+        margin-left: 10px;
+        margin-right: 10px;
+        width: 98.5%;
+        text-align: center;
+        padding: 20px;
+        transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #2B31B4;
+        color: #FFFFFF;
+        cursor: pointer;
+    }
+
+    .submit-btn-text:hover {
+        color: #FFFFFF;
+    }
+
+    .submit-btn-text {
+        text-decoration: none;
+        color: #2B31B4;
+        font-family: "Accia Piano";
+        font-size: 2.2rem;
     }
 
     .container7 {
         position: relative;
-        padding-top: 0; 
+        padding-top: 0;
         overflow: hidden;
-     padding-bottom:70px;
+        padding-bottom: 70px;
         max-height: 1457px;
     }
-    .container7 .mini-container{
+
+    .container7 .mini-container {
         background-color: #2B31B4;
-        width:450px;
-            transition: transform 0.3s ease;
-        border-left:none !important;
+        width: 450px;
+        transition: transform 0.3s ease;
+        border-left: none !important;
     }
 
-            .container7 .mini-container:hover {
-        transform: translateY(-15px); 
+    .container7 .mini-container:hover {
+        transform: translateY(-15px);
     }
-    
-  /*   .author-img img{
-        width:407px;
+
+    /*   .author-img img{
+          width:407px;
+          filter: brightness(0.9) contrast(1.1);
+      } */
+    .author-img img {
+        width: 100%; /* Робимо картинку адаптивною всередині блоку */
+        height: auto;
         filter: brightness(0.9) contrast(1.1);
     } */
     .author-img img {
@@ -648,138 +649,132 @@
         filter: brightness(0.9) contrast(1.1);
     }
 
-    .author-text{
+    .author-text {
         color: #FFFFFF;
-        font-family:'Gilroy';
-        font-size:1.7rem;
-        font-weight:300;
-        display:block;
-        margin-top:25px;
-        line-height:2.2rem;
+        font-family: 'Gilroy';
+        font-size: 1.7rem;
+        font-weight: 300;
+        display: block;
+        margin-top: 25px;
+        line-height: 2.2rem;
     }
-    .mini-container .landing-title{
+
+    .mini-container .landing-title {
         color: #FFFFFF;
     }
 
     .container7 .landing-title {
-        margin-top:60px !important;
+        margin-top: 60px !important;
     }
 
+    .container7 .landing-subtitle {
+        color: #FFFFFF;
+    }
 
-    .container7 .landing-subtitle{
+    .container7 .ordinary-text {
         color: #FFFFFF;
+        font-weight: 500;
     }
-    .container7 .ordinary-text{
-        color: #FFFFFF;
-        font-weight:500;
-    }
-    .container10{
-        height:617px;
-          position: relative;
+
+    .container10 {
+        height: 617px;
+        position: relative;
         padding-top: 0;
         background-color: #2B31B4;
         margin-left: -20px !important;
         margin-right: -20px !important;
-        overflow:hidden;
+        overflow: hidden;
     }
 
     .container10 .landing-title {
-            color: #FFFFFF;
+        color: #FFFFFF;
         margin-top: 80px !important;
-        margin-bottom:15px !important;
+        margin-bottom: 15px !important;
     }
 
 
     .container10 .landing-subtitle {
         color: #FFFFFF;
-        font-weight:500;
-        font-size:3rem;
-        
+        font-weight: 500;
+        font-size: 3rem;
     }
 
     .container10 .ordinary-text {
         color: #FFFFFF;
-        width:90%;
-     
-    
+        width: 90%;
     }
 
-    .bird-img2{
-        position:absolute;
-        top:30%;
-        left:70%;
-    }
-    .bird-img2 img{
-        width:115px;
-            animation: float 6s ease-in-out infinite;
+    .bird-img2 {
+        position: absolute;
+        top: 30%;
+        left: 70%;
     }
 
-    .container10 .mini-container{
-        padding:30px;
-        margin:30px;
+    .bird-img2 img {
+        width: 115px;
+        animation: float 6s ease-in-out infinite;
+    }
 
+    .container10 .mini-container {
+        padding: 30px;
+        margin: 30px;
     }
 
     .blue-tint {
         width: 80px;
         height: 80px;
-   
 
         background-size: cover;
         background-position: center;
-   
+
         background-color: #a5c7f9;
-        background-blend-mode: multiply; 
+        background-blend-mode: multiply;
         filter: contrast(1.2);
         position: relative;
         z-index: 1;
-
     }
 
-  
+
     .container8 {
-      /*   height: 1431px; */
+        /*   height: 1431px; */
         position: relative;
         padding-top: 0;
         overflow: hidden;
         border-bottom: 2px solid #2B31B4;
     }
 
-    
+    .container8 .ordinary-text {
+        line-height: 2.2rem;
+        border: 2px solid #2B31B4;
+        width: 450px;
+        margin-top: 0px !important;
+        min-height: 432px;
+        padding: 20px;
+        padding-top: 30px;
 
-        .container8 .ordinary-text{
-            line-height:2.2rem;
-            border: 2px solid #2B31B4;
-            width:450px;
-            margin-top:0px !important;
-            min-height: 432px;
-            padding:20px;
-            padding-top: 30px;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Плавний перехід */
+        background-color: transparent;
+        position: relative;
 
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Плавний перехід */
-            background-color: transparent;
-            position: relative;
-          
-       
-            background-color: white;
-          
-        }
+        background-color: white;
+    }
 
     .review-card:hover {
         z-index: 999;
     }
-            .container8 .ordinary-text:hover {
-                /* 1. Легке синє світіння (Box Shadow) */
-                box-shadow: 0 10px 30px rgba(43, 49, 180, 0.3), 0 0 15px rgba(43, 49, 180, 0.2);
-                /* 2. Ефект підйому вгору */
-                transform: translateY(-8px);
-                /* 3. Робимо рамку трохи яскравішою */
-                border-color: #4a51ff;
-                /* 4. Опціонально: легкий блиск фону */
-                background-color: rgba(43, 49, 180, 0.02);
-                position: relative; /* Обов'язково для роботи z-index */
-                z-index: 10;
-            }
+
+    .container8 .ordinary-text:hover {
+        /* 1. Легке синє світіння (Box Shadow) */
+        box-shadow: 0 10px 30px rgba(43, 49, 180, 0.3), 0 0 15px rgba(43, 49, 180, 0.2);
+        /* 2. Ефект підйому вгору */
+        transform: translateY(-8px);
+        /* 3. Робимо рамку трохи яскравішою */
+        border-color: #4a51ff;
+        /* 4. Опціонально: легкий блиск фону */
+        background-color: rgba(43, 49, 180, 0.02);
+        position: relative; /* Обов'язково для роботи z-index */
+        z-index: 10;
+    }
 
     .review-img img {
         width: 100%;
@@ -791,32 +786,30 @@
     .review-img {
         z-index: 5;
         position: relative;
-
     }
 
     .container8 .landing-title {
         margin-top: 35px !important;
     }
-    .review-arrow{
+
+    .review-arrow {
         margin-top: 80px !important;
-        cursor:pointer;
-        
+        cursor: pointer;
     }
 
-        .review-arrow img:hover{
-     
-            transform: scale(1.2); /* Збільшує стрілку на 20% */
-            filter: brightness(1.2);
-        }
-
-    .review-arrow img{
-       width:85px;
+    .review-arrow img:hover {
+        transform: scale(1.2); /* Збільшує стрілку на 20% */
+        filter: brightness(1.2);
     }
-    .container8 .submit-btn-text{
-        font-size:1.7rem;
-        border:none;
-        background-color:transparent;
 
+    .review-arrow img {
+        width: 85px;
+    }
+
+    .container8 .submit-btn-text {
+        font-size: 1.7rem;
+        border: none;
+        background-color: transparent;
     }
 
     .container8 .submit-btn-text:hover {
@@ -827,11 +820,11 @@
 
     .review-card {
         position: relative;
-        z-index: 1; 
-        transition: z-index 0s; 
+        z-index: 1;
+        transition: z-index 0s;
     }
 
-    .modal-text{
+    .modal-text {
         font-family: 'Gilroy';
         font-weight: 300;
         font-size: 1.6rem;
@@ -840,6 +833,7 @@
         margin-bottom: 20px;
         line-height: 2rem;
     }
+
     .modal-title {
         font-family: 'Accia Piano';
         font-weight: 300;
@@ -847,7 +841,7 @@
         line-height: 100%;
         color: #FFFFFF;
         margin-bottom: 30px;
-        margin-top:10px;
+        margin-top: 10px;
         line-height: 2.1rem;
     }
 
@@ -859,14 +853,14 @@
     }
 
     #reviewModal .form-control {
-     
+
         border: 1px solid rgba(255, 255, 255, 0.3);
         color: white;
     }
 
     #reviewModal .modal-content {
         border: 2px solid #2B31B4;
-        background-color: #2B31B4; 
+        background-color: #2B31B4;
 
         /* Ефект світіння (Box Shadow) */
         /* Перша тінь — глибока і розсіяна, друга — яскравий контур */
@@ -874,33 +868,30 @@
         /* Плавна поява світіння разом з вікном */
         transition: box-shadow 0.3s ease-in-out;
     }
-    .modal-footer .submit-btn-text{
+
+    .modal-footer .submit-btn-text {
         font-size: 1.3rem;
     }
 
     .modal-footer .submit-btn-text:hover {
-            color: #2B31B4;
-            text-shadow: none;
+        color: #2B31B4;
+        text-shadow: none;
     }
 
-   
-
-     
 
     #reviewsSlider {
-        display: flex !important; 
-        flex-wrap: nowrap !important; 
-        overflow-x: auto; 
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
         gap: 20px;
         padding: 20px 0;
     }
 
-
-        #reviewsSlider::-webkit-scrollbar {
-            display: none;
-        }
+    #reviewsSlider::-webkit-scrollbar {
+        display: none;
+    }
 
     #reviewsSlider {
         -ms-overflow-style: none;
@@ -909,37 +900,36 @@
 
     /* Картка відгуку */
     .review-card-container {
-        flex: 0 0 470px !important; 
+        flex: 0 0 470px !important;
         width: 450px !important;
         position: relative;
     }
 
     .registration-section {
         padding: 60px 20px;
-        background-color: #f9f9f9; 
-       
+        background-color: #f9f9f9;
     }
 
     .registration-container {
         display: flex;
-    /*     max-width: 1100px; */
-        margin-top: 60px ;
+        /*     max-width: 1100px; */
+        margin-top: 60px;
         margin-bottom: 60px;
         gap: 50px;
         align-items: center;
-        padding:30px;
-       
-      
-       /*  margin:60px auto; */
+        padding: 30px;
+
+
+        /*  margin:60px auto; */
     }
 
     /* Ліва колонка */
     .registration-info {
         flex: 1;
         border: 2px solid #2B31B4;
-        width:880px;
+        width: 880px;
         height: 435px;
-        padding:20px;
+        padding: 20px;
     }
 
     .info-title {
@@ -947,18 +937,18 @@
         font-size: 2.3rem;
         margin-bottom: 20px;
         font-weight: 500;
-        font-family:"Gilroy";
-        margin-top:60px;
+        font-family: "Gilroy";
+        margin-top: 60px;
         margin-bottom: 20px;
     }
 
     .main-cta {
-        color: #B8BAE5; 
+        color: #B8BAE5;
         font-size: 3.5rem;
         line-height: 1;
         font-weight: 300;
         text-transform: uppercase;
-        font-family:"Accia Piano";
+        font-family: "Accia Piano";
     }
 
     /* Права колонка (форма) */
@@ -974,30 +964,27 @@
         /* width:860px; */
         width: 800px;
         border: none;
-        border-bottom: 2px solid #2B31B4; 
+        border-bottom: 2px solid #2B31B4;
         background: transparent;
         padding: 20px 0;
         font-size: 2rem;
         outline: none;
         color: #B8BAE5;
         font-family: "Gilroy";
-        font-weight:500;
-
+        font-weight: 500;
     }
 
-     
-        .form-group input::placeholder {
-            color: #a5a9d1;
-        }
-
+    .form-group input::placeholder {
+        color: #a5a9d1;
+    }
 
     .register-btn {
         background-color: #2B31B4;
         color: white;
         border: none;
         padding: 25px;
-        font-size:2rem;
-        font-family:"Accia Piano";
+        font-size: 2rem;
+        font-family: "Accia Piano";
         font-weight: 300;
         cursor: pointer;
         margin-top: 10px;
@@ -1005,77 +992,76 @@
         text-transform: uppercase;
     }
 
-        .register-btn:hover {
-            background-color: #1e238a;
-            box-shadow: 0 5px 15px rgba(43, 49, 180, 0.3); 
-        }
-        .container11{
+    .register-btn:hover {
+        background-color: #1e238a;
+        box-shadow: 0 5px 15px rgba(43, 49, 180, 0.3);
+    }
+
+    .container11 {
         position: relative;
         padding-top: 0;
         overflow: hidden;
-     
- 
-        }
+    }
 
-    .container12{
+    .container12 {
         position: relative;
         padding-top: 0;
         overflow: hidden;
         background-color: #2B31B4;
         margin-left: -20px !important;
         margin-right: -20px !important;
- 
-        height:700px;
-     
-    }
-    .container12 .landing-title{
-            color: #FFFFFF;
+
+        height: 700px;
     }
 
-        .container12 .ordinary-text {
-            color: #FFFFFF;
-            font-size:2.2rem;
-        }
+    .container12 .landing-title {
+        color: #FFFFFF;
+    }
 
-        .container12 .nav-link-landing {
-            color: #FFFFFF;
-          
-          /*   margin-left:95px; */
-            font-size:1.4rem;
-            font-family:"Accia Piano";
-            font-weight:300;
-         
-        }
-        .email-form{
+    .container12 .ordinary-text {
+        color: #FFFFFF;
+        font-size: 2.2rem;
+    }
+
+    .container12 .nav-link-landing {
+        color: #FFFFFF;
+
+        /*   margin-left:95px; */
+        font-size: 1.4rem;
+        font-family: "Accia Piano";
+        font-weight: 300;
+    }
+
+    .email-form {
         flex: 1;
         display: flex;
         flex-direction: column;
         gap: 10px;
         width: 800px;
-        }
+    }
 
-        .email-form .form-group input {
+    .email-form .form-group input {
         /* width:860px; */
         width: 450px;
-        border-bottom: 2px solid #FFFFFF; 
-      
+        border-bottom: 2px solid #FFFFFF;
+
         padding: 10px 0;
         font-size: 1.5rem;
-      
+
         color: #FFFFFF;
- 
+
         font-weight: 500;
     }
 
-            .email-form .form-group input::placeholder {
-                color: #FFFFFF;
-                opacity:0.7;
+    .email-form .form-group input::placeholder {
+        color: #FFFFFF;
+        opacity: 0.7;
     }
 
-        .email-form .register-btn {
-            background-color: #FFFFFF;
-            color: #2B31B4;
-            border: 1px solid #2B31B4;
+    .email-form .register-btn {
+        background-color: #FFFFFF;
+        color: #2B31B4;
+        border: 1px solid #2B31B4;
         padding: 8px;
         font-size: 1.1rem;
         font-family: "Accia Piano";
@@ -1084,10 +1070,8 @@
         margin-top: 10px;
         transition: background 0.3s ease;
         text-transform: uppercase;
-        width:140px;
+        width: 140px;
     }
-
-      
 
     .mini-container:hover .mini-num,
     .mini-container:hover .landing-subtitle,
@@ -1095,38 +1079,32 @@
         color: #ffffff !important;
     }
 
-   
     .mini-num, .landing-subtitle, .ordinary-text {
         transition: color 0.3s ease;
     }
 
     .wide-text {
-        width: 170% !important; 
-  
+        width: 170% !important;
+
     }
 
-    .picture-frame-cats img{
-        width:350px;
+    .picture-frame-cats img {
+        width: 350px;
     }
-  
-    @@media(max-width: 1600px) {
-    html {
-        font-size: 14px;
-    }
-   
+
+    @@media (max-width: 1600px) {
+        html {
+            font-size: 14px;
+        }
+
         .mermaid-img {
-           
             left: 90.8%;
-          
-       
         }
 
 
         .column-img {
             left: 87%;
             top: 53%;
-           
-      
         }
 
         .circle-img {
@@ -1137,7 +1115,6 @@
         .avatar-img {
             left: 33%;
             top: 18%;
-      
         }
 
         .plane-img {
@@ -1146,7 +1123,6 @@
         }
 
         .down-img img {
-           
             height: 410px;
         }
 
@@ -1169,145 +1145,155 @@
         .tree-img {
             left: 71%;
         }
-           .container4 .container{
-           width:95%;
-           }
+
+        .container4 .container {
+            width: 95%;
+        }
 
         .container8 .ordinary-text {
-        min-height:352px;
+            min-height: 352px;
         }
-      
-}
+
+    }
 
     @@media (max-width: 767px) {
-    html {
-        font-size: 16px;
-    }
-    .container1{
-        max-height:516px;
-    }
-    .up-img img{
-       
-        height:70px;
-        margin-top:-25px;
-    }
-    .mermaid-img img{
+        html {
+            font-size: 16px;
+        }
+
+        .container1 {
+            max-height: 516px;
+        }
+
+        .up-img img {
+
+            height: 70px;
+            margin-top: -25px;
+        }
+
+        .mermaid-img img {
             width: 100px;
             height: 100px;
-    }
-     .mermaid-img{
-            left: 87%;
-     }
+        }
 
-        .plane-img img{
+        .mermaid-img {
+            left: 87%;
+        }
+
+        .plane-img img {
             width: 75px;
         }
 
         .bird-img {
-            
+
             top: 10%;
         }
 
-            .bird-img img {
-                width: 50px;
-               
-            }
+        .bird-img img {
+            width: 50px;
+
+        }
 
         .down-img img {
-   
+
             max-width: 400px;
             height: 150px;
-          
+
         }
-        .column-img img{
-            height:150px;
-            width:60px;
+
+        .column-img img {
+            height: 150px;
+            width: 60px;
         }
 
         .column-img {
-          
+
             top: 68%;
         }
 
 
         .circle-img {
-        
+
             left: 65%;
-          
+
             top: 75%;
-          
+
         }
 
-            .circle-img img {
-                width: 40px;
-           
-            }
+        .circle-img img {
+            width: 40px;
+
+        }
 
         .avatar-img img {
             width: 60px;
-          
+
         }
 
         .avatar-img {
-            
+
             left: 21%;
-         
+
             top: 25%;
-          
+
         }
-        .sub-title{
-            font-size:1.1rem;
+
+        .sub-title {
+            font-size: 1.1rem;
             line-height: 1.1rem;
-            margin-left:10px;
-            margin-bottom:60px;    
+            margin-left: 10px;
+            margin-bottom: 60px;
         }
 
 
         .plane-img {
-          
+
             top: 20%;
         }
 
         .main-title {
-            font-size: 120px; 
-        
+            font-size: 120px;
+
             margin-top: 70px;
-            margin-bottom:70px;
-          
+            margin-bottom: 70px;
+
         }
 
         .container2 {
             border-bottom: 1px solid #2B31B4;
             overflow: hidden;
         }
-        .container2 .ordinary-text:last-child{
-            padding-bottom:25px;
-                border-bottom: 1px solid #2B31B4;
+
+        .container2 .ordinary-text:last-child {
+            padding-bottom: 25px;
+            border-bottom: 1px solid #2B31B4;
         }
 
-      .landing-title{
-          font-size:3.2rem;
-          line-height:3.5rem;
+        .landing-title {
+            font-size: 3.2rem;
+            line-height: 3.5rem;
             margin-bottom: 15px;
-      }
-      .landing-subtitle{
+        }
+
+        .landing-subtitle {
             font-size: 1.2rem;
             margin-bottom: 15px;
-      }
-      .ordinary-text{
+        }
+
+        .ordinary-text {
             font-size: 1.2rem;
             margin-bottom: 15px;
             line-height: 1.3rem;
-            width:100%;
-      }
+            width: 100%;
+        }
 
         .text {
             width: 100%;
         }
 
-       .p-3{
-           padding:0.5rem !important;
-       }
+        .p-3 {
+            padding: 0.5rem !important;
+        }
 
         .m-3 {
             margin: 0.5rem !important;
@@ -1316,23 +1302,25 @@
         .text-content {
             margin-top: 5px;
         }
+
         /* Стилі для галереї в колонці */
         .gallery-grid {
             gap: 10px;
             padding-left: 10px;
         }
-   
-     
+
+
         /* Кожен елемент з картиною */
         .gallery-item {
-            top:-30px;
+            top: -30px;
             animation: none;
         }
+
         /* Базовий стиль дроту */
         .wire {
-  
+
             width: 2px;
-   
+
         }
 
         .wire-left {
@@ -1342,27 +1330,29 @@
         .wire-right {
             right: 50px;
         }
+
         /* --- Довжина для ВИЩОЇ картини (Дівчина з перловою сережкою) --- */
         .item-high {
             margin-top: 60px;
         }
 
-            .item-high .wire {
-                height: 60px;
-            }
+        .item-high .wire {
+            height: 60px;
+        }
+
         /* --- Довжина для НИЖЧОЇ картини (Гічкок) --- */
         .item-low {
             margin-top: 140px;
         }
 
-            .item-low .wire {
-                height: 140px;
-            }
+        .item-low .wire {
+            height: 140px;
+        }
 
 
         .picture-frame img {
             width: 170px;
-   
+
         }
 
         .picture-frame {
@@ -1370,178 +1360,177 @@
         }
 
         .picture-caption {
-     
+
             width: 160px;
         }
 
 
+        .picture-caption .title {
 
-            .picture-caption .title {
-              
-                font-size: 0.9rem;
-            
-            }
+            font-size: 0.9rem;
+
+        }
 
         .wide-text {
-            width: 100% !important; 
+            width: 100% !important;
             max-width: 100% !important;
-            box-sizing: border-box; 
+            box-sizing: border-box;
         }
 
-   
-        .container3 .landing-title{
-            line-height:3.5rem;
-            margin-bottom:5px;
+
+        .container3 .landing-title {
+            line-height: 3.5rem;
+            margin-bottom: 5px;
         }
 
-            .container3 .plane-img {
-                position: absolute;
-                left: 2%;
-                transform: translateX(-50%);
-                top: 92%;
-            }
+        .container3 .plane-img {
+            position: absolute;
+            left: 2%;
+            transform: translateX(-50%);
+            top: 92%;
+        }
 
-            .container3 .landing-subtitle {
-                width: 100%;
-                padding-left: 15px;
-            }
+        .container3 .landing-subtitle {
+            width: 100%;
+            padding-left: 15px;
+        }
 
-            .container3 .ordinary-text {
-                width: 100%;
-                padding-left: 15px;
-            }
+        .container3 .ordinary-text {
+            width: 100%;
+            padding-left: 15px;
+        }
 
-  
-
-       
 
         .mini-container {
             text-align: left !important;
             padding-bottom: 15px !important;
             margin-bottom: 5px;
             position: relative;
-            border-left:none;
+            border-left: none;
         }
- 
-            .mini-container::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 15px;
-                right: 15px;
-                height: 1px;
-                background-color: #2B31B4; 
-            
-            }
-            .mini-container:last-child{
-                margin-bottom:110px;
-            }
 
-      
-  
-            .container4 .landing-title {
-                padding-left: 20px !important;
-               
-                margin-bottom: 25px !important;
-            }
+        .mini-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+            right: 15px;
+            height: 1px;
+            background-color: #2B31B4;
 
-            .container4 .container {
-                margin: 0 !important;
-                max-width: 100% !important;
-                padding: 0 10px !important;
-            }
+        }
+
+        .mini-container:last-child {
+            margin-bottom: 110px;
+        }
+
+
+        .container4 .landing-title {
+            padding-left: 20px !important;
+
+            margin-bottom: 25px !important;
+        }
+
+        .container4 .container {
+            margin: 0 !important;
+            max-width: 100% !important;
+            padding: 0 10px !important;
+        }
+
         /* Перебудова рядка модуля у вертикальний стек */
         .module-row {
-            flex-direction: column ;
-            align-items: flex-start ; 
-            margin-left: 0 ;
-            padding: 20px 10px ;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 0;
+            padding: 20px 10px;
         }
-  
+
         .module-number {
-            width: 100% ;
-            padding: 0 ; 
-            font-size: 2.2rem ; 
-            border-right: none ; 
+            width: 100%;
+            padding: 0;
+            font-size: 2.2rem;
+            border-right: none;
         }
-  
+
         .module-name {
-            width: 100% ;
-            padding: 5px 0 0 0 ;
-            font-size: 1.3rem ; 
-            font-weight: 400 ; 
-            letter-spacing: 0.5px ;
+            width: 100%;
+            padding: 5px 0 0 0;
+            font-size: 1.3rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
         }
- 
+
         .text-end {
-            text-align: center ; /* Змінюємо з right на center */
-            margin-top: 40px ;
-            margin-right: 0 ;
+            text-align: center; /* Змінюємо з right на center */
+            margin-top: 40px;
+            margin-right: 0;
         }
 
         .show-more-btn {
-            font-size: 1.1rem ; 
+            font-size: 1.1rem;
             display: inline-block;
         }
-      
+
         .plants-img {
-            margin-right: 0 ;
+            margin-right: 0;
         }
 
-            .plants-img img {
-                width: 180px ; 
-            }
-       
+        .plants-img img {
+            width: 180px;
+        }
+
         .basket-img {
-            margin-left: 0 ;
-            margin-top: 30px ;
+            margin-left: 0;
+            margin-top: 30px;
             display: flex;
-            justify-content: flex-start; 
+            justify-content: flex-start;
         }
 
-            .basket-img img {
-                width: 110px ; 
-            }
+        .basket-img img {
+            width: 110px;
+        }
 
         .container5 .ordinary-text {
             width: 140%;
-            margin-bottom:30px;
+            margin-bottom: 30px;
         }
 
         .container5 .ordinary-text:last-child {
-            padding-bottom:25px;
-            margin-bottom:15px;
-                border-bottom: 1px solid #2B31B4;
+            padding-bottom: 25px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #2B31B4;
         }
-        /* --- Довжина для ВИЩОЇ картини (Дівчина з перловою сережкою) --- */
-            .container5 .item-high {
-                margin-top: 60px;
-            }
 
-          .container5 .item-high .wire {
-                    height: 60px;
-                }
+        /* --- Довжина для ВИЩОЇ картини (Дівчина з перловою сережкою) --- */
+        .container5 .item-high {
+            margin-top: 60px;
+        }
+
+        .container5 .item-high .wire {
+            height: 60px;
+        }
+
         /* --- Довжина для НИЖЧОЇ картини (Гічкок) --- */
         .item-cats {
             margin-top: 150px;
         }
 
-            .item-cats .wire {
-                height: 150px;
-            }
+        .item-cats .wire {
+            height: 150px;
+        }
 
-            .item-cats .wire-left {
-                left: 40px;
-            }
+        .item-cats .wire-left {
+            left: 40px;
+        }
 
-            .item-cats .wire-right {
-                right: 50px;
-            }
+        .item-cats .wire-right {
+            right: 50px;
+        }
 
 
-            .item-cats .picture-frame {
-                margin-top: -30px;
-            }
+        .item-cats .picture-frame {
+            margin-top: -30px;
+        }
 
         .container5 .gallery-grid {
             gap: 10px;
@@ -1549,56 +1538,57 @@
         }
 
         .tree-img {
-           display:none;
+            display: none;
         }
 
-            .tree-img img {
-                display: none;
-            }
-            .picture-frame-cats img{
-                width:150px;
-            }
+        .tree-img img {
+            display: none;
+        }
+
+        .picture-frame-cats img {
+            width: 150px;
+        }
 
         .container6 .landing-title {
             line-height: 3.5rem;
             margin-bottom: 5px;
         }
 
-       .container6{
-           border-bottom:none;
-       }
+        .container6 {
+            border-bottom: none;
+        }
 
         .container6 .landing-subtitle {
             width: 100%;
             padding-left: 15px;
-            padding-top:10px;
+            padding-top: 10px;
         }
 
         .container6 .ordinary-text {
             width: 100%;
             padding-left: 15px;
-            padding-bottom:5px;
+            padding-bottom: 5px;
         }
-        .mini-num{
+
+        .mini-num {
             font-size: 1.7rem;
             padding-left: 20px;
             padding-top: 5px;
-            justify-content:flex-start !important;
+            justify-content: flex-start !important;
         }
 
-      
 
         .submit-btn {
             margin-left: 2px;
             margin-right: 10px;
             width: 100%;
-            border:none !important;
-            padding-top:40px;
- 
+            border: none !important;
+            padding-top: 40px;
+
         }
 
         .submit-btn-text {
-        
+
             font-size: 1.2rem;
         }
 
@@ -1606,26 +1596,27 @@
             padding-bottom: 20px;
         }
 
-        .container7 .landing-title{
-            margin-bottom:10px ;
-            padding-left:10px;
+        .container7 .landing-title {
+            margin-bottom: 10px;
+            padding-left: 10px;
         }
-   
+
         .authors-slider {
-            scrollbar-width: none; 
-            overflow-x: auto; 
+            scrollbar-width: none;
+            overflow-x: auto;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
             padding-bottom: 15px !important;
         }
-            .authors-slider::-webkit-scrollbar {
-                display: none;
-            }
-   
+
+        .authors-slider::-webkit-scrollbar {
+            display: none;
+        }
+
         .container7 .mini-container {
-            width: 85vw !important; 
+            width: 85vw !important;
             max-width: 340px;
-            flex: 0 0 auto; 
+            flex: 0 0 auto;
             margin-right: 25px;
         }
 
@@ -1635,31 +1626,33 @@
         }
 
         .slider-arrow-img {
-            width: 55px; 
+            width: 55px;
             height: auto;
             cursor: pointer;
             transition: opacity 0.2s;
         }
 
-            .slider-arrow-img:active {
-                opacity: 0.6; 
-            }
+        .slider-arrow-img:active {
+            opacity: 0.6;
+        }
 
         .author-text {
             font-size: 1.2rem;
             margin-top: 20px;
             line-height: 1.4rem;
         }
-       .container7 .review-arrow{
-           margin-top:40px !important;
-       }
+
+        .container7 .review-arrow {
+            margin-top: 40px !important;
+        }
 
         .container8 .ordinary-text {
-            line-height:1.4rem;
+            line-height: 1.4rem;
         }
+
         .blue-tint {
-            width:45px;
-            height:45px;
+            width: 45px;
+            height: 45px;
         }
 
         .container8 .header-row {
@@ -1676,60 +1669,62 @@
             flex: 0 0 80vw !important;
             width: 80vw !important;
         }
-         .container8 .landing-title{
-             margin-top:40px;
-         }
-        .container8 .ordinary-text {
-            width: 100% ; 
-            min-height: 280px ; 
-            line-height: 1.4rem ;
-            padding: 20px ;
+
+        .container8 .landing-title {
+            margin-top: 40px;
         }
-     
+
+        .container8 .ordinary-text {
+            width: 100%;
+            min-height: 280px;
+            line-height: 1.4rem;
+            padding: 20px;
+        }
+
         .review-arrow-mobile {
             width: 100%;
             margin-bottom: 40px;
         }
 
         .slider-arrow-img-mob {
-            width: 80px ; 
+            width: 80px;
             height: auto;
             cursor: pointer;
             transition: transform 0.2s;
         }
 
-            .slider-arrow-img-mob:active {
-                transform: scale(0.9); /* Ефект натискання */
-            }
-      
+        .slider-arrow-img-mob:active {
+            transform: scale(0.9); /* Ефект натискання */
+        }
+
         .container8 .btn-wrapper {
-            text-align: center !important; 
+            text-align: center !important;
             margin-top: 25px !important;
             margin-bottom: 25px !important;
         }
 
         .container8 .submit-btn-text {
-            font-size: 1.2rem ;
+            font-size: 1.2rem;
         }
-        
-  
+
+
         .review-img {
-            width: 100vw !important; 
+            width: 100vw !important;
             position: relative;
             left: 50%;
             right: 50%;
             margin-left: -50vw !important;
             margin-right: -50vw !important;
-           
+
         }
 
-            .review-img img {
-                width: 100% !important; 
-                height: auto !important; 
-                display: block; 
-                animation:none;
-            }
-       
+        .review-img img {
+            width: 100% !important;
+            height: auto !important;
+            display: block;
+            animation: none;
+        }
+
 
         .container8 .header-row .review-arrow {
             display: none !important;
@@ -1741,27 +1736,27 @@
 
         .container10 {
             height: 438px;
-       
+
         }
 
-            .container10 .landing-title {
-            
-                margin-top: 30px !important;
-                margin-bottom: 30px !important;
-            }
+        .container10 .landing-title {
+
+            margin-top: 30px !important;
+            margin-bottom: 30px !important;
+        }
 
 
-            .container10 .landing-subtitle {
-           
-                font-size: 1.6rem;
-                margin-bottom: 30px !important;
-            }
+        .container10 .landing-subtitle {
 
-            .container10 .ordinary-text {
-                color: #FFFFFF;
-                width: 100%;
-                line-height:1.5rem;
-            }
+            font-size: 1.6rem;
+            margin-bottom: 30px !important;
+        }
+
+        .container10 .ordinary-text {
+            color: #FFFFFF;
+            width: 100%;
+            line-height: 1.5rem;
+        }
 
         .bird-img2 {
             position: absolute;
@@ -1769,91 +1764,96 @@
             left: 5%;
         }
 
-            .bird-img2 img {
-                width: 75px;
-                animation: float 6s ease-in-out infinite;
-            }
+        .bird-img2 img {
+            width: 75px;
+            animation: float 6s ease-in-out infinite;
+        }
 
         .container10 .mini-container {
             padding: 20px;
             margin: 10px;
-            
+
         }
+
         .container12 {
-            padding-left:15px;
-            padding-bottom:40px;
-            height:752px;
+            padding-left: 15px;
+            padding-bottom: 40px;
+            height: 752px;
         }
+
         .container12-mini {
-           
-            flex-direction:column;
-            margin-left:10px;
+
+            flex-direction: column;
+            margin-left: 10px;
         }
-        .container12-mini .ordinary-text{
-            font-size:1.4rem;
-            margin-top:10px !important;
-            font-weight:400;
+
+        .container12-mini .ordinary-text {
+            font-size: 1.4rem;
+            margin-top: 10px !important;
+            font-weight: 400;
         }
-        .last-container{
+
+        .last-container {
             flex-direction: column !important
         }
 
-      
+
         .container12 .nav-link-landing {
-           
+
             font-size: 1.2rem;
-            margin-top:5px !important;
+            margin-top: 5px !important;
             margin-bottom: 5px !important;
             padding-top: 5px !important;
             padding-bottom: 5px !important;
         }
-        .container12 .nav{
-            border-bottom:2px solid #ffffff;
-            margin-top:10px !important;
-           
+
+        .container12 .nav {
+            border-bottom: 2px solid #ffffff;
+            margin-top: 10px !important;
+
         }
 
         .container12 .nav-link-landing:last-child {
-          
-            padding-bottom:10px !important;
+
+            padding-bottom: 10px !important;
         }
-        
+
 
         .email-form {
-        
+
             gap: 10px;
             width: 95vw;
-            padding-left:5px;
+            padding-left: 5px;
         }
 
-        .email-form .ordinary-text{
-            line-height:2.5rem;
-                font-size: 2rem;
+        .email-form .ordinary-text {
+            line-height: 2.5rem;
+            font-size: 2rem;
         }
 
-            .email-form .form-group input {
-          
-                width: 95vw;
-              
-                font-size: 1.3rem;
-               
-            }
+        .email-form .form-group input {
 
-    
-            .email-form .register-btn {
-             
-                font-size: 1.1rem;
-               
-                width: 90vw !important;
-             
-                margin-bottom:10px;
-                padding:10px !important;
-            }
+            width: 95vw;
+
+            font-size: 1.3rem;
+
+        }
+
+
+        .email-form .register-btn {
+
+            font-size: 1.1rem;
+
+            width: 90vw !important;
+
+            margin-bottom: 10px;
+            padding: 10px !important;
+        }
 
         .registration-container {
-            flex-direction: column; 
+            flex-direction: column;
             gap: 35px;
-            padding: 10px; 
+            padding: 10px;
             margin-top: 30px;
             margin-bottom: 30px;
         }
@@ -1863,30 +1863,30 @@
             height: auto !important;
             padding: 20px 10px !important;
         }
-    
+
         .info-title {
             font-size: 1.3rem !important;
             margin-top: 10px !important;
             margin-bottom: 15px !important;
             line-height: 1.3;
         }
-      
+
         .main-cta {
             font-size: 1.8rem !important;
             line-height: 1.1;
         }
-       
+
         .registration-form {
             width: 100% !important;
-            gap: 20px !important; 
+            gap: 20px !important;
         }
-   
+
         .form-group input {
             width: 100% !important;
-            font-size: 1.4rem !important; 
+            font-size: 1.4rem !important;
             padding: 12px 0 !important;
         }
-     
+
         .register-btn {
             width: 100% !important;
             max-width: 100% !important;
@@ -1894,160 +1894,190 @@
             padding: 15px !important;
             margin-top: 15px !important;
         }
-}
-
-
-/* 1. Визначаємо анімацію (вертикальний рух) */
-@@keyframes float {
-    0% {
-        transform: translateY(0px); /* Початкова позиція */
     }
-    50% {
-        transform: translateY(-10px); /* Піднімається на 10px вгору */
+
+
+    /* 1. Визначаємо анімацію (вертикальний рух) */
+    @@keyframes float {
+        0% {
+            transform: translateY(0px); /* Початкова позиція */
+        }
+        50% {
+            transform: translateY(-10px); /* Піднімається на 10px вгору */
+        }
+        100% {
+            transform: translateY(0px); /* Повертається назад */
+        }
     }
-    100% {
-        transform: translateY(0px); /* Повертається назад */
+
+    @@keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-15px);
+        }
+        /* Піднімається на 15px */
+        100% {
+            transform: translateY(0px);
+        }
     }
-}
-@@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); } /* Піднімається на 15px */
-    100% { transform: translateY(0px); }
-}
 
-/* Анімація №2: Погойдування (Sway) - нахил навколо центру */
-@@keyframes sway {
-    0% { transform: rotate(-1.5deg); } /* Легкий нахил вліво */
-    50% { transform: rotate(1.5deg); } /* Легкий нахил вправо */
-    100% { transform: rotate(-1.5deg); }
-}
-
-
-
-
+    /* Анімація №2: Погойдування (Sway) - нахил навколо центру */
+    @@keyframes sway {
+        0% {
+            transform: rotate(-1.5deg);
+        }
+        /* Легкий нахил вліво */
+        50% {
+            transform: rotate(1.5deg);
+        }
+        /* Легкий нахил вправо */
+        100% {
+            transform: rotate(-1.5deg);
+        }
+    }
 
 
 </style>
 <div style="margin-bottom:0px;padding-bottom:0px;">
     <div class="container1 ">
         <div class="up-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407388/Hero_Decorative_Plants_jzt3xj.webp" />
+            <img
+                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407388/Hero_Decorative_Plants_jzt3xj.webp"/>
         </div>
         <div class="mermaid-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407446/Hero-Decorative-Mermaid_cm9et7.webp" />
+            <img
+                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407446/Hero-Decorative-Mermaid_cm9et7.webp"/>
         </div>
         <div class="plane-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407504/Hero-Decorative-Hang-Glider_lvnmtx.webp" />
+            <img
+                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407504/Hero-Decorative-Hang-Glider_lvnmtx.webp"/>
         </div>
         <div class="bird-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407512/Hero_Decorative_Bird_cxty3x.webp" />
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407512/Hero_Decorative_Bird_cxty3x.webp"/>
         </div>
         <div class="d-flex flex-column align-items-center">
             <div class="avatar-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075828/Progress_Avatar_fri9bd.png" />
+                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075828/Progress_Avatar_fri9bd.png"/>
             </div>
-       <span class="main-title">Artline</span>
-            <span class="sub-title"><br />Онлайн-курс з історії мистецтва:<br /> від античності до сучасності</span>
+            <span class="main-title">Artline</span>
+            <span class="sub-title"><br/>Онлайн-курс з історії мистецтва:<br/> від античності до сучасності</span>
         </div>
 
         <div class="circle-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407479/Hero-Decorative-Sphere_myrtmu.webp" />
+            <img
+                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407479/Hero-Decorative-Sphere_myrtmu.webp"/>
         </div>
         <div class="column-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407380/Hero_Decorative_Column_aexzz5.webp" />
+            <img
+                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407380/Hero_Decorative_Column_aexzz5.webp"/>
         </div>
         <div class="down-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407345/Hero-Decorative-Ground_qibdbo.webp" />
+            <img
+                src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407345/Hero-Decorative-Ground_qibdbo.webp"/>
         </div>
     </div>
-    
 
 
     <div class="container2 " id="container2">
-            <div class="row align-items-start">
         <div class="row align-items-start">
+            <div class="row align-items-start">
 
-            <div class="col-lg-4 p-3 m-3 ">
-                <div class="text-content d-flex flex-column ">
-                    <div class="landing-title mt-4">ПРО КУРС</div>
-                    <div class="landing-subtitle ">Цей курс присвячений історії мистецтва як цілісному процесу.</div>
-                    <div class="ordinary-text ">
-                        Ми розглядаємо мистецтво не ізольовано, а в широкому культурному контексті: історичному, соціальному та філософському.
-                    </div>
+                <div class="col-lg-4 p-3 m-3 ">
+                    <div class="text-content d-flex flex-column ">
+                        <div class="landing-title mt-4">ПРО КУРС</div>
+                        <div class="landing-subtitle ">Цей курс присвячений історії мистецтва як цілісному процесу.
+                        </div>
+                        <div class="ordinary-text ">
+                            Ми розглядаємо мистецтво не ізольовано, а в широкому культурному контексті: історичному,
+                            соціальному та філософському.
+                        </div>
                         <div class="ordinary-text wide-text">
-                        Програма охоплює ключові періоди розвитку мистецтва та різні види: живопис, скульптуру, архітектуру, музику і кіно. Матеріал подано структуровано, з опорою на візуальні приклади, порівняння та аналітичні пояснення.<br /><br />
-                        Курс підходить як для першого знайомства з темою, так і для систематизації вже наявних знань.
+                            Програма охоплює ключові періоди розвитку мистецтва та різні види: живопис, скульптуру,
+                            архітектуру, музику і кіно. Матеріал подано структуровано, з опорою на візуальні приклади,
+                            порівняння та аналітичні пояснення.<br/><br/>
+                            Курс підходить як для першого знайомства з темою, так і для систематизації вже наявних
+                            знань.
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-lg-7">
-                <div class="gallery-relative-container">
-                    <div class="gallery-grid">
-                        <div class="gallery-item item-high">
-                            <div class="wire wire-left"></div>
-                            <div class="wire wire-right"></div>
-                            <div class="picture-frame ">
-                                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778503947/Girl_ruricr.webp"  alt="Art 1">
-                            </div>
+                <div class="col-lg-7">
+                    <div class="gallery-relative-container">
+                        <div class="gallery-grid">
+                            <div class="gallery-item item-high">
+                                <div class="wire wire-left"></div>
+                                <div class="wire wire-right"></div>
+                                <div class="picture-frame ">
+                                    <img
+                                        src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778503947/Girl_ruricr.webp"
+                                        alt="Art 1">
+                                </div>
                                 <div class="picture-caption">
                                     <span class="title">Дівчина з перловою сережкою</span>
                                 </div>
-                        </div>
-
-                        <div class="gallery-item item-low">
-                            <div class="wire wire-left"></div>
-                            <div class="wire wire-right"></div>
-                            <div class="picture-frame ">
-                                <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778503955/Hitchcock_e1o8lp.webp"  alt="Art 2">
                             </div>
+
+                            <div class="gallery-item item-low">
+                                <div class="wire wire-left"></div>
+                                <div class="wire wire-right"></div>
+                                <div class="picture-frame ">
+                                    <img
+                                        src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778503955/Hitchcock_e1o8lp.webp"
+                                        alt="Art 2">
+                                </div>
                                 <div class="picture-caption">
                                     <span class="title">Альфред Гічкок</span>
                                 </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-    </div>
-   
-</div>
-</div>
 
-    <div class="container3" >
-    <div class="p-3 m-3">
-        <div class="landing-title mt-4">ДЛЯ КОГО ЦЕЙ КУРС</div>
-            <div class="plane-img"  style=" transform: scaleX(-1)">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407504/Hero-Decorative-Hang-Glider_lvnmtx.webp" />
         </div>
+    </div>
+
+    <div class="container3">
+        <div class="p-3 m-3">
+            <div class="landing-title mt-4">ДЛЯ КОГО ЦЕЙ КУРС</div>
+            <div class="plane-img" style=" transform: scaleX(-1)">
+                <img
+                    src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407504/Hero-Decorative-Hang-Glider_lvnmtx.webp"/>
+            </div>
         </div>
         <div class="row section-row">
-        <div class="col-lg-4 p-3 mini-container">
-            <div class="landing-subtitle ">Всіх, хто цікавиться мистецтвом</div>
-            <div class="ordinary-text ">
-                Для тих, хто хоче розібратись в історії мистецтва з нуля і зрозуміти, як пов’язані між собою різні періоди та напрями.
-                Ви отримаєте цілісну картину розвитку мистецтва без перевантаження термінами.
-            </div>
-        </div>
             <div class="col-lg-4 p-3 mini-container">
-            <div class="landing-subtitle ">Дизайнерів і креативників</div>
-            <div class="ordinary-text ">
-                Для тих, хто працює з візуальною мовою і хоче краще розуміти її походження.                  Курс допоможе розширити візуальний кругозір і усвідомлено працювати з формою, стилем і композицією.
+                <div class="landing-subtitle ">Всіх, хто цікавиться мистецтвом</div>
+                <div class="ordinary-text ">
+                    Для тих, хто хоче розібратись в історії мистецтва з нуля і зрозуміти, як пов’язані між собою різні
+                    періоди та напрями.
+                    Ви отримаєте цілісну картину розвитку мистецтва без перевантаження термінами.
+                </div>
             </div>
-        </div>
             <div class="col-lg-4 p-3 mini-container">
-            <div class="landing-subtitle ">Студентів гуманітарних спеціальностей</div>
-            <div class="ordinary-text ">
-                Для тих, кому потрібна чітка структура знань для навчання або підготовки до іспитів.                 Матеріали курсу можна використовувати як базу для подальшого вивчення теми.
+                <div class="landing-subtitle ">Дизайнерів і креативників</div>
+                <div class="ordinary-text ">
+                    Для тих, хто працює з візуальною мовою і хоче краще розуміти її походження.  Курс допоможе розширити
+                    візуальний кругозір і усвідомлено працювати з формою, стилем і композицією.
+                </div>
+            </div>
+            <div class="col-lg-4 p-3 mini-container">
+                <div class="landing-subtitle ">Студентів гуманітарних спеціальностей</div>
+                <div class="ordinary-text ">
+                    Для тих, кому потрібна чітка структура знань для навчання або підготовки до іспитів.  Матеріали
+                    курсу можна використовувати як базу для подальшого вивчення теми.
+                </div>
             </div>
         </div>
-        </div>
-</div>
+    </div>
 
     <div class="container4 p-0 m-0 " id="container4">
         <div class="plants-img d-flex justify-content-end ">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407367/decor_plants_xwx659.webp"  />
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407367/decor_plants_xwx659.webp"/>
         </div>
-        <div class="landing-title mt-0 " >ПРОГРАМА КУРСУ</div>
+        <div class="landing-title mt-0 ">ПРОГРАМА КУРСУ</div>
 
         <div class="container">
 
@@ -2059,7 +2089,7 @@
                         <div class="module-number">Модуль @module.ModuleNumber.</div>
                         <div class="module-name">
                             @module.Name
-                           
+
                         </div>
                     </div>
                 }
@@ -2075,7 +2105,7 @@
                                 <div class="module-number">Модуль @module.ModuleNumber.</div>
                                 <div class="module-name">
                                     @module.Name
-                                   
+
                                 </div>
                             </div>
                         }
@@ -2091,11 +2121,11 @@
         </div>
 
         <div class="basket-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075814/Sidebar_Decoration_ljpp8v.webp" />
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1776075814/Sidebar_Decoration_ljpp8v.webp"/>
         </div>
-</div>
+    </div>
 
-<div class="container5">
+    <div class="container5">
         <div class="row align-items-start">
             <div class="row align-items-start">
 
@@ -2105,13 +2135,13 @@
                         <div class="ordinary-text ">
                             Орієнтація у ключових мистецьких періодах
                         </div>
-                        <div class="ordinary-text" >
+                        <div class="ordinary-text">
                             Розуміння взаємозв’язок мистецтва, історії та культури
                         </div>
-                        <div class="ordinary-text" >
+                        <div class="ordinary-text">
                             Вміння аналізувати твори різних видів мистецтва
                         </div>
-                        <div class="ordinary-text" >
+                        <div class="ordinary-text">
                             Систематизована база знань для навчання або роботи
                         </div>
                     </div>
@@ -2124,7 +2154,9 @@
                                 <div class="wire wire-left"></div>
                                 <div class="wire wire-right"></div>
                                 <div class="picture-frame ">
-                                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778519906/elvis_vwpeqi.webp" alt="Art 1">
+                                    <img
+                                        src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778519906/elvis_vwpeqi.webp"
+                                        alt="Art 1">
                                 </div>
                                 <div class="picture-caption">
                                     <span class="title">Елвіс Преслі</span>
@@ -2135,24 +2167,27 @@
                                 <div class="wire wire-left"></div>
                                 <div class="wire wire-right"></div>
                                 <div class="picture-frame picture-frame-cats">
-                                    <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778519900/cats_fnqran.webp"  alt="Art 2">
+                                    <img
+                                        src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778519900/cats_fnqran.webp"
+                                        alt="Art 2">
                                 </div>
-                                <div class="picture-caption" >
-                                    <span class="title" >Коханці моєї дружини</span>
+                                <div class="picture-caption">
+                                    <span class="title">Коханці моєї дружини</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="tree-img ">
-                        <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778522229/Results_Decorative_dbhofx.webp"/>
+                        <img
+                            src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778522229/Results_Decorative_dbhofx.webp"/>
                     </div>
                 </div>
             </div>
 
         </div>
-</div>
+    </div>
 
-<div class="container6">
+    <div class="container6">
         <div class="p-3 m-3">
             <div class="landing-title mt-4">ПЕРЕВАГИ КУРСУ</div>
 
@@ -2180,70 +2215,78 @@
                 </div>
             </div>
             <div class="submit-btn" style="  border-top: 2px solid #2B31B4;">
-                <a  class="submit-btn-text p-2"
+                <a class="submit-btn-text p-2"
                    asp-controller="Auth"
                    asp-action="Register">
                     ЗАПИСАТИСЯ
                 </a>
             </div>
         </div>
-</div>
+    </div>
 
-        <div class="container7" id="container7">
-            <div class="p-3 m-3 mb-0 pb-0 header-container">
-                <div class="landing-title mt-4">АВТОРИ КУРСУ</div>
-            </div>
+    <div class="container7" id="container7">
+        <div class="p-3 m-3 mb-0 pb-0 header-container">
+            <div class="landing-title mt-4">АВТОРИ КУРСУ</div>
+        </div>
 
-            <div class="authors-slider-wrapper">
-                <div class="d-flex row flex-nowrap flex-lg-wrap justify-content-start justify-content-lg-around m-2 p-2 g-4 authors-slider" id="authorsSlider">
+        <div class="authors-slider-wrapper">
+            <div
+                class="d-flex row flex-nowrap flex-lg-wrap justify-content-start justify-content-lg-around m-2 p-2 g-4 authors-slider"
+                id="authorsSlider">
 
-                    <div class="col-lg-4 col-12 p-4 mini-container">
-                        <div class="author-img">
-                            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602608/5617d5bdffda33041a60e594663344de576b7e69_yddurt.png" alt="Олена Кравчук" />
-                        </div>
-                        <div class="landing-subtitle mb-2 mt-4">Олена Кравчук</div>
-                        <div class="ordinary-text">
-                            Кандидатка мистецтвознавства<br />
-                            <span class="author-text">Викладачка історії мистецтва, дослідниця європейського модернізму<br />10+ років викладання у вищих навчальних закладах</span>
-                        </div>
+                <div class="col-lg-4 col-12 p-4 mini-container">
+                    <div class="author-img">
+                        <img
+                            src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602608/5617d5bdffda33041a60e594663344de576b7e69_yddurt.png"
+                            alt="Олена Кравчук"/>
                     </div>
-
-                    <div class="col-lg-4 col-12 p-4 mini-container">
-                        <div class="author-img">
-                            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602618/1a5e31c3d5963856f9b153d57b37c27fe3b9d11c_ai6ito.png" alt="Андрій Мельник" />
-                        </div>
-                        <div class="landing-subtitle mb-2 mt-4">Андрій Мельник</div>
-                        <div class="ordinary-text">
-                            Мистецтвознавець, cultural аналітик<br />
-                            <span class="author-text">Спеціалізація — мистецтво ХХ століття та кіно<br />Лектор публічних освітніх програм і курсів</span>
-                        </div>
+                    <div class="landing-subtitle mb-2 mt-4">Олена Кравчук</div>
+                    <div class="ordinary-text">
+                        Кандидатка мистецтвознавства<br/>
+                        <span class="author-text">Викладачка історії мистецтва, дослідниця європейського модернізму<br/>10+ років викладання у вищих навчальних закладах</span>
                     </div>
-
-                    <div class="col-lg-4 col-12 p-4 mini-container">
-                        <div class="author-img">
-                            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602628/d17b0fe32d85353492c2fa66165aac0ff4dbbff4_1_ysvjbr.png" alt="Марія Романюк" />
-                        </div>
-                        <div class="landing-subtitle mb-2 mt-4">Марія Романюк</div>
-                        <div class="ordinary-text mb-2">
-                            Історикиня архітектури<br />
-                            <span class="author-text">Досвід роботи з музейними та освітніми проєктами 10 років</span>
-                        </div>
-                    </div>
-
                 </div>
-            </div>
 
-            <div class="review-arrow d-flex d-lg-none justify-content-between align-items-center px-4 mt-1">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
-                     class="slider-arrow-img"
-                     onclick="scrollAuthorsSlider(-1)"
-                     alt="scrollLeft" />
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
-                     class="slider-arrow-img"
-                     onclick="scrollAuthorsSlider(1)"
-                     alt="scrollRight" />
+                <div class="col-lg-4 col-12 p-4 mini-container">
+                    <div class="author-img">
+                        <img
+                            src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602618/1a5e31c3d5963856f9b153d57b37c27fe3b9d11c_ai6ito.png"
+                            alt="Андрій Мельник"/>
+                    </div>
+                    <div class="landing-subtitle mb-2 mt-4">Андрій Мельник</div>
+                    <div class="ordinary-text">
+                        Мистецтвознавець, cultural аналітик<br/>
+                        <span class="author-text">Спеціалізація — мистецтво ХХ століття та кіно<br/>Лектор публічних освітніх програм і курсів</span>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-12 p-4 mini-container">
+                    <div class="author-img">
+                        <img
+                            src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778602628/d17b0fe32d85353492c2fa66165aac0ff4dbbff4_1_ysvjbr.png"
+                            alt="Марія Романюк"/>
+                    </div>
+                    <div class="landing-subtitle mb-2 mt-4">Марія Романюк</div>
+                    <div class="ordinary-text mb-2">
+                        Історикиня архітектури<br/>
+                        <span class="author-text">Досвід роботи з музейними та освітніми проєктами 10 років</span>
+                    </div>
+                </div>
+
             </div>
         </div>
+
+        <div class="review-arrow d-flex d-lg-none justify-content-between align-items-center px-4 mt-1">
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
+                 class="slider-arrow-img"
+                 onclick="scrollAuthorsSlider(-1)"
+                 alt="scrollLeft"/>
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
+                 class="slider-arrow-img"
+                 onclick="scrollAuthorsSlider(1)"
+                 alt="scrollRight"/>
+        </div>
+    </div>
 
     <div class="container8" id="container8">
         <div class="p-3 m-3 mb-0 pb-0 d-flex justify-content-between align-baseline header-row">
@@ -2253,24 +2296,24 @@
                 <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
                      class="slider-arrow-img px-3"
                      onclick="scrollSlider(-1)"
-                     alt="scrollLeft" />
+                     alt="scrollLeft"/>
                 <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
                      class="slider-arrow-img px-3"
                      onclick="scrollSlider(1)"
-                     alt="scrollRight" />
+                     alt="scrollRight"/>
             </div>
         </div>
 
         @if (Model.Reviews != null && Model.Reviews.Any())
         {
-            <div class="slider-wrapper px-4 py-1"  style="overflow: hidden;">
+            <div class="slider-wrapper px-4 py-1" style="overflow: hidden;">
                 <div id="reviewsSlider" class="d-flex" style="scroll-behavior: smooth; gap: 20px;">
                     @foreach (var review in Model.Reviews)
                     {
-                     
                         <div class="review-card-container">
                             <div class="d-flex align-items-center mb-0">
-                                <div class="blue-tint" style="background-image: url('https://res.cloudinary.com/daxjj6p5c/image/upload/v1778668767/a8e13e3251a9bf9bde246e4b297ea74f4e09684f_xerdly.png')"></div>
+                                <div class="blue-tint"
+                                     style="background-image: url('https://res.cloudinary.com/daxjj6p5c/image/upload/v1778668767/a8e13e3251a9bf9bde246e4b297ea74f4e09684f_xerdly.png')"></div>
                             </div>
 
                             <div class="ordinary-text">
@@ -2281,46 +2324,46 @@
                 </div>
             </div>
         }
-            
-            else
-            {
-                <div class="col-12 text-center text-muted">
-                    <p>Тут поки немає відгуків. Станьте першим!</p>
-                </div>
-            }
+
+        else
+        {
+            <div class="col-12 text-center text-muted">
+                <p>Тут поки немає відгуків. Станьте першим!</p>
+            </div>
+        }
 
 
         <div class="review-arrow-mobile d-flex d-lg-none justify-content-between align-items-center px-4 mt-1">
             <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646623/scrollLeft_fucspj.svg"
                  class="slider-arrow-img-mob"
                  onclick="scrollSlider(-1)"
-                 alt="scrollLeft" />
+                 alt="scrollLeft"/>
             <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1775646633/scrollRight_guxmdt.svg"
                  class="slider-arrow-img-mob"
                  onclick="scrollSlider(1)"
-                 alt="scrollRight" />
+                 alt="scrollRight"/>
         </div>
 
         <div class="text-end m-3 px-2 mb-4 btn-wrapper">
-                <button type="button"
-                        class="submit-btn-text"
-                        data-bs-toggle="modal"
-                        data-bs-target="#reviewModal">
-                    ЗАЛИШИТИ ВІДГУК
-                </button>
-            
-           
+            <button type="button"
+                    class="submit-btn-text"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reviewModal">
+                ЗАЛИШИТИ ВІДГУК
+            </button>
+
+
         </div>
         <div class="review-img">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407489/decor_reviews_pm5dru.webp" />
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407489/decor_reviews_pm5dru.webp"/>
         </div>
 
     </div>
 
-<div class="container9">
+    <div class="container9">
         <div class="p-3 m-3">
             <div class="landing-title mt-4">ЯК ЗАПИСАТИСЯ НА КУРС</div>
-           
+
         </div>
         <div class="row">
             <div class="col-4 p-3  mini-container">
@@ -2338,27 +2381,30 @@
             <div class="col-4 p-3 mini-container">
                 <div class="landing-subtitle ">Доступ до навчання</div>
                 <div class="ordinary-text ">
-                    Після оплати відкривається повний доступ до платформи: відеолекцій, навчальних матеріалів і практичних завдань.
+                    Після оплати відкривається повний доступ до платформи: відеолекцій, навчальних матеріалів і
+                    практичних завдань.
                 </div>
             </div>
         </div>
-</div>
+    </div>
 
-<div class="container10">
+    <div class="container10">
         <div class="mini-container">
-        <div >
-            <div class="landing-title ">ВАРТІСТЬ</div>
+            <div>
+                <div class="landing-title ">ВАРТІСТЬ</div>
+            </div>
+
+            <div class="landing-subtitle ">₴ 1 500</div>
+            <div class="bird-img2">
+                <img
+                    src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407512/Hero_Decorative_Bird_cxty3x.webp"/>
+            </div>
+            <div class="ordinary-text ">
+                У вартість входить: доступ до платформи, всі лекції, практичні завдання, додаткові матеріали, можливість
+                завантажувати лекції.
+            </div>
         </div>
-       
-        <div class="landing-subtitle ">₴ 1 500 </div>
-        <div class="bird-img2">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407512/Hero_Decorative_Bird_cxty3x.webp" />
-        </div>
-        <div class="ordinary-text ">
-            У вартість входить: доступ до платформи, всі лекції, практичні завдання, додаткові матеріали, можливість завантажувати лекції.
-        </div>
-        </div>
-</div>
+    </div>
 
     <div class="container11">
         <div class="registration-container ">
@@ -2382,14 +2428,14 @@
                 <button type="submit" class="register-btn">ЗАРЕЄСТРУВАТИСЯ</button>
             </form>
         </div>
-</div>
+    </div>
 
     <div class="container12">
         <div class="plants-img d-flex justify-content-end ">
-            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407367/decor_plants_xwx659.webp" />
+            <img src="https://res.cloudinary.com/daxjj6p5c/image/upload/v1778407367/decor_plants_xwx659.webp"/>
         </div>
         <div class="d-flex justify-content-around p-2 m-2 container12-mini" style="border-bottom:2px solid #FFFFFF">
-        <div class="landing-title mt-0 ">ARTLINE</div>
+            <div class="landing-title mt-0 ">ARTLINE</div>
             <div class="ordinary-text mt-4">info@artline.com</div>
             <div class="ordinary-text mt-4">+38 068 000 00 00</div>
         </div>
@@ -2419,13 +2465,13 @@
                     </div>
                     <button type="submit" class="register-btn">ПІДПИСАТИСЯ</button>
                 </form>
-               @*  <div class="ordinary-text mt-4">ПІДПИСАТИСЯ НА РОЗСИЛКУ</div>
+                @*  <div class="ordinary-text mt-4">ПІДПИСАТИСЯ НА РОЗСИЛКУ</div>
                 <div class="ordinary-text mt-4">Ваша пошта</div>
                 <button>ПІДПИСАТИСЯ</button> *@
             </div>
         </div>
-</div>
- 
+    </div>
+
 </div>
 
 <div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
@@ -2433,19 +2479,19 @@
         <div class="modal-content p-3" style="background-color: #2B31B4; color: white;">
             <div class="modal-header border-0">
                 <h5 class="modal-title ">ЗАЛИШИТИ ВІДГУК</h5>
-                <button type="button" class="btn-close btn-close-white mb-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white mb-3" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
 
             @if (User.Identity.IsAuthenticated)
             {
-             
                 <form asp-controller="User" asp-action="AddReview" method="post">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Текст відгуку</label>
                             <textarea name="Content" class="form-control" rows="4" required></textarea>
                         </div>
-                        <input type="hidden" name="Rating" value="5" />
+                        <input type="hidden" name="Rating" value="5"/>
                     </div>
                     <div class="modal-footer border-0">
                         <button type="submit" class="submit-btn-text border-white border p-2">ВІДПРАВИТИ</button>
@@ -2454,9 +2500,8 @@
             }
             else
             {
-              
                 <div class="modal-body text-center p-5">
-                    <i class="bi bi-person-lock" style="font-size: 3rem;"></i> 
+                    <i class="bi bi-person-lock" style="font-size: 3rem;"></i>
                     <p class="modal-text mt-3">Щоб залишити відгук, будь ласка, увійдіть у свій аккаунт.</p>
                     <a asp-controller="Auth"
                        asp-action="Login"
@@ -2505,9 +2550,9 @@
     // });
     document.addEventListener("DOMContentLoaded", function () {
         const collapseElement = document.getElementById('fullProgram');
-         const btn = document.querySelector('.show-more-btn');
+        const btn = document.querySelector('.show-more-btn');
         const fullProgram = document.getElementById('fullProgram');
-      
+
         const decorationImg = document.querySelector('.basket-img');
         const programSection = document.querySelector('.program-section');
 
@@ -2515,7 +2560,7 @@
             // Ховаємо картинку
             btn.innerHTML = 'ЗГОРНУТИ ПРОГРАМУ';
             if (decorationImg) decorationImg.classList.add('img-hidden');
-          
+
             programSection.classList.add('program-expanded');
         });
 
@@ -2546,11 +2591,12 @@
                 behavior: 'smooth'
             });
 
-           
+
         } else {
             console.error("Картки .review-card-container не знайдені всередині слайдера!");
         }
     }
+
     function scrollAuthorsSlider(direction) {
         const slider = document.getElementById('authorsSlider');
         if (!slider) return;
@@ -2561,7 +2607,7 @@
 
         const cardWidth = card.getBoundingClientRect().width + 20; // 20 — це margin-right
 
-    
+
         slider.scrollBy({
             left: direction * cardWidth,
             behavior: 'smooth'

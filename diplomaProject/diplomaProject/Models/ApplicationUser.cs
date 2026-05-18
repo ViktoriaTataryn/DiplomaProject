@@ -1,20 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
-namespace diplomaProject.Models
+namespace diplomaProject.Models;
+
+//класс описывает таблицу пользователя в базе данных
+public class ApplicationUser : IdentityUser
 {
-    //класс описывает таблицу пользователя в базе данных
-    public class ApplicationUser : IdentityUser
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
 
-    
 
-        //автоматическая дата регистрации (текущее время)
-        [Display(Name = "Registration Date")]
-        public DateTime RegistrationDate { get; set; } = DateTime.Now;
-
-        
-    }
+    //автоматическая дата регистрации (текущее время)   
+    [Display(Name = "Registration Date")] public DateTime RegistrationDate { get; set; } = DateTime.Now;
 }
