@@ -228,14 +228,24 @@
     height: 45px;
     border: 1px solid #2B31B4;
     background-color: #FFFFFF;
-
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+    .btn-detail:hover {
+        background-color: #2B31B4; /* Фон стає синім */
+        border-color: #2B31B4;
+    }
+
+        /* 2. Одночасно змінюємо колір тексту всередині, коли мишка наведена на кнопку */
+        .btn-detail:hover .btn-detail-text {
+            color: #FFFFFF; /* Текст стає білим */
+        }
 
 .btn-detail-text {
     color: #2B31B4;
     font-family: "Accia Piano";
     font-weight: 300;
     font-size: 1.5rem;
+    transition: color 0.3s ease;
 }
 
 /* Щоб при фокусі (кліку) рамка не ставала блакитною стандартною */

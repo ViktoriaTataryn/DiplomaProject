@@ -422,4 +422,20 @@ public class CourseController(
 
         return View(viewModel);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ViewSubmission(int id)
+    {
+        var submission = await context.HomeworkSubmissions
+            .Include(s => s.Homework)
+                .ThenInclude(h => h.Questions)
+                    .ThenInclude(q => q.Options)
+            .Include(s => s.StudentAnswers)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (submission == null) return NotFound();
+
+        ViewBag.LessonTitle = submission.Homework?.Lesson?.Title;
+        return View(submission);
+    }
 }

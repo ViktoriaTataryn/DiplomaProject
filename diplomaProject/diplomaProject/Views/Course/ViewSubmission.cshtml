@@ -1,0 +1,249 @@
+﻿@model diplomaProject.Models.HomeworkSubmission
+
+@{
+    ViewData["Title"] = "Результати тесту";
+}
+
+<style>
+        /* Основна палітра та шрифти */
+        .results-container {
+            font-family: 'Gilroy', sans-serif;
+            color: #494C90;
+            max-width: 900px;
+            margin: 40px auto;
+
+        }
+
+        .quiz-main-title {
+            color: #2B31B4;
+            font-size: 2.4rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .quiz-subtitle {
+            color: #9799C4;
+            font-size: 0.95rem;
+            font-family:"Acia Piano";
+        }
+
+        /* Блок оцінки */
+        .score-display {
+            text-align: right;
+        }
+
+        .score-value {
+            font-size: 2.3rem;
+            font-family:"Acia Piano";
+            color: #2B31B4;
+            line-height: 1;
+        }
+
+        /* Контейнер питань */
+        .quiz-question-block {
+            background: #FFFFFF;
+            margin-bottom: 40px;
+        }
+
+        .question-text {
+            color: #2B31B4;
+            font-weight: 500;
+            font-size: 1.5rem;
+            line-height: 1.4;
+            font-family:"Gilroy";
+        }
+
+        /* Опції відповідей */
+        .options-container {
+            border: 1px solid #E0E0E0;
+          /*   border-radius: 6px; */
+            overflow: hidden;
+        }
+
+        .custom-option-item {
+            position: relative;
+            border-bottom: 1px solid #E0E0E0;
+            transition: all 0.2s ease;
+        }
+
+            .custom-option-item:last-child {
+                border-bottom: none;
+            }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 18px 24px;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Кастомний маркер (кружечок) */
+        .custom-radio-mark {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #E0E0E0;
+            border-radius: 2px; /* Квадратний як на макеті */
+            margin-right: 16px;
+            position: relative;
+            flex-shrink: 0;
+            background: #fff;
+        }
+
+            /* Якщо варіант був обраний користувачем */
+            .custom-radio-mark.checked {
+                background-color: currentColor;
+                border-color: transparent;
+            }
+
+                .custom-radio-mark.checked::after {
+                    content: "";
+                    position: absolute;
+                    width: 6px;
+                    height: 6px;
+                    background: #fff;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+
+        /* --- СТАТУСИ ПЕРЕВІРКИ --- */
+
+        /* 1. ПРАВИЛЬНА ВІДПОВІДЬ (обрана студентом) */
+        .custom-option-item.correct {
+            background-color: #F3FEEB; /* Світло-зелений фон */
+            border-left: 4px solid #6CB53E; /* Акцентна лінія зліва */
+        }
+
+            .custom-option-item.correct .option-text-content {
+                color: #494C90;
+                font-weight: 600;
+            }
+
+            .custom-option-item.correct .custom-radio-mark.checked {
+                color: #6CB53E;
+            }
+
+        /* 2. НЕПРАВИЛЬНА ВІДПОВІДЬ (обрана студентом) */
+        .custom-option-item.incorrect {
+            background-color: #FFF5F5; /* Світло-червоний фон */
+            border-left: 4px solid #D32F2F;
+        }
+
+            .custom-option-item.incorrect .custom-radio-mark.checked {
+                color: #D32F2F;
+            }
+
+        /* 3. ПРАВИЛЬНА ВІДПОВІДЬ (яку студент НЕ обрав) */
+        .custom-option-item.should-have-selected {
+            background-color: #FAFAFA;
+            border-left: 4px solid #C3E8A6;
+            opacity: 0.8;
+        }
+
+        /* Текстові підписи (badges) */
+        .status-badge {
+            margin-left: auto;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 8px;
+        }
+
+        .correct-text {
+            color: #6CB53E;
+        }
+
+        .incorrect-text {
+            color: #D32F2F;
+        }
+
+        /* Кнопка повернення */
+        .btn-back-to-list {
+            display: inline-block;
+            border: 1px solid #2B31B4;
+            color: #2B31B4;
+            padding: 14px 30px;
+
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 1rem;
+            margin-top: 20px;
+            font-family:"Gilroy";
+
+        }
+
+            .btn-back-to-list:hover {
+                background: #2B31B4;
+                color: #fff;
+            }
+    /*
+        .main-container{
+            background-color: #FFFFFF;
+            overflow: hidden;
+            display: flex;
+
+            max-width: 1580px;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+            box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
+        } */
+</style>
+
+<div class="main-container px-3 pt-4 pb-1">
+    <div class="results-container">
+        <div class="d-flex justify-content-between align-items-start mb-5">
+            <div>
+                <h2 class="quiz-main-title">РЕЗУЛЬТАТИ ТЕСТУ</h2>
+            </div>
+            <div class="score-display">
+                <div class="score-value">@Model.Grade/@Model.Homework.Questions.Count</div>
+
+            </div>
+        </div>
+
+        @foreach (var question in Model.Homework.Questions)
+        {
+            <div class="quiz-question-block p-3">
+                <h5 class="question-text">@question.Text</h5>
+                <div class="options-container mt-3">
+                    @foreach (var option in question.Options)
+                    {
+                        var isSelected = Model.StudentAnswers.Any(sa => sa.SelectedOptionId == option.Id);
+                        var isCorrect = option.IsCorrect;
+
+                        // Логіка визначення класу
+                        string resultClass = "";
+                        if (isSelected && isCorrect) resultClass = "correct";
+                        else if (isSelected && !isCorrect) resultClass = "incorrect";
+                        else if (!isSelected && isCorrect) resultClass = "should-have-selected";
+
+                        <div class="custom-option-item @resultClass">
+                            <div class="option-label">
+                                <span class="custom-radio-mark @(isSelected ? "checked" : "")"></span>
+                                <span class="option-text-content">@option.Text</span>
+
+                                @if (isSelected && isCorrect)
+                                {
+                                    <span class="status-badge correct-text">Правильно</span>
+                                }
+                                else if (isSelected && !isCorrect)
+                                {
+                                    <span class="status-badge incorrect-text">Неправильно</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <a href="@Url.Action("GetHomeworks", "Course")" class="btn-back-to-list">
+            Повернутися до списку завдань
+        </a>
+    </div>
+</div>
