@@ -33,7 +33,7 @@ body {
     font-size: 1.2rem;
     font-family: "Gilroy Regular", serif;
     font-weight: 500;
-    /* line-height:1;*/
+
 }
 
 .status {
@@ -43,10 +43,10 @@ body {
 
 .art-frame-wrapper {
     position: relative;
-    /* min-width: 280px;*/
+
     max-width: 376px;
     height: 200px;
-    /* height: 180px;*/
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -65,7 +65,7 @@ body {
     pointer-events: none;
     object-fit: contain;
     bottom: 0;
-    /* filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.3));*/
+
     filter: drop-shadow(0px 5px 12px rgba(120, 90, 200, 0.25));
 }
 
@@ -95,10 +95,7 @@ body {
     height: 280px;
 }
 
-/*.progress-container {
-  
-    background-color: #9799C4;
-}*/
+
 
 .progress-success {
     background-color: #2B31B4;
@@ -214,8 +211,7 @@ div#modulesSlider::-webkit-scrollbar {
     font-family: "Gilroy Light", "Gilroy", sans-serif;
     font-weight: 300;
     line-height: 1;
-    /*padding-top:5px;*/
-    /* letter-spacing: 1px;*/
+   
 }
 
 #hometask .hometask-text {
@@ -241,8 +237,7 @@ div#modulesSlider::-webkit-scrollbar {
     line-height: 1;
     font-size: 1.2rem;
     font-weight: 300;
-    /* letter-spacing: 0.5px;*/
-    /*  font-weight: 300; */
+  
 }
 
 .welcome-picture img {
@@ -277,31 +272,18 @@ div#modulesSlider::-webkit-scrollbar {
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    /* height:511px;*/
-    /* display: flex;
-        flex-direction: column;
-        justify-content: center; */
-    /*     height:405px; */
-    /*    width:100%; */
-    /*  width: 100% !important;
-    max-width: 100% !important;*/
-    /* display: block !important; */
-    /*  box-sizing: border-box; */
-    /* margin-left: -10px !important;
-    margin-right: -85px !important;*/
+  
 
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
-    /*       padding-left: 0 !important;
-        padding-right: 0 !important; */
-    /* background-color: #FFFFFF; */
+ 
 
     background-origin: border-box;
     background-clip: border-box;
-    /* padding: -50px !important;*/
+
 }
 
 .progress-inner-content {
-    /*padding: 30px 12px;*/
+  
     width: 100%;
     padding-bottom: 10px !important;
 
@@ -323,8 +305,7 @@ div#modulesSlider::-webkit-scrollbar {
     max-width: 755px;
     width: 46%;
     height: 55px;
-    /* width: 450px;*/
-    /*height: 43px;*/
+
     align-content: center;
     margin-top: 40px !important;
 }
@@ -339,7 +320,7 @@ div#modulesSlider::-webkit-scrollbar {
     font-family: "Accia Piano", serif;
     text-decoration: none;
     letter-spacing: 1px;
-    /* font-weight:300; */
+ 
     font-size: 1.4rem;
     font-weight: 300;
 }
@@ -465,8 +446,7 @@ div#modulesSlider::-webkit-scrollbar {
     max-width: 755px;
     width: 46%;
     height: 55px;
-    /* width: 450px;*/
-    /*height: 43px;*/
+
     align-content: center;
     margin-top: 40px !important;
 }
@@ -658,12 +638,7 @@ div#modulesSlider::-webkit-scrollbar {
 
     #conteiner2 {
         margin-top: -15px !important;
-        /*width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding-left: 0px ;
-        padding-right: 0px ;
-        margin-bottom:10px;*/
+    
         display: flex !important;
         flex-direction: column !important; /* Примусово ставимо один під одного */
         height: auto !important;
@@ -673,20 +648,11 @@ div#modulesSlider::-webkit-scrollbar {
 
 
     #hometask {
-        /*flex: 0 0 100% !important;*/
-        /* max-width: 100%;*/
-        /*padding: 10px 10px;
-        padding-bottom: 0px;
-        max-width: 351px;
-        width: 100% !important;
-        flex-direction: row;*/
+       
         max-width: 351px;
         width: 100% !important;
         padding-top: 10px !important;
-        /*   padding: 10px !important;*/
-        /* padding-top: 15px !important;
-         padding-left: 5px !important;
-         padding-right: 10px !important;*/
+    
         margin-bottom: 20px;
         margin-top: 0px;
         flex-direction: row;
@@ -730,65 +696,12 @@ div#modulesSlider::-webkit-scrollbar {
         width: 100% !important;
         margin-bottom: 20px;
         flex-direction: row;
-        /*flex: 0 0 100% !important;*/
-        /*     max-width: 100%;*/
-        /*margin-top: 15px;
-        padding: 10px 10px;
-        padding-top: 21px;
-        max-width: 351px;
-        width: 100% !important;
-        flex-direction: row;*/
+   
     }
 
-    /* #grades .d-flex {
-         display: flex !important;
-         flex-direction: row !important; 
-         align-items: flex-start !important;
-         width: 100% !important;
-        
-     }
 
-    
-     #grades .px-1.flex-grow-1 {
-         flex: 2 !important; 
-         min-width: 0 !important; 
-         border-right: 2px solid #8588D1 ;
-         padding-right: 10px !important;
-     }
-
-     
-     #grades .hometask-box {
-         flex: 1 !important; 
-         display: flex !important;
-         flex-direction: column !important;
-         align-items: center !important;
-         text-align: center;
-         padding-left: 5px !important;
-         padding-right: 0 !important;
-     }*/
-    /* Налаштування самих квадратиків оцінок,  */
-    /*.grade-square {
-        width: 30px !important;
-        height: 30px !important;
-        font-size: 14px !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f0f0f0; 
-      
-    }
-
-    .grade-item-container span {
-        font-size: 12px ;
-        font-weight: bold;
-        display: block;
-        margin-bottom: 5px;
-        text-transform: capitalize;*/
-    /* Місяці з великої літери */
-    /*}*/
     .grades-grid {
-        /*display: grid;
-        grid-template-columns: repeat(5, 45px);*/ /* 5 в ряд */
+      
         gap: 3px;
     }
 
@@ -842,9 +755,9 @@ div#modulesSlider::-webkit-scrollbar {
 
 
     .art-frame-wrapper {
-        /* height: auto !important;*/
+ 
         aspect-ratio: 16 / 9;
-        /* width: 100% !important;*/
+     
         width: 320px;
         height: 176px;
     }
@@ -868,9 +781,7 @@ div#modulesSlider::-webkit-scrollbar {
 
 @media (max-width: 1600px) {
     html {
-        /* Тепер 1rem = 14px. 
-           Ваш заголовок автоматично стане 28px (2 * 14), 
-           а статус — 12.25px (0.875 * 14) */
+       
         font-size: 14px;
     }
 }

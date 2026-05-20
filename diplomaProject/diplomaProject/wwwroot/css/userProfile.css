@@ -100,7 +100,7 @@ hometask-text {
     background: transparent;
     border: 1.5px solid #2B31B4;
     color: #3b42a8;
-    /*  padding: 15px 60px; */
+
     font-size: 1.5rem;
     cursor: pointer;
     margin-top: 20px;
@@ -126,15 +126,15 @@ hometask-text {
 .eye-icon {
     position: absolute;
     right: 5px;
-    bottom: 10px; /* вирівнюємо точно над синьою лінією */
+    bottom: 10px; 
     cursor: pointer;
-    color: #2B31B4; /* колір як у вашого тексту */
+    color: #2B31B4; 
     font-size: 1.2rem;
     transition: color 0.3s;
 }
 
 .eye-icon:hover {
-    color: #5a62d1; /* легкий ефект при наведенні */
+    color: #5a62d1; 
 }
 
 .end-img {
@@ -155,15 +155,14 @@ hometask-text {
     margin-top: 40px;
     justify-content: center;
     align-content: center;
-    /*  left:304px; */
+
     text-align: center;
 }
 
 .final-block {
-    /* position: relative; */
+  
     height: 375px;
 
-    /*  z-index: 1; */
 }
 
 .subtitle-end {
@@ -189,7 +188,7 @@ hometask-text {
 
     .update-btn {
         max-width: 326px;
-        /*  width: 47%;*/
+ 
         height: 48px;
 
     }
@@ -219,8 +218,7 @@ hometask-text {
     }
 
     #userStatus {
-        /*   max-width: 351px;
-            width:100%; */
+       
         max-width: 351px;
         width: 100% !important;
         padding: 10px !important;
@@ -284,9 +282,7 @@ hometask-text {
 
 @media (max-width: 1600px) {
     html {
-        /* Тепер 1rem = 14px. 
-           Ваш заголовок автоматично стане 28px (2 * 14), 
-           а статус — 12.25px (0.875 * 14) */
+     
         font-size: 14px;
     }
 }

@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="~/css/userProfile.css" asp-append-version="true"/>
 <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true"/>
 <link rel="stylesheet" href="~/css/getHomeworks.css" asp-append-version="true"/>
-@* <link rel="stylesheet" href="~/css/moduleList.css" asp-append-version="true" /> *@
+
 
 <div class="m-3">
 
@@ -65,26 +65,26 @@
             <div class=" d-flex  justify-content-sm-evenly align-content-center gap-0 px-3 mt-4 py-4 gap-xxl-5">
                 <div class="d-flex flex-column py-2 px-4 hometask-box"
                      style="border-right: 2px solid #8588D1; flex: 1;">
-                    @* <div class="d-flex flex-column py-2 px-4 hometask-box" style="border-right: 2px solid #8588D1; "> *@
+                  
                     <span class="hometask-text ">Доступних <br/> завдань:</span>
                     <span class="hometask-num">@Model.Stats?.AvailableWork</span>
                 </div>
 
-                @*  <div class="d-flex flex-column py-2  px-4 hometask-box " style="border-right: 2px solid #8588D1"> *@
+              
                 <div class="d-flex flex-column py-2 px-4 hometask-box "
                      style="border-right: 2px solid #8588D1; flex: 1;">
                     <span class="hometask-text ">Завдань <br/> виконано:</span>
                     <span class="hometask-num">@Model.Stats?.Completed</span>
                 </div>
 
-                @*   <div class="d-flex flex-column py-2 px-4 hometask-box " style="border-right: 2px solid #8588D1"> *@
+              
                 <div class="d-flex flex-column py-2 px-4 hometask-box "
                      style="border-right: 2px solid #8588D1; flex: 1;">
                     <span class="hometask-text ">Завдань <br/> залишилось:</span>
                     <span class="hometask-num">@Model.Stats?.Remaining</span>
                 </div>
 
-                @* <div class="d-flex flex-column py-2  px-4 hometask-box "> *@
+               
                 <div class="d-flex flex-column py-2 px-4 hometask-box " style=" flex: 1;">
                     <span class="hometask-text mt-2">Середній бал:</span>
                     <span class="hometask-num">@(Model.AverageScore.ToString("F1") ?? "0.0")</span>
@@ -126,8 +126,7 @@
             {
                 @foreach (var item in Model.ExecutedHomeworks)
                 {
-                    @*  <div class="homework-card d-flex align-items-center py-3 border-bottom">
-                </div> *@
+                   
 
                     <div class="homework-card d-flex align-items-center py-4  border-bottom border-2"
                          style="border-color: #9799C4 !important;">
@@ -256,67 +255,5 @@
     </script>
 }
 
-@* <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // 1. Отримуємо елементи управління та всі картки
-        const searchInput = document.getElementById('homeworkSearch');
-        const moduleFilter = document.getElementById('moduleFilter');
-        const homeworkContainer = document.querySelector('.homework-scroll-container');
 
-        // Функція фільтрації
-        function filterHomeworks() {
-            const searchText = searchInput.value.toLowerCase().trim();
-            const selectedModule = moduleFilter.value; // Це буде число (OrderIndex) або пуста строка
-            const cards = homeworkContainer.querySelectorAll('.homework-card');
-
-            cards.forEach(card => {
-                // Отримуємо назву завдання (Title)
-                const titleElement = card.querySelector('.fw-bold');
-                const titleText = titleElement ? titleElement.innerText.toLowerCase() : "";
-
-                // Отримуємо номер модуля з тексту картки (шукаємо "Модуль X")
-                const cardContent = card.innerText;
-
-                // Логіка перевірки пошуку
-                const matchesSearch = titleText.includes(searchText);
-
-                // Логіка перевірки модуля
-                // Якщо вибрано "Всі модулі" (selectedModule === ""), то matchesModule завжди true
-                const matchesModule = selectedModule === "" || cardContent.includes("Модуль " + selectedModule);
-
-                // Показуємо або ховаємо картку
-                if (matchesSearch && matchesModule) {
-                    card.style.setProperty('display', 'flex', 'important');
-                } else {
-                    card.style.setProperty('display', 'none', 'important');
-                }
-            });
-
-            // Опціонально: показ повідомлення "Нічого не знайдено"
-            updateEmptyState(cards);
-        }
-
-        // Функція для відображення повідомлення, якщо результатів 0
-        function updateEmptyState(cards) {
-            let visibleCards = Array.from(cards).filter(c => c.style.display !== 'none').length;
-            let noResultsMsg = document.getElementById('no-results-message');
-
-            if (visibleCards === 0) {
-                if (!noResultsMsg) {
-                    noResultsMsg = document.createElement('div');
-                    noResultsMsg.id = 'no-results-message';
-                    noResultsMsg.className = 'text-center py-5 text-muted';
-                    noResultsMsg.innerHTML = '<i class="bi bi-search mb-2" style="font-size: 2rem;"></i><p>Завдань не знайдено</p>';
-                    homeworkContainer.appendChild(noResultsMsg);
-                }
-            } else if (noResultsMsg) {
-                noResultsMsg.remove();
-            }
-        }
-
-        // Слухаємо події введення та зміни
-        searchInput.addEventListener('input', filterHomeworks);
-        moduleFilter.addEventListener('change', filterHomeworks);
-    });
-</script> *@
 

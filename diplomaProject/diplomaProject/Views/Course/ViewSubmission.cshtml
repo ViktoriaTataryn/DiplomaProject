@@ -5,7 +5,7 @@
 }
 
 <style>
-        /* Основна палітра та шрифти */
+       
         .results-container {
             font-family: 'Gilroy', sans-serif;
             color: #494C90;
@@ -57,7 +57,7 @@
         /* Опції відповідей */
         .options-container {
             border: 1px solid #E0E0E0;
-          /*   border-radius: 6px; */
+       
             overflow: hidden;
         }
 
@@ -84,7 +84,7 @@
             width: 18px;
             height: 18px;
             border: 1px solid #E0E0E0;
-            border-radius: 2px; /* Квадратний як на макеті */
+            border-radius: 2px;
             margin-right: 16px;
             position: relative;
             flex-shrink: 0;
@@ -112,8 +112,8 @@
 
         /* 1. ПРАВИЛЬНА ВІДПОВІДЬ (обрана студентом) */
         .custom-option-item.correct {
-            background-color: #F3FEEB; /* Світло-зелений фон */
-            border-left: 4px solid #6CB53E; /* Акцентна лінія зліва */
+            background-color: #F3FEEB; 
+            border-left: 4px solid #6CB53E; 
         }
 
             .custom-option-item.correct .option-text-content {
@@ -127,7 +127,7 @@
 
         /* 2. НЕПРАВИЛЬНА ВІДПОВІДЬ (обрана студентом) */
         .custom-option-item.incorrect {
-            background-color: #FFF5F5; /* Світло-червоний фон */
+            background-color: #FFF5F5;
             border-left: 4px solid #D32F2F;
         }
 
@@ -142,7 +142,7 @@
             opacity: 0.8;
         }
 
-        /* Текстові підписи (badges) */
+   
         .status-badge {
             margin-left: auto;
             font-size: 0.75rem;
@@ -160,7 +160,7 @@
             color: #D32F2F;
         }
 
-        /* Кнопка повернення */
+  
         .btn-back-to-list {
             display: inline-block;
             border: 1px solid #2B31B4;
@@ -180,18 +180,7 @@
                 background: #2B31B4;
                 color: #fff;
             }
-    /*
-        .main-container{
-            background-color: #FFFFFF;
-            overflow: hidden;
-            display: flex;
 
-            max-width: 1580px;
-            width: 100%;
-            margin-left: 0;
-            margin-right: 0;
-            box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
-        } */
 </style>
 
 <div class="main-container px-3 pt-4 pb-1">
@@ -216,7 +205,7 @@
                         var isSelected = Model.StudentAnswers.Any(sa => sa.SelectedOptionId == option.Id);
                         var isCorrect = option.IsCorrect;
 
-                        // Логіка визначення класу
+                       
                         string resultClass = "";
                         if (isSelected && isCorrect) resultClass = "correct";
                         else if (isSelected && !isCorrect) resultClass = "incorrect";

@@ -7,71 +7,7 @@ namespace diplomaProject.Services;
 
 public class ProgressService(AppDbContext context) : IProgressService
 {
-    //public async Task<Lesson> GetActiveLessonAsync(string userId, int courseId)
-    //{
-    //    var activeLesson = await _context.UserProgresses
-    //        .Include(l => l.Lesson)
-    //        .ThenInclude(m => m.Module)
-    //        .Where(u => u.UserId == userId && u.CourseId == courseId && u.LessonId != null)
-    //        .FirstOrDefaultAsync(s => s.Status == ProgressStatus.InProgress || s.Status == ProgressStatus.Open);
-
-    //    //if (activeLesson == null)
-    //    //{
-    //    //    var openLesson = await _context.UserProgresses
-    //    //    .Include(l => l.Lesson)
-    //    //    .ThenInclude(m => m.Module)
-    //    //    .Where(u => u.UserId == userId && u.CourseId == courseId && u.LessonId != 0)
-    //    //    .OrderBy(l => l.LessonId)
-    //    //    .FirstOrDefaultAsync(s => s.Status == ProgressStatus.Open);
-    //    //    return openLesson.Lesson.Title;
-    //    //}
-    //    if (activeLesson == null || activeLesson.Lesson == null)
-    //    {
-    //        // Вместо ошибки возвращаем заглушку, чтобы Dashboard не падал
-    //        return null;
-    //    }
-    //    return activeLesson.Lesson;
-
-    //}
-
-    //public async Task<Lesson> GetActiveLessonAsync(string userId, int courseId)
-    //{
-    //    // 1. Намагаємося знайти лекцію, яку користувач вже почав дивитися (InProgress)
-    //    var activeLesson = await _context.UserProgresses
-    //        .Include(l => l.Lesson)
-    //        .ThenInclude(m => m.Module)
-    //        .Where(u => u.UserId == userId && u.CourseId == courseId && u.LessonId != null)
-    //        .OrderByDescending(a => a.LastActivity)
-    //        .FirstOrDefaultAsync(s => s.Status == ProgressStatus.InProgress);
-
-    //    // 2. Якщо початої лекції немає, шукаємо першу відкриту (Open)
-    //    if (activeLesson == null)
-    //    {
-    //        activeLesson = await _context.UserProgresses
-    //            .Include(l => l.Lesson)
-    //            .ThenInclude(m => m.Module)
-    //            .Where(u => u.UserId == userId && u.CourseId == courseId && u.LessonId != null)
-    //            .OrderBy(l => l.LessonId) // Беремо найпершу за порядком
-    //            .FirstOrDefaultAsync(s => s.Status == ProgressStatus.Open);
-    //    }
-    //    if (activeLesson == null)
-    //    {
-    //        // 3. Якщо нічого не знайдено, беремо просто будь-яку доступну лекцію користувача в цьому курсі
-    //        activeLesson = await _context.UserProgresses
-    //            .Include(l => l.Lesson)
-    //            .Where(u => u.UserId == userId && u.CourseId == courseId && u.LessonId != null)
-    //            .OrderBy(l => l.LessonId)
-    //            .FirstOrDefaultAsync();
-    //    }
-
-    //    if (activeLesson == null || activeLesson.Lesson == null)
-    //    {
-    //        return null;
-    //    }
-    //    Console.WriteLine($"DEBUG: UserId={userId}, CourseId={courseId}");
-    //    return activeLesson.Lesson;
-    //}
-
+   
     public async Task<Lesson?> GetActiveLessonAsync(string userId, int courseId)
     {
         // Шукаємо запис, де LessonId НЕ NULL (SQL: IS NOT NULL)
@@ -108,92 +44,6 @@ public class ProgressService(AppDbContext context) : IProgressService
         return status.Status;
     }
 
-    //public async Task StartCourse(string userId, int courseId)
-    //{
-    //    if (await _context.UserProgresses.AnyAsync(u => u.UserId == userId && u.CourseId == courseId)) return;
-    //    var modules = await _context.Modules
-    //        .Include(m => m.Lessons)
-    //        .Where(m => m.CourseId == courseId)
-    //        .OrderBy(m => m.OrderIndex)
-    //        .ToListAsync();
-
-    //    if (!modules.Any()) return;
-
-    //    //var progressEntries = new List<UserProgress>();
-    //    //bool isFirstModule = true;
-
-    //    //foreach (var module in modules)
-    //    //{
-    //    //    progressEntries.Add(new UserProgress
-    //    //    {
-    //    //        UserId = userId,
-    //    //        CourseId = courseId,
-    //    //        ModuleId = module.Id,
-    //    //        LessonId = null,
-    //    //        Status = isFirstModule ? ProgressStatus.Open : ProgressStatus.Close,
-    //    //        LastActivity = DateTime.Now
-    //    //    });
-
-    //    //    bool isFirstLessonInCourse = isFirstModule;
-    //    //    bool isFirstLessonInModule = true;
-
-    //    //    foreach (var lesson in module.Lessons.OrderBy(l => l.Id))
-    //    //    {
-    //    //        progressEntries.Add(new UserProgress
-    //    //        {
-    //    //            UserId = userId,
-    //    //            CourseId = courseId,
-    //    //            ModuleId = module.Id,
-    //    //            LessonId = lesson.Id,
-    //    //            Status = (isFirstLessonInCourse && isFirstLessonInModule)
-    //    //                         ? ProgressStatus.Open
-    //    //                         : ProgressStatus.Close,
-    //    //            LastActivity = DateTime.Now
-    //    //        });
-    //    //        isFirstLessonInModule = false;
-    //    //    }
-    //    //    isFirstModule = false;
-    //    //}
-
-    //    //_context.UserProgresses.AddRange(progressEntries);
-    //    //await _context.SaveChangesAsync();
-    //    var progressEntries = new List<UserProgress>();
-    //    bool isVeryFirstItem = true; // Прапорець для самого першого елемента в усьому курсі
-
-    //    foreach (var module in modules)
-    //    {
-    //        // Додаємо запис для модуля
-    //        progressEntries.Add(new UserProgress
-    //        {
-    //            UserId = userId,
-    //            CourseId = courseId,
-    //            ModuleId = module.Id,
-    //            LessonId = null,
-    //            Status = isVeryFirstItem ? ProgressStatus.InProgress : ProgressStatus.Close,
-    //            LastActivity = DateTime.Now
-    //        });
-
-    //        foreach (var lesson in module.Lessons.OrderBy(l => l.Id))
-    //        {
-    //            progressEntries.Add(new UserProgress
-    //            {
-    //                UserId = userId,
-    //                CourseId = courseId,
-    //                ModuleId = module.Id,
-    //                LessonId = lesson.Id,
-    //                // ПЕРША лекція першого модуля отримує InProgress, інші - Close
-    //                Status = isVeryFirstItem ? ProgressStatus.InProgress : ProgressStatus.Close,
-    //                LastActivity = DateTime.Now
-    //            });
-
-    //            // Після того як обробили саму першу лекцію, вимикаємо прапорець
-    //            isVeryFirstItem = false;
-    //        }
-    //    }
-
-    //    _context.UserProgresses.AddRange(progressEntries);
-    //    await _context.SaveChangesAsync();
-    //}
 
     public async Task StartCourse(string userId, int courseId)
     {
@@ -203,7 +53,7 @@ public class ProgressService(AppDbContext context) : IProgressService
 
         if (hasProgress) return;
 
-        // 2. Отримуємо структуру курсу
+       
         var modules = await context.Modules
             .Include(m => m.Lessons)
             .Where(m => m.CourseId == courseId)
@@ -254,12 +104,7 @@ public class ProgressService(AppDbContext context) : IProgressService
 
     public async Task OpenLessonAsync(string userId, int lessonId)
     {
-        //var lessonProgress = await _context.UserProgresses.FirstOrDefaultAsync(p => p.UserId == userId && p.LessonId == lessonId && p.LessonId != 0);
-        //if (lessonProgress != null && lessonProgress.Status == ProgressStatus.Close)
-        //{
-        //    lessonProgress.Status = ProgressStatus.Open;
-        //}
-        //await _context.SaveChangesAsync();
+        
         var progress = await context.UserProgresses
             .FirstOrDefaultAsync(p => p.UserId == userId && p.LessonId == lessonId);
 
@@ -310,44 +155,7 @@ public class ProgressService(AppDbContext context) : IProgressService
         await context.SaveChangesAsync();
     }
 
-    //public async Task UnlockNextLessonAsync(string userId, int currentLessonId)
-    //{
-    //    var currentLesson = await _context.Lessons.FindAsync(currentLessonId);
-    //    if (currentLesson == null) return;
 
-    //    var lessonProgress = await _context.UserProgresses.FirstOrDefaultAsync(l => l.UserId == userId && l.LessonId == currentLessonId && l.LessonId != 0);
-    //    if (lessonProgress == null) return;
-    //    var homeworkStatus = await _context.HomeworkSubmissions
-    //        .Include(h => h.Homework)
-    //        .FirstOrDefaultAsync(h => h.StudentId == userId && h.Homework.LessonId == currentLessonId);
-
-    //    if (lessonProgress != null && homeworkStatus != null && homeworkStatus.Status == HomeworkStatus.Approved)
-    //    {
-    //        lessonProgress.Status = ProgressStatus.Completed;
-    //        lessonProgress.IsCompleted = true;
-    //    }
-
-
-    //    var nextLesson = await _context.Lessons.Where(l => l.ModuleId == currentLesson.ModuleId && l.LessonIndex > currentLesson.LessonIndex)
-    //        .OrderBy(l => l.LessonIndex)
-    //        .FirstOrDefaultAsync();
-    //    //        var nextLesson = await _context.Lessons
-    //    //.Where(l => l.ModuleId == lessonProgress.ModuleId && l.LessonIndex > currentLesson.LessonIndex)
-    //    //.OrderBy(l => l.LessonIndex)
-    //    //.FirstOrDefaultAsync();
-    //    if (nextLesson != null)
-    //    {
-    //        //var nextLessonStatus = await _context.UserProgresses.FirstOrDefaultAsync(l => l.UserId == userId && l.LessonId == nextLesson.Id);
-    //        //if (nextLessonStatus != null && nextLessonStatus.Status == ProgressStatus.Close) { 
-    //        //    nextLessonStatus .Status=ProgressStatus.Open;
-    //        //}
-
-
-    //            await OpenLessonAsync(userId, nextLesson.Id);
-    //        }
-
-    //    await _context.SaveChangesAsync();
-    //}
 
     public async Task UnlockNextLessonAsync(string userId, int currentLessonId)
     {
@@ -366,7 +174,7 @@ public class ProgressService(AppDbContext context) : IProgressService
             await context.SaveChangesAsync();
         }
 
-        // 3. Шукаємо наступну лекцію (БЕЗПЕЧНО)
+      
         var nextLesson = await context.Lessons
             .Where(l => l.ModuleId == currentLesson.ModuleId && l.LessonIndex > currentLesson.LessonIndex)
             .OrderBy(l => l.LessonIndex)
@@ -374,7 +182,7 @@ public class ProgressService(AppDbContext context) : IProgressService
 
 
         if (nextLesson != null)
-            // ВИКЛИКАЄМО метод для відкриття наступної лекції
+           
             await OpenLessonAsync(userId, nextLesson.Id);
 
         else
@@ -382,139 +190,6 @@ public class ProgressService(AppDbContext context) : IProgressService
     }
 
 
-    //   public async Task UnlockNextModuleAsync(string userId, int currentModuleId)
-    //   {
-    //       var allLessonsOfModule = _context.UserProgresses
-    //                   .Where(p => p.UserId == userId && p.ModuleId == currentModuleId && p.LessonId != 0);
-
-    //       bool isAllCompleted = await allLessonsOfModule.AnyAsync() &&
-    //                    await allLessonsOfModule.AllAsync(p => p.Status == ProgressStatus.Completed);
-
-
-    //       if (isAllCompleted)
-    //       {
-    //           // 1. Позначаємо поточний модуль як завершений
-    //           var currentModuleProgress = await _context.UserProgresses
-    //                   .Include(p => p.Module)
-    //                   .FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == currentModuleId && m.LessonId == 0);
-
-    //           if (currentModuleProgress != null)
-    //           {
-    //               currentModuleProgress.Status = ProgressStatus.Completed;
-    //               currentModuleProgress.IsCompleted = true;
-
-    //               // 2. Шукаємо наступний модуль за порядковим номером
-    //               var nextModule = await _context.Modules
-    //                   .Where(m => m.OrderIndex > currentModuleProgress.Module.OrderIndex)
-    //                   .OrderBy(m => m.OrderIndex)
-    //                   .FirstOrDefaultAsync();
-
-    //               if (nextModule != null)
-    //               {
-    //                   bool isPaid = await _context.CourseRegistrations
-    //.AnyAsync(cr => cr.UserId == userId && cr.CourseId == currentModuleProgress.Module.CourseId && cr.IsPaid);
-
-    //                   if (nextModule.OrderIndex > 1 && !isPaid)
-    //                   {
-    //                       await _context.SaveChangesAsync();
-    //                       return; // Зупиняємося, якщо це платний модуль і оплати немає
-    //                   }
-    //                   // 3. Відкриваємо прогрес для самого модуля
-    //                   var nextModuleProgress = await _context.UserProgresses
-    //                       .FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == nextModule.Id && m.LessonId == 0);
-
-    //                   if (nextModuleProgress != null)
-    //                   {
-    //                       nextModuleProgress.Status = ProgressStatus.InProgress;
-    //                   }
-
-    //                   // 4. Знаходимо ПЕРШУ лекцію наступного модуля і робимо її InProgress
-    //                   var firstLessonOfNextModule = await _context.UserProgresses
-    //                       .Where(p => p.UserId == userId && p.ModuleId == nextModule.Id && p.LessonId != 0)
-    //                       .OrderBy(p => p.LessonId) 
-    //                       .FirstOrDefaultAsync();
-
-    //                   if (firstLessonOfNextModule != null)
-    //                   {
-    //                       firstLessonOfNextModule.Status = ProgressStatus.InProgress;
-    //                   }
-    //               }
-
-    //               await _context.SaveChangesAsync();
-    //           }
-    //       }
-    //   }
-
-    //public async Task UnlockNextModuleAsync(string userId, int currentModuleId)
-    //{
-    //    // 1. Перевіряємо, чи всі лекції поточного модуля завершені
-    //    var allLessonsOfModule = _context.UserProgresses
-    //        .Where(p => p.UserId == userId && p.ModuleId == currentModuleId && p.LessonId != 0);
-
-    //    bool isAllCompleted = await allLessonsOfModule.AnyAsync() &&
-    //                         await allLessonsOfModule.AllAsync(p => p.Status == ProgressStatus.Completed);
-
-    //    Console.WriteLine("Спроба відкрити наступний модуль для користувача " + userId);
-    //    if (isAllCompleted)
-    //    {
-    //        // 2. Позначаємо прогрес самого модуля як завершений
-    //        var currentModuleProgress = await _context.UserProgresses
-    //            .Include(p => p.Module)
-    //            .FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == currentModuleId && m.LessonId == 0);
-
-    //        if (currentModuleProgress != null)
-    //        {
-    //            currentModuleProgress.Status = ProgressStatus.Completed;
-    //            currentModuleProgress.IsCompleted = true;
-
-    //            // 3. Шукаємо наступний модуль за порядком
-    //            var nextModule = await _context.Modules
-    //                .Where(m => m.CourseId == currentModuleProgress.Module.CourseId &&
-    //                            m.OrderIndex > currentModuleProgress.Module.OrderIndex)
-    //                .OrderBy(m => m.OrderIndex)
-    //                .FirstOrDefaultAsync();
-
-    //            if (nextModule != null)
-    //            {
-    //                // 4. ПЕРЕВІРКА ОПЛАТИ через таблицю CourseRegistrations
-    //                var registration = await _context.CourseRegistrations
-    //                    .FirstOrDefaultAsync(cr => cr.UserId == userId && cr.CourseId == nextModule.CourseId);
-
-    //                bool isPaid = registration?.IsPaid ?? false;
-
-    //                // Якщо це не перший модуль (OrderIndex > 1) і курс не оплачено
-    //                if (nextModule.OrderIndex > 1 && !isPaid)
-    //                {
-
-    //                    await _context.SaveChangesAsync();
-    //                    return; // БЛОКУЄМО: далі логіка не йде, статус InProgress не ставиться
-    //                }
-
-    //                // 5. Якщо оплачено або це безкоштовний модуль — відкриваємо його
-    //                var nextModuleProgress = await _context.UserProgresses
-    //                    .FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == nextModule.Id && m.LessonId == 0);
-
-    //                if (nextModuleProgress != null)
-    //                {
-    //                    nextModuleProgress.Status = ProgressStatus.InProgress;
-    //                }
-
-    //                // 6. Відкриваємо першу лекцію цього нового модуля
-    //                var firstLessonOfNextModule = await _context.UserProgresses
-    //                    .Where(p => p.UserId == userId && p.ModuleId == nextModule.Id && p.LessonId != 0)
-    //                    .OrderBy(p => p.LessonId)
-    //                    .FirstOrDefaultAsync();
-
-    //                if (firstLessonOfNextModule != null)
-    //                {
-    //                    firstLessonOfNextModule.Status = ProgressStatus.InProgress;
-    //                }
-    //            }
-
-    //            await _context.SaveChangesAsync();
-    //        }
-    //    }
-    //}
     public async Task UnlockNextModuleAsync(string userId, int currentModuleId)
     {
         Console.WriteLine($"---> Початок UnlockNextModule для модуля {currentModuleId}");
@@ -526,14 +201,14 @@ public class ProgressService(AppDbContext context) : IProgressService
 
         if (currentModuleProgress == null)
         {
-            Console.WriteLine("❌ Помилка: Не знайдено запис прогресу для поточного модуля (LessonId = 0)");
+            Console.WriteLine(" Помилка: Не знайдено запис прогресу для поточного модуля (LessonId = 0)");
             return;
         }
 
         // 2. Позначаємо поточний як завершений
         currentModuleProgress.Status = ProgressStatus.Completed;
         currentModuleProgress.IsCompleted = true;
-        Console.WriteLine($"✅ Модуль {currentModuleId} позначено як Completed");
+        Console.WriteLine($" Модуль {currentModuleId} позначено як Completed");
 
         // 3. Шукаємо наступний модуль
         var nextModule = await context.Modules
@@ -544,7 +219,7 @@ public class ProgressService(AppDbContext context) : IProgressService
 
         if (nextModule == null)
         {
-            Console.WriteLine("ℹ️ Наступних модулів більше немає. Курс завершено!");
+            Console.WriteLine(" Наступних модулів більше немає. Курс завершено!");
             await context.SaveChangesAsync();
             return;
         }
@@ -556,11 +231,11 @@ public class ProgressService(AppDbContext context) : IProgressService
             .FirstOrDefaultAsync(cr => cr.UserId == userId && cr.CourseId == nextModule.CourseId);
 
         var isPaid = registration?.IsPaid ?? false;
-        Console.WriteLine($"💰 Статус оплати: {isPaid}");
+        Console.WriteLine($" Статус оплати: {isPaid}");
 
         if (nextModule.OrderIndex > 1 && !isPaid)
         {
-            Console.WriteLine("⛔ Доступ заблоковано: Потрібна оплата для наступного модуля.");
+            Console.WriteLine(" Доступ заблоковано: Потрібна оплата для наступного модуля.");
             await context.SaveChangesAsync();
             return;
         }
@@ -572,7 +247,7 @@ public class ProgressService(AppDbContext context) : IProgressService
         if (nextModuleProgress != null)
         {
             nextModuleProgress.Status = ProgressStatus.InProgress;
-            Console.WriteLine($"🔓 Наступний модуль {nextModule.Id} переведено в InProgress");
+            Console.WriteLine($" Наступний модуль {nextModule.Id} переведено в InProgress");
         }
 
         // 6. Відкриваємо першу лекцію
@@ -584,83 +259,13 @@ public class ProgressService(AppDbContext context) : IProgressService
         if (firstLesson != null)
         {
             firstLesson.Status = ProgressStatus.Open;
-            Console.WriteLine($"📖 Перша лекція {firstLesson.LessonId} відкрита");
+            Console.WriteLine($" Перша лекція {firstLesson.LessonId} відкрита");
         }
 
         await context.SaveChangesAsync();
-        Console.WriteLine("💾 Зміни збережено в БД успішно!");
+        Console.WriteLine(" Зміни збережено в БД успішно!");
     }
-    //public async Task UnlockNextModuleAsync(string userId, int currentModuleId)
-    //{
-    //    // ТИМЧАСОВО: замість пошуку запису модуля (LessonId == 0), 
-    //    // беремо будь-яку лекцію цього модуля, щоб отримати доступ до навігації
-    //    var anyLessonProgress = await _context.UserProgresses
-    //        .Include(p => p.Module)
-    //        .FirstOrDefaultAsync(m => m.UserId == userId && m.ModuleId == currentModuleId);
 
-    //    if (anyLessonProgress == null)
-    //    {
-    //        Console.WriteLine("❌ Навіть лекцій не знайдено!");
-    //        return;
-    //    }
-
-    //    // Шукаємо наступний модуль
-    //    var nextModule = await _context.Modules
-    //        .Where(m => m.CourseId == anyLessonProgress.Module.CourseId &&
-    //                    m.OrderIndex > anyLessonProgress.Module.OrderIndex)
-    //        .OrderBy(m => m.OrderIndex)
-    //        .FirstOrDefaultAsync();
-
-    //    if (nextModule == null) return;
-
-    //    // Перевірка оплати (залишаємо як було)
-    //    var registration = await _context.CourseRegistrations
-    //        .FirstOrDefaultAsync(cr => cr.UserId == userId && cr.CourseId == nextModule.CourseId);
-
-    //    if (nextModule.OrderIndex > 1 && !(registration?.IsPaid ?? false)) return;
-
-    //    // ШВИДКИЙ ФІКС: Відкриваємо першу лекцію наступного модуля ПРЯМО ТУТ
-    //    var firstLessonOfNextModule = await _context.Lessons
-    //        .Where(l => l.ModuleId == nextModule.Id)
-    //        .OrderBy(l => l.LessonIndex)
-    //        .FirstOrDefaultAsync();
-
-    //    if (firstLessonOfNextModule != null)
-    //    {
-    //        var nextProgress = await _context.UserProgresses
-    //            .FirstOrDefaultAsync(p => p.UserId == userId && p.LessonId == firstLessonOfNextModule.Id);
-
-    //        if (nextProgress != null)
-    //        {
-    //            nextProgress.Status = ProgressStatus.Open;
-    //            Console.WriteLine($"🚀 Тимчасовий фікс: Відкрито лекцію {firstLessonOfNextModule.Id}");
-    //        }
-    //    }
-
-    //    await _context.SaveChangesAsync();
-    //}
-
-    //public async Task<bool> IsFirstModuleCompletedAsync(string userId, int courseId)
-    //{
-    //    var firstModuleId = await _context.Modules
-    //.Where(m => m.CourseId == courseId)
-    //.OrderBy(m => m.OrderIndex) 
-    //.Select(m => m.Id)
-    //.FirstOrDefaultAsync();
-
-    //    if (firstModuleId == 0) return false;
-
-    //    var moduleLessons = await _context.Lessons
-    //        .Where(l => l.ModuleId == firstModuleId)
-    //        .Select(l => l.Id)
-    //        .ToListAsync();
-
-    //    var progressQuery = _context.UserProgresses
-    // .Where(p => p.UserId == userId && p.ModuleId == firstModuleId && p.LessonId != 0);
-
-    //    return await progressQuery.AnyAsync() &&
-    //           await progressQuery.AllAsync(p => p.Status == ProgressStatus.Completed);
-    //}
 
     public async Task<bool> IsFirstModuleCompletedAsync(string userId, int courseId)
     {
@@ -681,13 +286,71 @@ public class ProgressService(AppDbContext context) : IProgressService
                               up.ModuleId == firstModule.Id &&
                               up.Status == ProgressStatus.Completed);
 
-        // Умова успіху
         return totalLessons > 0 && completedLessons >= totalLessons;
     }
 
     public async Task SyncProgressAfterPayment(string userId, int courseId)
     {
-        // 1. Отримуємо всі модулі курсу
+        Console.WriteLine($"---> Сервіс: Початок синхронізації для User: {userId}");
+
+        // 1. Примусово відкриваємо другий модуль
+        var secondModule = await context.Modules
+            .Where(m => m.CourseId == courseId)
+            .OrderBy(m => m.OrderIndex)
+            .Skip(1)
+            .FirstOrDefaultAsync();
+
+        if (secondModule != null)
+        {
+            var secondModuleProgress = await context.UserProgresses
+                .FirstOrDefaultAsync(p => p.UserId == userId && p.ModuleId == secondModule.Id && p.LessonId == null);
+
+            if (secondModuleProgress == null)
+            {
+                context.UserProgresses.Add(new UserProgress
+                {
+                    UserId = userId,
+                    CourseId = courseId,
+                    ModuleId = secondModule.Id,
+                    LessonId = null,
+                    Status = ProgressStatus.InProgress,
+                    IsCompleted = false
+                });
+                Console.WriteLine("---> Сервіс: Створено прогрес для Другого Модуля");
+            }
+
+            // 2. Примусово відкриваємо першу лекцію другого модуля
+            var firstLessonOfSecondModule = await context.Lessons
+                .Where(l => l.ModuleId == secondModule.Id)
+                .OrderBy(l => l.LessonIndex)
+                .FirstOrDefaultAsync();
+
+            if (firstLessonOfSecondModule != null)
+            {
+                var lessonProgress = await context.UserProgresses
+                    .FirstOrDefaultAsync(p => p.UserId == userId && p.LessonId == firstLessonOfSecondModule.Id);
+
+                if (lessonProgress == null)
+                {
+                    context.UserProgresses.Add(new UserProgress
+                    {
+                        UserId = userId,
+                        CourseId = courseId,
+                        ModuleId = secondModule.Id,
+                        LessonId = firstLessonOfSecondModule.Id,
+                        Status = ProgressStatus.InProgress,
+                        IsCompleted = false
+                    });
+                    Console.WriteLine("---> Сервіс: Створено прогрес для Першої Лекції 2-го модуля");
+                }
+                else
+                {
+                    lessonProgress.Status = ProgressStatus.InProgress;
+                }
+            }
+        }
+
+     
         var modules = await context.Modules
             .Where(m => m.CourseId == courseId)
             .OrderBy(m => m.OrderIndex)
@@ -695,7 +358,6 @@ public class ProgressService(AppDbContext context) : IProgressService
 
         foreach (var module in modules)
         {
-            // 2. Перевіряємо, чи завершені всі лекції в цьому модулі
             var lessonsProgress = await context.UserProgresses
                 .Where(p => p.UserId == userId && p.ModuleId == module.Id && p.LessonId != null)
                 .ToListAsync();
@@ -705,26 +367,24 @@ public class ProgressService(AppDbContext context) : IProgressService
 
             if (isAllLessonsCompleted)
             {
-                // 3. Якщо лекції пройдені, позначаємо модуль як завершений
                 var moduleProgress = await context.UserProgresses
                     .FirstOrDefaultAsync(p => p.UserId == userId && p.ModuleId == module.Id && p.LessonId == null);
 
-                if (moduleProgress != null)
+                if (moduleProgress != null && moduleProgress.Status != ProgressStatus.Completed)
                 {
                     moduleProgress.Status = ProgressStatus.Completed;
                     moduleProgress.IsCompleted = true;
                 }
 
-                // 4. Пробуємо розблокувати наступний модуль
                 await UnlockNextModuleAsync(userId, module.Id);
             }
             else
             {
-                // Якщо ми знайшли модуль, який ще не завершений, далі перевіряти не сенсу
                 break;
             }
         }
 
+        Console.WriteLine("---> Сервіс: Виклик SaveChangesAsync()");
         await context.SaveChangesAsync();
     }
 }

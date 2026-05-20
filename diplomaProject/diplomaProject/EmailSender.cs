@@ -33,9 +33,6 @@ public class EmailSender : IEmailSender
         message.IsBodyHtml = true;
 
         await client.SendMailAsync(message);
-        //var message = new MailMessage(from: mail, to: email, subject, htmlMessage)
-        //{
-        //    IsBodyHtml = true
-        //};
+      
     }
 }

@@ -6,10 +6,7 @@
 }
 
 @{
-    // Переносим вычислення activeModule в область видимості всього представлення,
-    // щоб він був доступний і в HTML, і в скриптах незалежно від гілкування.
-    // var activeModule = Model?.FirstOrDefault(m => m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
-    //                    ?? Model?.FirstOrDefault(m => m.Status == "InProgress");
+    
     var activeModule = Model
         .Where(m => m.Status == "InProgress" && m.CurrentLessonId.HasValue && m.CurrentLessonId != 0)
         .OrderByDescending(m => m.ModuleNumber)

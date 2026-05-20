@@ -18,7 +18,7 @@
 
 <div class="m-3">
     <div class=" d-flex " id="progressContainer">
-        @*  <div class=" progress-inner-content px-3 py-4"> *@
+      
         <div class="col-12 progress-inner-content px-3 py-4">
             <span class="title mb-2 mt-4 ">ПРОГРЕС КУРСУ </span>
 
@@ -76,19 +76,6 @@
 
             <p class="hometask-text"> Наступний урок: @Model.Progress.NextLessonTitle</p>
 
-
-
-            @*   <div class="mb-2 actions">
-
-        @if (!isFirstCompleted)
-        {
-        <p>Пройдіть першу лекцію, щоб розблокувати курс.</p>
-        }
-        else if (isFirstCompleted && !isSecondOpen)
-        {
-        <button id="buyButton" class="btn btn-success">Придбати повний доступ</button>
-        }
-        </div> *@
             <div class="m-3 mt-4 buy-button">
                 @if (Model.IsPaid)
                 {
@@ -247,9 +234,7 @@
 
                                 <partial name="_ModuleCard" model="module"/>
                             </div>
-                            // @{
-                            //     RenderModuleContent(module);
-                            // }
+                       
                         }
                         else
                         {
@@ -258,15 +243,10 @@
                                class=" module-item-container text-decoration-none d-block">
                                 <partial name="_ModuleCard" model="module"/>
                             </a>
-                            // @{
-
-                            //   RenderModuleContent(module);
-
-                            // }
+                          
                         }
                     </div>
 
-                    // </div>
                 }
             </div>
 
@@ -349,7 +329,7 @@
 }
 
 
-@* stripe listen --forward-to https://localhost:5115/api/Payment/webhook *@
+
 
 
 

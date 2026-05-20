@@ -728,8 +728,8 @@ Figma Module List Styles (Новое добавление)
 }
 
 .landing-btn1:hover {
-    background-color: #1a1f8c; /* Трохи темніший синій */
-    transform: translateY(-3px); /* Піднімається вгору */
+    background-color: #1a1f8c; 
+    transform: translateY(-3px);
     /* box-shadow: 0 10px 20px rgba(43, 49, 180, 0.3);*/
     box-shadow: 0 6px 15px rgba(43, 49, 180, 0.4);
 }
