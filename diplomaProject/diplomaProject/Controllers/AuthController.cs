@@ -70,34 +70,7 @@ public class AuthController(
         // model.CourseId збережеться автоматично, бо він є в моделі
         return View(model);
 
-        //if (!result.Succeeded)
-        //{
-        //    foreach (var error in result.Errors)
-        //    {
-        //        ModelState.AddModelError(string.Empty, error.Description);
-        //    }
-        //    return View(model);
-        //}
-
-        // var roleResult = await _userManager.AddToRoleAsync(user, "Student");
-        //if (!roleResult.Succeeded)
-        //{
-        //    var errors = string.Join(" | ", roleResult.Errors.Select(e => e.Description));
-        //    throw new Exception($"ПОМИЛКА ДОДАВАННЯ РОЛІ: {errors}");
-        //}
-
-        //var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-        //// 2. Створюємо посилання (Callback URL)
-        //var confirmationLink = Url.Action("ConfirmEmail", "Auth",
-        //    new { userId = user.Id, token = token }, Request.Scheme);
-
-        //await _emailSender.SendEmailAsync(user.Email, "Підтвердження реєстрації",
-        //    $"Будь ласка, підтвердіть вашу реєстрацію, перейшовши за посиланням: <a href='{confirmationLink}'>ПІДТВЕРДИТИ</a>");
-
-        ////return Ok(new { message = "Лист для підтвердження надіслано на вашу пошту." }); //тест для постман
-
-        //return View("RegisterSuccess");
+       
     }
 
     [HttpGet]

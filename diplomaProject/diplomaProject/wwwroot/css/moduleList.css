@@ -9,9 +9,9 @@
 
 .art-frame-wrapper-mini {
     position: relative;
-    /* max-width: 130px;*/
+ 
     width: 157px;
-    /*    height: 70px;*/
+
     height: 86px;
     flex-shrink: 0;
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -51,7 +51,7 @@
     bottom: 8%;
     z-index: 1;
     overflow: hidden;
-    /*   background-color: #eee;*/
+
 }
 
 .arrow-icon {
@@ -64,22 +64,14 @@
     border-bottom: 2px solid #9799C4;
 }
 
-/* .module-item:hover:not(.locked) {
-     box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
- }*/
 
-/*.module-description {
-    border-left: 3px solid #8588D1;  Твій акцентний колір 
-    padding-left: 15px;
-    font-style: italic;
-}*/
 
 .text-desc {
-    /* font-family: "Gilroy";*/
+    
     font-family: "Gilroy Light", "Gilroy", sans-serif;
-    /*font-size: 15px;*/
+   
     color: #494C90;
-    /* line-height: 18px;*/
+  
     font-size: 1.2rem;
     line-height: 1.1;
     width: 75%;
@@ -93,9 +85,7 @@
 
 }
 
-/*.list-group-item {
-    transition: background-color 0.2s;
-}*/
+
 
 
 .module-item.locked .list-group-item {
@@ -109,16 +99,16 @@
 }
 
 .moduleListText .text {
-    /* line-height: 18px;*/
+
     line-height: 1;
-    /*font-size: 17px;*/
+
     font-size: 1.5rem;
     font-weight: 500;
     font-family: "Gilroy", serif
 }
 
 .timeline-container .text {
-    /* font-size: 19px;*/
+   
     font-size: 1.5rem;
     font-weight: 500;
     font-family: "Gilroy", serif
@@ -126,7 +116,7 @@
 
 .moduleListText .status {
     color: #9799C4;
-    /* font-size: 11px;*/
+
     font-size: 1rem;
     padding-bottom: 8px;
     padding-top: 0px;
@@ -147,7 +137,7 @@
 }
 
 .lesson-title {
-    /* font-size: 19px;*/
+
     font-size: 1.3rem;
     color: #494C90;
     font-family: "Gilroy", serif;
@@ -166,7 +156,7 @@
     height: 55px;
 
     align-content: center;
-    /*box-shadow: 0 4px 12px rgba(133, 136, 209, 0.3);*/
+   
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -176,11 +166,9 @@
     font-family: "Accia Piano", serif;
     text-decoration: none;
     font-weight: 300;
-    /* letter-spacing: 1px;*/
-    /* font-weight:300; */
-    /* font-size: 16px;*/
+   
     font-size: 1.25rem;
-    /* transition: all 0.25s ease-in-out;*/
+  
 }
 
 .continue-btn-text:hover {
@@ -188,10 +176,10 @@
 }
 
 .continue-btn:hover {
-    transform: translateY(-2px); /* Кнопка ніби піднімається */
-    /*    box-shadow: 0 6px 15px rgba(133, 136, 209, 0.5);*/
+    transform: translateY(-2px); 
+
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-    /* background-color: #7477c2 !important; */
+
 }
 
 
@@ -241,8 +229,7 @@
     z-index: 1;
     margin-top: -10px;
     margin-bottom: -5px;
-    /* margin-top: 2px;
-    margin-bottom: 2px;*/
+
 }
 
 /* Прибираємо лінію під останнім кружечком */
@@ -300,12 +287,7 @@
     min-width: 20px;
 }
 
-/* Контейнер для лінії та фігурки */
-/*.progress-timeline-container {
-    padding-top: 20px;
-    padding-bottom: 10px;
-    margin-top: 8px;
-}*/
+
 /* --- Контейнер для СТАТУЇ --- */
 .statue-avatar-container {
     position: absolute;
@@ -357,13 +339,13 @@
 
 .btn-last-lesson {
     background-color: #FFFFFF;
-    /*width: 320px;*/
+
     align-content: center;
     height: 55px;
     margin-left: 5px;
     margin-right: 5px;
     border: 1px solid #2B31B4;
-    /*box-shadow: 0 4px 12px rgba(133, 136, 209, 0.3);*/
+  
 }
 
 .btn-last-text {
@@ -372,8 +354,7 @@
     font-family: "Accia Piano", serif;
     text-decoration: none;
     letter-spacing: 1px;
-    /* font-weight:300; */
-    /*font-size: 15px;*/
+ 
     font-size: 1.25rem;
 }
 
@@ -410,7 +391,7 @@ hr.custom-line {
         padding-left: 0px;
         padding-right: 0px;
         height: 250px;
-        /*   padding: 12px;*/
+      
     }
 
     .btn-last-text {
@@ -448,17 +429,6 @@ hr.custom-line {
         line-height: 23px;
     }
 
-    /* .module-summary.is-open {
-         flex-direction: column !important;
-         align-items: flex-start !important;
-         padding-bottom: 5px;
-     }
- 
-         .module-summary.is-open .art-frame-wrapper-mini {
-             width: 320px;
-             height: 176px;
-             margin-bottom: 5px;
-         }*/
     .module-image-inner-mini img {
         width: 95%;
         height: 95%;
@@ -466,7 +436,7 @@ hr.custom-line {
 
     .module-summary.is-open {
         flex-direction: column !important;
-        /* Міняємо на center для мобілки */
+      
         padding-bottom: 15px;
         align-items: flex-start !important;
 
@@ -478,9 +448,8 @@ hr.custom-line {
 
     .module-summary.is-open .art-frame-wrapper-mini {
         width: 100%; /* Контейнер на всю ширину */
-        max-width: 320px; /* Обмежуємо розмір самої рамки */
+        max-width: 320px; 
         height: 176px;
-        /* МАГІЯ ТУТ: автоматичні відступи зліва і справа вирівнюють блок по центру */
         margin-left: auto !important;
         margin-right: auto !important;
         margin-bottom: 15px;
@@ -489,30 +458,6 @@ hr.custom-line {
     }
 
 
-    /*.module-summary.is-open .moduleListText {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;*/
-    /* Текст теж стане по центру під картинкою */
-    /*}*/
-    /*.moduleListText {
-        padding-right: 10px;
-    }
-    .arrow-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 15px;*/
-    /* Відступ від тексту до стрілочки */
-    /*min-width: 24px;*/
-    /* Щоб стрілочка не "стрибала" */
-    /*}
-    .arrow-icon {*/
-    /* Прибираємо можливі стандартні відступи іконок */
-    /*line-height: 1;
-        margin: 0;
-    }*/
     .module-summary .ms-auto {
         display: flex !important;
         align-items: center !important; /* Центрує іконку по вертикалі */
@@ -563,20 +508,13 @@ hr.custom-line {
         font-size: 1rem;
     }
 
-    /* Опціонально: робимо стрілочку в кутку, коли розгорнуто */
-    /*.module-summary.is-open .bi-chevron-down {
-        align-self: flex-end;
-        margin-top: -20px;*/
-    /* піднімаємо трохи вгору, якщо назва довга */
-    /*}*/
+
 }
 
 
 @media (max-width: 1600px) {
     html {
-        /* Тепер 1rem = 14px. 
-           Ваш заголовок автоматично стане 28px (2 * 14), 
-           а статус — 12.25px (0.875 * 14) */
+       
         font-size: 14px;
     }
 }

@@ -33,7 +33,7 @@ public class DashboardService : IDashboardService
 
         return new DashboardViewDto
         {
-            //Progress= progressData,
+          
             CourseTitle = title ?? "Курс не знайдено",
             CourseId = courseId,
             Progress = progressData,
@@ -116,7 +116,7 @@ public class DashboardService : IDashboardService
                 else
                     // Жодна лекція не доступна
                     currentModuleStatus = ProgressStatus.Close;
-                // ---------------------------------------
+            
 
                 return new ModuleProgressDto
                 {
@@ -130,8 +130,8 @@ public class DashboardService : IDashboardService
                         ? (int)((double)moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed) /
                             module.Lessons.Count * 100)
                         : 0,
-                    Status = currentModuleStatus.ToString(), // Використовуємо наш обчислений статус
-                    //CurrentLessonId = activeLessonInModule?.LessonId
+                    Status = currentModuleStatus.ToString(), 
+                   
                     CurrentLessonId = moduleLessonsProgress
                         .FirstOrDefault(lp =>
                             lp.Status == ProgressStatus.InProgress || lp.Status == ProgressStatus.Open)
@@ -139,37 +139,7 @@ public class DashboardService : IDashboardService
                 };
             }).OrderBy(m => m.ModuleNumber).ToList();
 
-        //    var moduleStats = allModules
-        //        .Select(module =>
-        //        {
-        //            var moduleLessonsProgress = lessonsProgress.Where(lp => lp.Lesson?.ModuleId == module.Id).ToList();
-        //            var moduleRecord = moduleProgress.FirstOrDefault(mp =>
-        //                                                 mp.ModuleId == module.Id && (mp.LessonId == null || mp.LessonId == 0));
 
-        //            var currentModuleStatus = moduleRecord?.Status ?? ProgressStatus.Close;
-
-
-        //            return new ModuleProgressDTO
-        //            {
-        //                ModuleId = module.Id,
-        //                Name = module.Title ?? "Модуль",
-        //                ModuleNumber = module.OrderIndex,
-        //                ImageForUser = module.ImageUrl,
-        //                // Якщо прогресу немає, буде 0, але модуль залишиться у списку
-        //                TotalLesson = module.Lessons?.Count ?? 0,
-        //                CompletedLesson = moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed),
-        //                Percent = (module.Lessons != null && module.Lessons.Count > 0)
-        //? (int)((double)moduleLessonsProgress.Count(g => g.Status == ProgressStatus.Completed) / module.Lessons.Count * 100)
-        //: 0,
-        //                Status = currentModuleStatus switch
-        //                {
-        //                    ProgressStatus.Completed => "Completed",
-        //                    ProgressStatus.InProgress => "InProgress",
-        //                    ProgressStatus.Open => "Open",
-        //                    _ => "Close"
-        //                },
-        //            };
-        //        }).OrderBy(m => m.ModuleNumber).ToList();
 
         var curLesson = await _progressService.GetActiveLessonAsync(userId, courseId);
         if (curLesson != null)
@@ -177,20 +147,20 @@ public class DashboardService : IDashboardService
             var activeModuleInList = moduleStats.FirstOrDefault(m => m.ModuleId == curLesson.ModuleId);
             if (activeModuleInList != null)
             {
-                // Це той самий ID, який шукає ваша в'юшка
+        
                 activeModuleInList.CurrentLessonId = curLesson.Id;
 
-                // Додатково переконаємося, що статус дозволяє знайти цей модуль через FirstOrDefault
+               
                 activeModuleInList.Status = "InProgress";
             }
         }
 
-        //string currentTitle = curLesson?.Title ?? "Немає активних лекцій";
+       
         var nextTitle = "Немає активних лекцій";
         if (curLesson != null)
         {
             var nextProgress = await _context.Lessons
-                .Where(up => up.LessonIndex > curLesson.LessonIndex) // Шукаємо ту, що після поточної
+                .Where(up => up.LessonIndex > curLesson.LessonIndex) 
                 .OrderBy(up => up.LessonIndex)
                 .FirstOrDefaultAsync();
 

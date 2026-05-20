@@ -48,22 +48,21 @@
     font-family: "Gilroy";
     font-weight: 300;
     font-style: Light;
-    /*font-size:1.7rem;*/
+
     font-size: 2rem;
     line-height: 100%;
     letter-spacing: 0%;
 }
 
 .task-btn {
-    /*    width: 755px;
-    width: 100%;*/
+
     height: 50px;
     background-color: #2B31B4;
     border: 1px solid #2B31B4;
     text-align: center;
     width: 80% !important;
     max-width: 755px;
-    display: flex !important; /* Переконуємось, що це флекс-контейнер */
+    display: flex !important; 
     align-items: center;
     justify-content: center;
     text-decoration: none;
@@ -96,7 +95,7 @@
     content: "•";
     margin-left: 20px; /* Відступи від крапки */
     margin-right: 10px;
-    color: #9799C4; /* Колір вашої основної теми */
+    color: #9799C4; 
     font-weight: bold;
     display: inline-block;
     width: 8px;
@@ -105,13 +104,13 @@
 }
 
 .homework-scroll-container {
-    max-height: 550px; /* Встановіть висоту, яка вам підходить */
-    overflow-y: auto; /* Додає вертикальну прокрутку тільки якщо контенту багато */
-    overflow-x: hidden; /* Ховає горизонтальну прокрутку */
-    padding-right: 10px; /* Відступ, щоб скролбар не налізав на кнопки */
+    max-height: 550px;
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    padding-right: 10px; 
 }
 
-/* Стилізація скролбару (щоб виглядав акуратно, як у сучасних інтерфейсах) */
+
 .homework-scroll-container::-webkit-scrollbar {
     width: 6px;
 }
@@ -122,7 +121,7 @@
 }
 
 .homework-scroll-container::-webkit-scrollbar-thumb {
-    background: #8588D1; /* Колір вашої теми */
+    background: #8588D1; 
     border-radius: 10px;
 }
 
@@ -133,9 +132,7 @@
 .completed-block {
     max-width: 1580px;
     background-color: #FFFFFF;
-    /*  overflow: hidden;
-      display: flex;*/
-
+   
 
     width: 100%;
     margin-left: 0;
@@ -180,13 +177,13 @@
     box-shadow: 0 0 20px 2px rgba(43, 49, 180, 0.15);
 }
 
-/* Основна обгортка для всього блоку (рамка + картинка) */
+
 .art-frame-wrapper-mini {
-    width: 158px; /* Задайте фіксовану ширину, max-width може працювати некоректно з absolute */
+    width: 158px;
     height: 87px;
-    position: relative; /* Обов'язково для absolute всередині */
+    position: relative;
     flex-shrink: 0;
-    overflow: hidden; /* Щоб картинка не виходила за межі рамки */
+    overflow: hidden; 
 
 }
 
@@ -197,29 +194,29 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 10; /* Рамка має бути НАД картинкою */
-    object-fit: fill; /* Рамка має розтягнутися точно по розміру wrapper */
-    pointer-events: none; /* Щоб можна було клікати крізь рамку на картинку (якщо треба) */
+    z-index: 10; 
+    object-fit: fill; 
+    pointer-events: none; 
 }
 
 /* Контейнер для зображення модуля */
 .module-image-inner-mini {
     position: absolute;
-    /* Ці відступи (padding) задають внутрішній простір, куди впишеться картинка */
+   
     top: 6px;
     left: 6px;
     right: 6px;
     bottom: 6px;
-    z-index: 1; /* Картинка має бути ПІД рамкою */
+    z-index: 1;
     overflow: hidden;
-    border-radius: 8px; /* Невелике заокруглення для самої картинки всередині */
+    border-radius: 8px; 
 }
 
 /* Саме зображення модуля */
 .module-image-inner-mini img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Картинка заповнює простір без спотворень */
+    object-fit: cover;
     display: block;
 }
 
@@ -231,13 +228,13 @@
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
     .btn-detail:hover {
-        background-color: #2B31B4; /* Фон стає синім */
+        background-color: #2B31B4; 
         border-color: #2B31B4;
     }
 
-        /* 2. Одночасно змінюємо колір тексту всередині, коли мишка наведена на кнопку */
+
         .btn-detail:hover .btn-detail-text {
-            color: #FFFFFF; /* Текст стає білим */
+            color: #FFFFFF; 
         }
 
 .btn-detail-text {
@@ -248,7 +245,7 @@
     transition: color 0.3s ease;
 }
 
-/* Щоб при фокусі (кліку) рамка не ставала блакитною стандартною */
+
 .custom-input:focus, .custom-select:focus {
     border-color: #2B31B4;
     box-shadow: 0 0 0 0.2rem rgba(43, 49, 180, 0.25);
@@ -281,7 +278,7 @@
     }
 
     .hw-image {
-        order: -1; /* Змушує картинку бути найпершою зверху */
+        order: -1; 
         width: 100%;
         display: flex;
         justify-content: center;
@@ -297,7 +294,7 @@
     }
 
     .hw-image img {
-        max-width: 150px; /* Регулюйте розмір фіолетового декору тут */
+        max-width: 150px; 
         height: 80px;
     }
 
@@ -305,15 +302,11 @@
     .progress-iner-content {
         width: 100% !important;
         padding: 0 !important;
-        /*   position: relative;
-        top: -50px;
-        right: 10px;
-        left: 10px;*/
+   
         position: static;
-        /* Замість top: -50px використовуємо від'ємний margin, 
-           якщо треба наїхати на картинку зверху */
+    
         margin-top: -40px !important;
-        /* Встановлюємо реальні падінги */
+     
         padding-left: 15px !important;
         padding-right: 15px !important;
         padding-top: 0 !important;
@@ -325,13 +318,13 @@
         font-size: 1.2rem;
     }
 
-    /* Центруємо іконку комп'ютера та текст поруч */
+   
     .mini-container {
         gap: 8px !important;
         margin-bottom: 5px;
     }
 
-    /* Кнопки на мобілці */
+   
     .task-btn {
 
         margin-top: 5px;
@@ -349,13 +342,13 @@
     }
 
     #profileData {
-        flex-direction: column !important; /* Перемикаємо в колонку */
+        flex-direction: column !important; 
 
     }
 
     .module-part::after {
 
-        margin-left: 10px; /* Відступи від крапки */
+        margin-left: 10px; 
         margin-right: 5px;
 
 
@@ -376,38 +369,31 @@
         justify-content: center !important;
         padding-top: 5px !important;
         padding-bottom: 5px !important;
-        gap: 0 !important; /* Прибираємо розриви, щоб лінії зійшлися */
+        gap: 0 !important; 
     }
 
-    /* Налаштовуємо кожен блок як 50% ширини */
+ 
     #hometaskStats .hometask-box {
         flex: 0 0 50% !important;
-        border-right: none !important; /* Скидаємо всі існуючі бордери */
+        border-right: none !important; 
         border-bottom: none !important;
-        padding: 10px 10px !important; /* Компактні падінги */
+        padding: 10px 10px !important; 
         text-align: center;
         align-items: center;
     }
 
-    /* Створюємо ефект "хреста" (лінії як на макеті) */
-    /* Вертикальна лінія для 1-го та 3-го блоків (ліва колонка) */
+    
     #hometaskStats .hometask-box:nth-child(1),
     #hometaskStats .hometask-box:nth-child(3) {
         border-right: 2px solid #8588D1 !important;
     }
 
-    /* Горизонтальна лінія для 1-го та 2-го блоків (верхній ряд) */
+   
     #hometaskStats .hometask-box:nth-child(1),
     #hometaskStats .hometask-box:nth-child(2) {
         border-bottom: 2px solid #8588D1 !important;
     }
 
-    /* Корекція тексту */
-    /*    .hometask-text {
-            font-size: 0.85rem !important;
-            line-height: 1.1 !important;
-            margin-bottom: 5px !important;
-        }*/
     .hometask-num {
         font-size: 1.4rem !important;
     }
@@ -417,14 +403,14 @@
     }
 
     .completed-block .d-flex.align-items-center.gap-4 {
-        flex-direction: column !important; /* Ставимо елементи в колонку */
+        flex-direction: column !important; 
         align-items: flex-start !important;
         gap: 15px !important;
 
     }
 
     #homeworkSearch, #moduleFilter {
-        max-width: 100% !important; /* Розтягуємо пошук та фільтр на всю ширину */
+        max-width: 100% !important;
         width: 100% !important;
     }
 
@@ -436,7 +422,7 @@
         width: 111px;
     }
 
-    /* 2. Картка завдання (вертикальний вигляд) */
+  
     .homework-card {
         flex-direction: column !important;
         align-items: center !important;
@@ -444,7 +430,6 @@
         padding: 25px 10px !important;
     }
 
-    /* Зображення модуля */
     .art-frame-wrapper-mini {
         margin-right: 0 !important;
         margin-bottom: 20px;
@@ -452,7 +437,7 @@
         height: 179px;
     }
 
-    /* Текстовий блок */
+
     .homework-card .ms-4 {
         margin-left: 0 !important;
         width: 100%;
@@ -460,7 +445,7 @@
     }
 
     .hw-text {
-        /* justify-content: center;*/ /* Центруємо "Модуль • Тема • Дата" */
+       
         flex-wrap: wrap;
     }
 
@@ -470,11 +455,11 @@
         margin-top: 5px;
     }
 
-    /* Блок оцінки та кнопки */
+
     .homework-card .ms-auto {
         margin-left: 0 !important;
         width: 100%;
-        flex-direction: row !important; /* Оцінка та кнопка в один ряд */
+        flex-direction: row !important; 
         justify-content: space-between;
         align-items: center !important;
         margin-top: 5px;
@@ -485,9 +470,8 @@
         margin-right: 0 !important;
     }
 
-    /* Кнопка "ПЕРЕГЛЯНУТИ" */
     .btn-detail {
-        width: 226px; /* Фіксована ширина як на макеті */
+        width: 226px; 
         height: 42px;
     }
 
